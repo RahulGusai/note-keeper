@@ -1,0 +1,88 @@
+.outerContainer {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  background-color: aqua;
+  padding: 15px;
+  align-items: center;
+  box-shadow: 0 0 8px;
+}
+
+.loginContainer h4 {
+  margin-top: 20px;
+}
+
+.loginContainer p {
+  margin-top: 20px;
+}
+
+.formContainer {
+  margin-top: 10px;
+  width: 80%;
+  color: grey;
+  display: flex;
+  flex-direction: column;
+}
+.formContainer * {
+  width: 100%;
+  height: 30px;
+  background-color: white;
+  border: 2px solid;
+  border-radius: 2px;
+  margin-bottom: 3px;
+}
+
+.socialLoginContainer {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin-top: 10px;
+}
+.socialLoginContainer button {
+  width: 100%;
+  height: 30px;
+  background-color: white;
+  border: 2px solid;
+  border-radius: 2px;
+  margin-bottom: 3px;
+}
+
+.loginHelpContainer {
+  display: flex;
+  width: 80%;
+  justify-content: center;
+  align-items: baseline;
+  margin-top: 15px;
+  font-size: small;
+}
+
+.loginContainer p {
+  margin: 5px;
+}
+
+.lineBreak {
+  width: 80%;
+  border: 0.04em solid black;
+  margin-top: 20px;
+}
+
+.footerLogo {
+  margin-top: 20px;
+}
+
+.footerContainer {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  font-size: small;
+  font-weight: bold;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
