@@ -34,11 +34,11 @@
 }
 
 .expanded {
-  height: 150px;
+  min-height: 100px;
 }
 
 .title {
-  height: 20px;
+  height: 30px;
   line-height: 20px;
   resize: none;
   color: white;
@@ -48,10 +48,24 @@
   background-color: transparent;
 }
 
-.showTitle {
-  display: block;
+.show {
+  display: flex;
+  justify-content: space-between;
 }
 
-.hideTitle {
+.hide {
   display: none;
+}
+
+.footerContainer {
+  /* display: flex;
+  justify-content: space-between; */
+}
+
+.footerContainer .button {
+  color: white;
+  font-size: small;
+  margin: 10px;
+  letter-spacing: 1px;
+  font-family: Georgia, 'Times New Roman', Times, seri;
 }

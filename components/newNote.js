@@ -1,22 +1,17 @@
 import { func } from 'prop-types';
 import classes from './newNote.module.css';
-import { useState } from 'react';
+import { forwardRef, useRef, useState } from 'react';
 
-export function NewNote(props) {
+function componentHandler(props, ref) {
   const { isExpanded, newNoteClickHandler } = props;
+  const refs = {
+    titleRef: useRef(null);
+    contentRef: useRef(null)
+  };
 
   function handleNewNoteClick(e) {
     if (!isExpanded) {
       newNoteClickHandler(true);
-    }
-  }
-
-  function handleLineChange(e) {
-    if (e.key == 'Enter') {
-      // console.log(e.target.scrollHeight + 30 + 'px');
-      // e.target.style.height = e.target.scrollHeight + 30 + 'px';
-      e.target.style.cssText = 'height:auto; padding:0';
-      e.target.cssText = 'height:' + e.target.scrollHeight + 30 + 'px';
     }
   }
 
@@ -25,17 +20,42 @@ export function NewNote(props) {
   }`;
 
   const titleClassesname = `${classes.title} ${
-    isExpanded ? classes.showTitle : classes.hideTitle
+    isExpanded ? classes.show : classes.hide
+  }`;
+
+  const footerClassesName = `${classes.footerContainer} ${
+    isExpanded ? classes.show : classes.hide
   }`;
 
   return (
-    <div className={classes.newNoteContainer} onClick={handleNewNoteClick}>
-      <div contentEditable role="textbox" className={titleClassesname}>
+    <div
+      id="new_note"
+      className={classes.newNoteContainer}
+      onClick={handleNewNoteClick}
+    >
+      <div
+        contentEditable
+        ref={titleRef}
+        role="textbox"
+        className={titleClassesname}
+      >
         Title
       </div>
-      <div contentEditable role="textbox" className={classes.content}>
+      <div
+        contentEditable
+        ref={contentRef}
+        role="textbox"
+        className={contentClassesName}
+      >
         Take a note...
+      </div>
+      <div className={footerClassesName}>
+        <div className={classes.icons}></div>
+        <div className={classes.button}>Close</div>
       </div>
     </div>
   );
 }
+
+const NewNote = forwardRef(componentHandler);
+export { NewNote };
