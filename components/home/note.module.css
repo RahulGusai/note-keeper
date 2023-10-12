@@ -1,0 +1,9 @@
+.noteContainer {
+  width: 250px;
+  height: var(--custom-height, 150px);
+  margin: 5px;
+  padding: 10px;
+  border-radius: 4px;
+  border: 0.05em solid white;
+  /* align-self: center; */
+}

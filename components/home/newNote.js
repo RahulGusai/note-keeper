@@ -3,11 +3,8 @@ import classes from './newNote.module.css';
 import { forwardRef, useRef, useState } from 'react';
 
 function componentHandler(props, ref) {
+  const { titleRef, contentRef } = ref;
   const { isExpanded, newNoteClickHandler } = props;
-  const refs = {
-    titleRef: useRef(null);
-    contentRef: useRef(null)
-  };
 
   function handleNewNoteClick(e) {
     if (!isExpanded) {
