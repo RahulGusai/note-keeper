@@ -1,11 +1,17 @@
+import { useEffect, useRef } from 'react';
 import classes from './note.module.css';
 
 export function Note(props) {
-  const { height } = props;
-  console.log('Height received by props');
-  console.log(height);
+  const { height, content } = props;
+  const noteRef = useRef(null);
+
+  useEffect(() => {
+    noteRef.current.innerHTML = content;
+  }, []);
+
   return (
     <div
+      ref={noteRef}
       style={{ '--custom-height': `${height}px` }}
       className={classes.noteContainer}
     ></div>

@@ -1,16 +1,14 @@
 import { Note } from './note';
 import classes from './noteList.module.css';
 
-export function NoteList() {
+export function NoteList(props) {
+  const { notes } = props;
+
   return (
     <div className={classes.noteListContainer}>
-      <Note height="300"></Note>
-      <Note height="150"></Note>
-      <Note height="150"></Note>
-      <Note height="200"></Note>
-      <Note height="250"></Note>
-      <Note height="200"></Note>
-      <Note height="150"></Note>
+      {notes.map((note) => {
+        return <Note height="200" content={note.content}></Note>;
+      })}
     </div>
   );
 }

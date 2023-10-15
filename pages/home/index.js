@@ -2,6 +2,7 @@ import { NewNote } from '@/components/home/newNote';
 import classes from '../../styles/home.module.css';
 import { useEffect, useRef, useState } from 'react';
 import { NoteList } from '@/components/home/noteList';
+import { notes_list } from '@/data/notes';
 
 export default function HomePage() {
   const refs = {
@@ -10,17 +11,28 @@ export default function HomePage() {
   };
 
   const [isExpanded, setIsExpanded] = useState(false);
+  const [notes, setNotes] = useState([]);
 
   function handleHomeContainerClick(e) {
     if (e.target == e.currentTarget) {
-      //fetch title and content of note here
       const { titleRef, contentRef } = refs;
       console.log(titleRef.current.innerHTML);
-      console.log(refs.contentRef.current.innerHTML);
-      //Create a new note with the contents here
+      console.log(contentRef.current.innerHTML);
+      //TODO Create a new note with the contents here
+      const notesCopy = [...notes];
+      const newNote = {
+        content: contentRef.current.innerHTML,
+      };
+      notesCopy.push(newNote);
+      setNotes(notesCopy);
       setIsExpanded(false);
     }
   }
+
+  useEffect(() => {
+    //TODO fetch the contents from the API here
+    setNotes(notes_list);
+  }, []);
 
   return (
     <div className={classes.homeContainer} onClick={handleHomeContainerClick}>
@@ -29,7 +41,7 @@ export default function HomePage() {
         isExpanded={isExpanded}
         newNoteClickHandler={setIsExpanded}
       ></NewNote>
-      <NoteList></NoteList>
+      <NoteList notes={notes}></NoteList>
     </div>
   );
 }

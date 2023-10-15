@@ -1,6 +1,6 @@
 import { func } from 'prop-types';
 import classes from './newNote.module.css';
-import { forwardRef, useRef, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 
 function componentHandler(props, ref) {
   const { titleRef, contentRef } = ref;
@@ -11,6 +11,10 @@ function componentHandler(props, ref) {
       newNoteClickHandler(true);
     }
   }
+
+  useEffect(() => {
+    contentRef.current.innerHTML = 'Take a note...';
+  }, [isExpanded]);
 
   const contentClassesName = `${classes.content} ${
     isExpanded ? classes.expanded : classes.default
@@ -43,9 +47,7 @@ function componentHandler(props, ref) {
         ref={contentRef}
         role="textbox"
         className={contentClassesName}
-      >
-        Take a note...
-      </div>
+      ></div>
       <div className={footerClassesName}>
         <div className={classes.icons}></div>
         <div className={classes.button}>Close</div>
