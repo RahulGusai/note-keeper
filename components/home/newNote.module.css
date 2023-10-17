@@ -17,6 +17,8 @@
 }
 
 .content {
+  display: flex;
+  flex-direction: column;
   padding: 10px;
   line-height: 20px;
   resize: none;
@@ -61,7 +63,15 @@
 .footerContainer .button {
   color: white;
   font-size: small;
-  margin: 10px;
+  margin: 5px;
   letter-spacing: 1px;
   font-family: Georgia, 'Times New Roman', Times, seri;
+}
+
+.icons {
+  margin: 5px;
+}
+
+.bulletIcon {
+  font-size: medium;
 }

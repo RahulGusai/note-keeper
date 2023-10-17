@@ -3,6 +3,7 @@ import classes from '../../styles/home.module.css';
 import { useEffect, useRef, useState } from 'react';
 import { NoteList } from '@/components/home/noteList';
 import { notes_list } from '@/data/notes';
+import { NavBar } from '@/components/menu/navBar';
 
 export default function HomePage() {
   const refs = {
@@ -14,7 +15,7 @@ export default function HomePage() {
   const [notes, setNotes] = useState([]);
 
   function handleHomeContainerClick(e) {
-    if (e.target == e.currentTarget) {
+    if (isExpanded && e.target == e.currentTarget) {
       const { titleRef, contentRef } = refs;
       console.log(titleRef.current.innerHTML);
       console.log(contentRef.current.innerHTML);
@@ -36,6 +37,7 @@ export default function HomePage() {
 
   return (
     <div className={classes.homeContainer} onClick={handleHomeContainerClick}>
+      <NavBar></NavBar>
       <NewNote
         ref={refs}
         isExpanded={isExpanded}

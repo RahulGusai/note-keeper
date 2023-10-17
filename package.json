@@ -9,10 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mui/icons-material": "^5.14.13",
+    "@mui/material": "^5.14.13",
     "autosize": "^6.0.1",
     "next": "13.5.4",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-icons": "^4.11.0"
   },
   "devDependencies": {
     "eslint": "^8",
