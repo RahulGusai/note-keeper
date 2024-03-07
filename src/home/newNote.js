@@ -25,8 +25,12 @@ function ComponentHandler(props, ref) {
   }
 
   useEffect(() => {
-    contentRef.current.innerHTML =
-      'Take a note. You can click anywhere on the screen to save it';
+    if (!isExpanded) {
+      contentRef.current.innerHTML =
+        'Take a note. You can click anywhere on the screen to save it';
+    } else {
+      contentRef.current.innerHTML = '';
+    }
   }, [contentRef, isExpanded]);
 
   const contentClassesName = `content ${isExpanded ? 'expanded' : 'default'}`;
@@ -58,6 +62,7 @@ function ComponentHandler(props, ref) {
       <div className={footerClassesName}>
         <div className="icons">
           <FormatListBulletedIcon
+            style={{ color: 'white' }}
             onClick={insertBulletPoint}
             className="bulletIcon"
           ></FormatListBulletedIcon>

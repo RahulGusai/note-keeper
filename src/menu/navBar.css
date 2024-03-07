@@ -22,6 +22,10 @@
   align-items: center;
 }
 
+.leftContainer h2 {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
 .navBarContainer .leftContainer *,
 .navBarContainer .rightContainer * {
   margin: 10px;
