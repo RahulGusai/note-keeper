@@ -17,10 +17,15 @@ export default function App() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
 
   function handleHomeContainerClick(e) {
-    if (isExpanded && e.target == e.currentTarget) {
+    const classes = [
+      'homeContainer',
+      'noteContainer',
+      'notesContainer',
+      'noteListContainer',
+    ];
+    if (isExpanded && classes.includes(e.target.className)) {
       const { titleRef, contentRef } = refs;
-      console.log(titleRef.current.innerHTML);
-      console.log(contentRef.current.innerHTML);
+
       //TODO Create a new note with the contents here
       const notesCopy = [...notes];
       const newNote = {
