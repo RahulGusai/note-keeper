@@ -1,33 +1,30 @@
 .newNoteContainer {
   display: flex;
-  width: 500px;
-  height: fit-content;
-  margin-top: 100px;
-  margin-left: 100px;
+  width: 30%;
+  min-height: 25px;
+  padding: 10px;
+  margin-top: 50px;
   transition: all 0.1s ease;
   flex-direction: column;
-  justify-content: flex-start;
-  border: 0.04em solid white;
-  border-radius: 2px;
+  justify-content: center;
+  align-items: flex-start;
+  border: 1px solid grey;
+  box-shadow: 0px 0px 3px 1px #000000;
+  border-radius: 10px;
+  cursor: text;
 }
 
 .default {
-  height: 40px;
   opacity: 0.5;
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  padding: 10px;
-  line-height: 20px;
   resize: none;
   color: white;
   text-align: left;
   font-family: Georgia, 'Times New Roman', Times, serif;
-  font-weight: normal;
-  border: 1px solid transparent;
-  background-color: transparent;
   overflow: hidden;
 }
 
@@ -37,15 +34,16 @@
 }
 
 .expanded {
+  font-weight: normal;
+  margin-top: 10px;
   min-height: 100px;
+  color: white;
 }
 
 .title {
   height: 30px;
-  line-height: 20px;
   resize: none;
   color: white;
-  padding: 10px;
   font-family: Georgia, 'Times New Roman', Times, serif;
   border: 1px solid transparent;
   background-color: transparent;
