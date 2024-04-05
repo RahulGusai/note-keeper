@@ -9,11 +9,12 @@ import { CgMoreVerticalAlt } from 'react-icons/cg';
 
 function ComponentHandler(props, ref) {
   const { titleRef, contentRef } = ref;
-  const { isExpanded, newNoteClickHandler } = props;
-  const [isDefaultTextLoaded, setisDefaultTextLoaded] = useState({
-    content: true,
-    title: true,
-  });
+  const {
+    isExpanded,
+    newNoteClickHandler,
+    isDefaultTextLoaded,
+    setisDefaultTextLoaded,
+  } = props;
 
   function handleNewNoteClick(e) {
     if (!isExpanded) {
@@ -31,9 +32,13 @@ function ComponentHandler(props, ref) {
       selection.removeAllRanges();
       selection.addRange(range);
     } else {
+      titleRef.current.innerHTML = 'Title';
       contentRef.current.innerHTML = 'Take a note...';
+      setisDefaultTextLoaded((isDefaultTextLoaded) => {
+        return { ...isDefaultTextLoaded, content: true, title: true };
+      });
     }
-  }, [contentRef, isExpanded]);
+  }, [contentRef, isExpanded, setisDefaultTextLoaded, titleRef]);
 
   const handleKeyPressedOnContent = (e) => {
     if (e.key === 'Tab') {

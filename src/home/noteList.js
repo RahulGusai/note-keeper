@@ -7,7 +7,9 @@ export function NoteList(props) {
   return (
     <div className="noteListContainer">
       {notes.map((note) => {
-        return <Note height="200" content={note.content}></Note>;
+        return (
+          <Note height="200" title={note.title} content={note.content}></Note>
+        );
       })}
     </div>
   );

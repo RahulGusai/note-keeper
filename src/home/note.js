@@ -1,19 +1,32 @@
 import { useEffect, useRef } from 'react';
 import './note.css';
+import { TextIncrease } from '@mui/icons-material';
 
 export function Note(props) {
-  const { height, content } = props;
-  const noteRef = useRef(null);
+  const { title, content } = props;
+
+  const titleRef = useRef(null);
+  const contentRef = useRef(null);
 
   useEffect(() => {
-    noteRef.current.innerHTML = content;
-  }, [content, noteRef]);
+    if (title.length > 0 && content.length > 0) {
+      titleRef.current.innerHTML = title;
+      contentRef.current.innerHTML = content;
+      return;
+    }
+
+    if (title.length > 0) {
+      titleRef.current.innerHTML = title;
+      return;
+    }
+
+    titleRef.current.innerHTML = content;
+  }, [content, title]);
 
   return (
-    <div
-      ref={noteRef}
-      style={{ '--custom-height': `${height}px` }}
-      className="noteContainer"
-    ></div>
+    <div className="noteContainer">
+      <div contentEditable ref={titleRef} className="title"></div>
+      <div contentEditable ref={contentRef} className="content"></div>
+    </div>
   );
 }
