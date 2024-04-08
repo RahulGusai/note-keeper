@@ -21,6 +21,24 @@ export default function App() {
     title: true,
   });
 
+  function getHeightClass() {
+    const { contentRef } = refs;
+    if (contentRef.current.textContent.length <= 90) return 'short';
+    if (
+      contentRef.current.textContent.length > 90 &&
+      contentRef.current.textContent.length <= 180
+    )
+      return 'tall';
+
+    if (
+      contentRef.current.textContent.length > 180 &&
+      contentRef.current.textContent.length <= 270
+    )
+      return 'taller';
+
+    if (contentRef.current.textContent.length > 270) return 'tallest';
+  }
+
   function handleHomeContainerClick(e) {
     const classes = [
       'homeContainer',
@@ -32,10 +50,10 @@ export default function App() {
       const { titleRef, contentRef } = refs;
 
       if (!isDefaultTextLoaded.title || !isDefaultTextLoaded.content) {
-        console.log(isDefaultTextLoaded);
         const updatedNotes = [
           ...notes,
           {
+            heightClass: getHeightClass(),
             title: isDefaultTextLoaded.title ? '' : titleRef.current.innerHTML,
             content: isDefaultTextLoaded.content
               ? ''

@@ -1,5 +1,5 @@
 import './newNote.css';
-import { forwardRef, useEffect, useState } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { MdOutlineColorLens } from 'react-icons/md';
 import { BsImage } from 'react-icons/bs';
 import { BiArchiveIn } from 'react-icons/bi';

@@ -1,7 +1,9 @@
 .noteListContainer {
+  display: grid;
   margin-left: 100px;
   margin-right: 50px;
   margin-top: 30px;
-  display: flex;
-  flex-wrap: wrap;
+  grid-auto-rows: 100px;
+  grid-gap: 15px;
+  grid-template-columns: repeat(6, 1fr);
 }

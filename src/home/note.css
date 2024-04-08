@@ -1,28 +1,57 @@
 .noteContainer {
   width: 250px;
-  min-height: 100px;
-  max-height: 350px;
-  margin: 5px;
   padding: 10px;
   border-radius: 10px;
   border: 1px solid grey;
-  box-shadow: 0px 0px 3px 1px #000000;
   color: white;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 5px;
 }
 
-.noteContainer .title {
+.noteContainer .note-title {
+  width: 100%;
   font-family: 'Roboto Slab', serif;
   font-size: 14px;
   font-weight: 600;
 }
 
-.noteContainer .content {
+.noteContainer .note-content {
+  width: 100%;
   font-family: 'Roboto Slab', serif;
   font-size: 14px;
   font-weight: 500;
   font-style: normal;
+  user-select: none;
+  margin-top: 20px;
+  padding-bottom: 20px;
+  justify-self: flex-start;
+}
+
+.noteContainer .note-footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0px;
+}
+
+.short {
+  grid-row: span 1;
+  height: 100px;
+}
+
+.tall {
+  grid-row: span 2;
+  height: 200px;
+}
+
+.taller {
+  grid-row: span 3;
+  height: 300px;
+}
+
+.tallest {
+  grid-row: span 4;
+  height: 400px;
 }

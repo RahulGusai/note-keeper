@@ -8,7 +8,11 @@ export function NoteList(props) {
     <div className="noteListContainer">
       {notes.map((note) => {
         return (
-          <Note height="200" title={note.title} content={note.content}></Note>
+          <Note
+            heightClass={note.heightClass}
+            title={note.title}
+            content={note.content}
+          ></Note>
         );
       })}
     </div>
