@@ -11,20 +11,19 @@ function ComponentHandler(props, ref) {
   const { titleRef, contentRef } = ref;
   const {
     isExpanded,
-    newNoteClickHandler,
+    setIsExpanded,
     isDefaultTextLoaded,
     setisDefaultTextLoaded,
   } = props;
 
   function handleNewNoteClick(e) {
     if (!isExpanded) {
-      newNoteClickHandler(true);
+      setIsExpanded(true);
     }
   }
 
   useEffect(() => {
     if (isExpanded) {
-      contentRef.current.focus();
       const range = document.createRange();
       const selection = window.getSelection();
       range.selectNodeContents(contentRef.current);
@@ -41,12 +40,14 @@ function ComponentHandler(props, ref) {
   }, [contentRef, isExpanded, setisDefaultTextLoaded, titleRef]);
 
   const handleKeyPressedOnContent = (e) => {
-    if (e.key === 'Tab') {
+    if (e.key === 'Tab' || e.target.className.includes('title')) {
       return;
     }
+
     if (!isExpanded) {
-      handleNewNoteClick();
+      setIsExpanded(true);
     }
+
     if (isDefaultTextLoaded.content) {
       contentRef.current.innerHTML = '';
       setisDefaultTextLoaded((isDefaultTextLoaded) => {

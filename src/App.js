@@ -6,6 +6,7 @@ import { NoteList } from './home/noteList';
 import { notes_list } from './data/notes';
 import { NavBar } from './menu/navBar';
 import { SideBar } from './menu/sideBar';
+import { EditNote } from './home/editNote';
 
 export default function App() {
   const refs = {
@@ -14,6 +15,7 @@ export default function App() {
   };
 
   const [isExpanded, setIsExpanded] = useState(false);
+  const [editingNote, setEditingNote] = useState(false);
   const [notes, setNotes] = useState([]);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [isDefaultTextLoaded, setisDefaultTextLoaded] = useState({
@@ -23,20 +25,20 @@ export default function App() {
 
   function getHeightClass() {
     const { contentRef } = refs;
-    if (contentRef.current.textContent.length <= 90) return 'short';
+    if (contentRef.current.textContent.length <= 60) return 'short';
     if (
-      contentRef.current.textContent.length > 90 &&
-      contentRef.current.textContent.length <= 140
+      contentRef.current.textContent.length > 60 &&
+      contentRef.current.textContent.length <= 110
     )
       return 'tall';
 
     if (
-      contentRef.current.textContent.length > 140 &&
-      contentRef.current.textContent.length <= 190
+      contentRef.current.textContent.length > 110 &&
+      contentRef.current.textContent.length <= 160
     )
       return 'taller';
 
-    if (contentRef.current.textContent.length > 190) return 'tallest';
+    if (contentRef.current.textContent.length > 160) return 'tallest';
   }
 
   function handleHomeContainerClick(e) {
@@ -96,13 +98,22 @@ export default function App() {
           <NewNote
             ref={refs}
             isExpanded={isExpanded}
-            newNoteClickHandler={setIsExpanded}
+            setIsExpanded={setIsExpanded}
             isDefaultTextLoaded={isDefaultTextLoaded}
             setisDefaultTextLoaded={setisDefaultTextLoaded}
           ></NewNote>
-          <NoteList notes={notes}></NoteList>
+          <NoteList setEditingNote={setEditingNote} notes={notes}></NoteList>
         </div>
       </div>
+      {editingNote && (
+        <>
+          <div
+            onClick={() => setEditingNote(null)}
+            class="overlayContainer"
+          ></div>
+          <EditNote editingNote={editingNote}></EditNote>
+        </>
+      )}
     </div>
   );
 }

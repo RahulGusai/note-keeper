@@ -1,0 +1,59 @@
+.editNoteContainer {
+  width: 600px;
+  padding: 10px;
+  background-color: #202124;
+  border: 1px solid grey;
+  border-radius: 15px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  cursor: text;
+  resize: none;
+}
+
+.editNoteContainer .note-title {
+  height: 30px;
+  width: 100%;
+  color: white;
+  font-family: 'Roboto Slab', serif;
+  background-color: transparent;
+}
+
+.editNoteContainer .note-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  color: white;
+  text-align: left;
+  line-height: 20px;
+  font-size: 15px;
+  font-family: 'Roboto Slab', serif;
+  background-color: transparent;
+  margin-top: 10px;
+}
+
+.note-title:focus,
+.note-content:focus {
+  outline: none;
+}
+
+.editNoteContainer .note-footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 20px;
+  margin-top: 40px;
+}
+
+.note-footer .footerIcons {
+  display: flex;
+  gap: 30px;
+}
+
+.footerIcons * {
+  cursor: pointer;
+}

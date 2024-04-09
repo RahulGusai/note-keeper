@@ -1,3 +1,4 @@
+import './editNote.css';
 import { useEffect, useRef } from 'react';
 import { MdOutlineColorLens } from 'react-icons/md';
 import { BsImage } from 'react-icons/bs';
@@ -5,84 +6,28 @@ import { BiArchiveIn } from 'react-icons/bi';
 import { BiUndo } from 'react-icons/bi';
 import { BiRedo } from 'react-icons/bi';
 import { CgMoreVerticalAlt } from 'react-icons/cg';
-import { TbPinned } from 'react-icons/tb';
-import { RiCheckboxCircleFill } from 'react-icons/ri';
 
-import './note.css';
-
-export function Note(props) {
-  const { title, content, heightClass, setEditingNote } = props;
+function EditNote(props) {
+  const { editingNote } = props;
+  const { title, content } = editingNote;
 
   const titleRef = useRef(null);
   const contentRef = useRef(null);
 
-  const rowSpanToHeight = {
-    short: 'short-height',
-    tall: 'tall-height',
-    taller: 'taller-height',
-    tallest: 'tallest-height',
-  };
-
   useEffect(() => {
-    if (title.length > 0 && content.length > 0) {
-      titleRef.current.innerHTML = title;
-      contentRef.current.innerHTML = content;
-      return;
-    }
-
-    if (title.length > 0) {
-      titleRef.current.innerHTML = title;
-      return;
-    }
-
-    titleRef.current.innerHTML = content;
+    titleRef.current.innerHTML = title.length > 0 ? title : 'Title';
+    contentRef.current.innerHTML = content.length > 0 ? content : 'Note';
+    contentRef.current.focus();
   }, [content, title]);
 
-  function handleNoteClick(e) {
-    setEditingNote((editingNote) => {
-      return {
-        ...editingNote,
-        title: titleRef.current.innerHTML,
-        content: contentRef.current.innerHTML,
-      };
-    });
-  }
-
   return (
-    <div className={`outerContainer ${heightClass}`} onClick={handleNoteClick}>
-      <div className="noteContainer">
-        <div
-          className="select-icon"
-          style={{
-            backgroundColor: 'transparent',
-          }}
-        >
-          <RiCheckboxCircleFill
-            style={{
-              color: '#ffffff',
-            }}
-          />
-        </div>
-        <div className="title-bar">
-          <div ref={titleRef} className="note-title"></div>
-          <div
-            className="pin-icon"
-            style={{
-              backgroundColor: '#202124',
-            }}
-          >
-            <TbPinned
-              style={{
-                color: '#ffffff',
-              }}
-            />
-          </div>
-        </div>
-        <div
-          ref={contentRef}
-          className={`note-content ${rowSpanToHeight[heightClass]}`}
-        ></div>
-        <div className="note-footer">
+    <div className="editNoteContainer">
+      <div className="title-bar">
+        <div contentEditable ref={titleRef} className="note-title"></div>
+      </div>
+      <div contentEditable ref={contentRef} className="note-content"></div>
+      <div className="note-footer">
+        <div className="footerIcons">
           <div
             style={{
               backgroundColor: '#202124',
@@ -150,7 +95,10 @@ export function Note(props) {
             />
           </div>
         </div>
+        <div className="closeButton">Close</div>
       </div>
     </div>
   );
 }
+
+export { EditNote };
