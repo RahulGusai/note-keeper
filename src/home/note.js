@@ -5,6 +5,9 @@ import { BiArchiveIn } from 'react-icons/bi';
 import { BiUndo } from 'react-icons/bi';
 import { BiRedo } from 'react-icons/bi';
 import { CgMoreVerticalAlt } from 'react-icons/cg';
+import { TbPinned } from 'react-icons/tb';
+import { RiCheckboxCircleFill } from 'react-icons/ri';
+
 import './note.css';
 
 export function Note(props) {
@@ -12,6 +15,13 @@ export function Note(props) {
 
   const titleRef = useRef(null);
   const contentRef = useRef(null);
+
+  const rowSpanToHeight = {
+    short: 'short-height',
+    tall: 'tall-height',
+    taller: 'taller-height',
+    tallest: 'tallest-height',
+  };
 
   useEffect(() => {
     if (title.length > 0 && content.length > 0) {
@@ -31,75 +41,106 @@ export function Note(props) {
   function handleNoteClick(e) {}
 
   return (
-    <div className={`noteContainer ${heightClass}`} onClick={handleNoteClick}>
-      <div ref={titleRef} className="note-title"></div>
-      <div ref={contentRef} className={`note-content ${heightClass}`}></div>
-      <div className="note-footer">
+    <div className={`outer-container ${heightClass}`}>
+      <div className="noteContainer" onClick={handleNoteClick}>
         <div
+          className="select-icon"
           style={{
-            backgroundColor: '#202124',
+            backgroundColor: 'transparent',
           }}
         >
-          <MdOutlineColorLens
+          <RiCheckboxCircleFill
             style={{
               color: '#ffffff',
             }}
           />
         </div>
-        <div
-          style={{
-            backgroundColor: '#202124',
-          }}
-        >
-          <BsImage
+        <div className="title-bar">
+          <div ref={titleRef} className="note-title"></div>
+          <div
+            className="pin-icon"
             style={{
-              color: '#ffffff',
+              backgroundColor: '#202124',
             }}
-          />
+          >
+            <TbPinned
+              style={{
+                color: '#ffffff',
+              }}
+            />
+          </div>
         </div>
         <div
-          style={{
-            backgroundColor: '#202124',
-          }}
-        >
-          <BiArchiveIn
+          ref={contentRef}
+          className={`note-content ${rowSpanToHeight[heightClass]}`}
+        ></div>
+        <div className="note-footer">
+          <div
             style={{
-              color: '#ffffff',
+              backgroundColor: '#202124',
             }}
-          />
-        </div>
-        <div
-          style={{
-            backgroundColor: '#202124',
-          }}
-        >
-          <CgMoreVerticalAlt
+          >
+            <MdOutlineColorLens
+              style={{
+                color: '#ffffff',
+              }}
+            />
+          </div>
+          <div
             style={{
-              color: '#ffffff',
+              backgroundColor: '#202124',
             }}
-          />
-        </div>
-        <div
-          style={{
-            backgroundColor: '#202124',
-          }}
-        >
-          <BiUndo
+          >
+            <BsImage
+              style={{
+                color: '#ffffff',
+              }}
+            />
+          </div>
+          <div
             style={{
-              color: '#ffffff',
+              backgroundColor: '#202124',
             }}
-          />
-        </div>
-        <div
-          style={{
-            backgroundColor: '#202124',
-          }}
-        >
-          <BiRedo
+          >
+            <BiArchiveIn
+              style={{
+                color: '#ffffff',
+              }}
+            />
+          </div>
+          <div
             style={{
-              color: '#ffffff',
+              backgroundColor: '#202124',
             }}
-          />
+          >
+            <CgMoreVerticalAlt
+              style={{
+                color: '#ffffff',
+              }}
+            />
+          </div>
+          <div
+            style={{
+              backgroundColor: '#202124',
+            }}
+          >
+            <BiUndo
+              style={{
+                color: '#ffffff',
+              }}
+            />
+          </div>
+          <div
+            style={{
+              backgroundColor: '#202124',
+            }}
+          >
+            <BiRedo
+              style={{
+                color: '#ffffff',
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>

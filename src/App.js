@@ -26,17 +26,17 @@ export default function App() {
     if (contentRef.current.textContent.length <= 90) return 'short';
     if (
       contentRef.current.textContent.length > 90 &&
-      contentRef.current.textContent.length <= 180
+      contentRef.current.textContent.length <= 140
     )
       return 'tall';
 
     if (
-      contentRef.current.textContent.length > 180 &&
-      contentRef.current.textContent.length <= 270
+      contentRef.current.textContent.length > 140 &&
+      contentRef.current.textContent.length <= 190
     )
       return 'taller';
 
-    if (contentRef.current.textContent.length > 270) return 'tallest';
+    if (contentRef.current.textContent.length > 190) return 'tallest';
   }
 
   function handleHomeContainerClick(e) {

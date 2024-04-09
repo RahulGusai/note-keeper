@@ -44,6 +44,9 @@ function ComponentHandler(props, ref) {
     if (e.key === 'Tab') {
       return;
     }
+    if (!isExpanded) {
+      handleNewNoteClick();
+    }
     if (isDefaultTextLoaded.content) {
       contentRef.current.innerHTML = '';
       setisDefaultTextLoaded((isDefaultTextLoaded) => {
@@ -98,6 +101,7 @@ function ComponentHandler(props, ref) {
       id="new_note"
       className="newNoteContainer"
       onClick={handleNewNoteClick}
+      onKeyDown={handleKeyPressedOnContent}
     >
       <div
         contentEditable
