@@ -14,6 +14,11 @@ export default function App() {
     contentRef: useRef(null),
   };
 
+  const editNoterefs = {
+    titleRef: useRef(null),
+    contentRef: useRef(null),
+  };
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [editingNote, setEditingNote] = useState(false);
   const [notes, setNotes] = useState([]);
@@ -23,22 +28,23 @@ export default function App() {
     title: true,
   });
 
-  function getHeightClass() {
-    const { contentRef } = refs;
-    if (contentRef.current.textContent.length <= 60) return 'short';
+  function getHeightClass(contentRef) {
+    console.log(contentRef.current.innerHTML);
+
+    if (contentRef.current.textContent.length <= 40) return 'short';
     if (
-      contentRef.current.textContent.length > 60 &&
-      contentRef.current.textContent.length <= 110
+      contentRef.current.textContent.length > 40 &&
+      contentRef.current.textContent.length <= 90
     )
       return 'tall';
 
     if (
-      contentRef.current.textContent.length > 110 &&
-      contentRef.current.textContent.length <= 160
+      contentRef.current.textContent.length > 90 &&
+      contentRef.current.textContent.length <= 140
     )
       return 'taller';
 
-    if (contentRef.current.textContent.length > 160) return 'tallest';
+    if (contentRef.current.textContent.length > 140) return 'tallest';
   }
 
   function handleHomeContainerClick(e) {
@@ -52,21 +58,41 @@ export default function App() {
       const { titleRef, contentRef } = refs;
 
       if (!isDefaultTextLoaded.title || !isDefaultTextLoaded.content) {
-        const updatedNotes = [
+        const newNoteId = Math.floor(Math.random() * 1000) + 1;
+        const updatedNotes = {
           ...notes,
-          {
-            heightClass: getHeightClass(),
+          [newNoteId]: {
+            heightClass: getHeightClass(contentRef),
+            id: newNoteId,
             title: isDefaultTextLoaded.title ? '' : titleRef.current.innerHTML,
             content: isDefaultTextLoaded.content
               ? ''
               : contentRef.current.innerHTML,
           },
-        ];
+        };
         setNotes(updatedNotes);
       }
 
       setIsExpanded(false);
     }
+  }
+
+  function saveEditedNote() {
+    const noteId = editingNote.id;
+
+    setNotes((notes) => {
+      return {
+        ...notes,
+        [noteId]: {
+          id: noteId,
+          title: editNoterefs.titleRef.current.innerHTML,
+          content: editNoterefs.contentRef.current.innerHTML,
+          heightClass: getHeightClass(editNoterefs.contentRef),
+        },
+      };
+    });
+
+    setEditingNote(null);
   }
 
   useEffect(() => {
@@ -107,11 +133,8 @@ export default function App() {
       </div>
       {editingNote && (
         <>
-          <div
-            onClick={() => setEditingNote(null)}
-            class="overlayContainer"
-          ></div>
-          <EditNote editingNote={editingNote}></EditNote>
+          <div class="overlayContainer" onClick={saveEditedNote}></div>
+          <EditNote ref={editNoterefs} editingNote={editingNote}></EditNote>
         </>
       )}
     </div>

@@ -1,5 +1,5 @@
 import './editNote.css';
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useRef } from 'react';
 import { MdOutlineColorLens } from 'react-icons/md';
 import { BsImage } from 'react-icons/bs';
 import { BiArchiveIn } from 'react-icons/bi';
@@ -7,18 +7,17 @@ import { BiUndo } from 'react-icons/bi';
 import { BiRedo } from 'react-icons/bi';
 import { CgMoreVerticalAlt } from 'react-icons/cg';
 
-function EditNote(props) {
+function FunctionComponent(props, ref) {
   const { editingNote } = props;
   const { title, content } = editingNote;
 
-  const titleRef = useRef(null);
-  const contentRef = useRef(null);
+  const { titleRef, contentRef } = ref;
 
   useEffect(() => {
     titleRef.current.innerHTML = title.length > 0 ? title : 'Title';
     contentRef.current.innerHTML = content.length > 0 ? content : 'Note';
     contentRef.current.focus();
-  }, [content, title]);
+  }, [content, contentRef, title, titleRef]);
 
   return (
     <div className="editNoteContainer">
@@ -101,4 +100,5 @@ function EditNote(props) {
   );
 }
 
+const EditNote = forwardRef(FunctionComponent);
 export { EditNote };

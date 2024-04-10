@@ -41,6 +41,8 @@
   margin-top: 15px;
   margin-bottom: 20px;
   justify-self: flex-start;
+  overflow-wrap: break-word;
+  line-height: 20px;
 }
 
 .noteContainer .note-footer {

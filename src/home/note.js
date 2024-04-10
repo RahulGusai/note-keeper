@@ -11,7 +11,8 @@ import { RiCheckboxCircleFill } from 'react-icons/ri';
 import './note.css';
 
 export function Note(props) {
-  const { title, content, heightClass, setEditingNote } = props;
+  const { note, setEditingNote } = props;
+  const { id, title, content, heightClass } = note;
 
   const titleRef = useRef(null);
   const contentRef = useRef(null);
@@ -42,6 +43,7 @@ export function Note(props) {
     setEditingNote((editingNote) => {
       return {
         ...editingNote,
+        id: id,
         title: titleRef.current.innerHTML,
         content: contentRef.current.innerHTML,
       };
