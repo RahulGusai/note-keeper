@@ -7,6 +7,7 @@ import { notes_list } from './data/notes';
 import { NavBar } from './menu/navBar';
 import { SideBar } from './menu/sideBar';
 import { EditNote } from './home/editNote';
+import { countLines } from './utils';
 
 export default function App() {
   const refs = {
@@ -29,22 +30,12 @@ export default function App() {
   });
 
   function getHeightClass(contentRef) {
-    console.log(contentRef.current.innerHTML);
+    const numberOfLines = countLines(contentRef.current.innerHTML);
 
-    if (contentRef.current.textContent.length <= 40) return 'short';
-    if (
-      contentRef.current.textContent.length > 40 &&
-      contentRef.current.textContent.length <= 90
-    )
-      return 'tall';
-
-    if (
-      contentRef.current.textContent.length > 90 &&
-      contentRef.current.textContent.length <= 140
-    )
-      return 'taller';
-
-    if (contentRef.current.textContent.length > 140) return 'tallest';
+    if (numberOfLines <= 2) return 'short';
+    if (numberOfLines > 2 && numberOfLines <= 5) return 'tall';
+    if (numberOfLines > 5 && numberOfLines <= 8) return 'taller';
+    if (numberOfLines > 8) return 'tallest';
   }
 
   function handleHomeContainerClick(e) {
