@@ -10,14 +10,14 @@ import { EditNote } from './home/editNote';
 import { countLines } from './utils';
 
 export default function App() {
-  const refs = {
+  const newNoterefs = {
     titleRef: useRef(null),
     contentRef: useRef(null),
   };
 
   const editNoterefs = {
-    titleRef: useRef(null),
-    contentRef: useRef(null),
+    titleElem: useRef(null),
+    contentElem: useRef(null),
   };
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -27,6 +27,10 @@ export default function App() {
   const [isDefaultTextLoaded, setisDefaultTextLoaded] = useState({
     content: true,
     title: true,
+  });
+  const [editNoteDefaultText, setEditNoteDefaultText] = useState({
+    content: false,
+    title: false,
   });
 
   function getHeightClass(contentRef) {
@@ -45,23 +49,27 @@ export default function App() {
       'notesContainer',
       'noteListContainer',
     ];
+
     if (isExpanded && classes.includes(e.target.className)) {
-      const { titleRef, contentRef } = refs;
+      const { titleRef, contentRef } = newNoterefs;
 
       if (!isDefaultTextLoaded.title || !isDefaultTextLoaded.content) {
         const newNoteId = Math.floor(Math.random() * 1000) + 1;
-        const updatedNotes = {
-          ...notes,
-          [newNoteId]: {
-            heightClass: getHeightClass(contentRef),
-            id: newNoteId,
-            title: isDefaultTextLoaded.title ? '' : titleRef.current.innerHTML,
-            content: isDefaultTextLoaded.content
-              ? ''
-              : contentRef.current.innerHTML,
-          },
-        };
-        setNotes(updatedNotes);
+        setNotes((notes) => {
+          return {
+            ...notes,
+            [newNoteId]: {
+              heightClass: getHeightClass(contentRef),
+              id: newNoteId,
+              title: isDefaultTextLoaded.title
+                ? ''
+                : titleRef.current.innerHTML,
+              content: isDefaultTextLoaded.content
+                ? ''
+                : contentRef.current.innerHTML,
+            },
+          };
+        });
       }
 
       setIsExpanded(false);
@@ -72,18 +80,32 @@ export default function App() {
     const noteId = editingNote.id;
 
     setNotes((notes) => {
+      const title = editNoteDefaultText.title
+        ? ''
+        : editNoterefs.titleElem.current.innerHTML;
+      const content = editNoteDefaultText.content
+        ? ''
+        : editNoterefs.contentElem.current.innerHTML;
+
       return {
         ...notes,
         [noteId]: {
           id: noteId,
-          title: editNoterefs.titleRef.current.innerHTML,
-          content: editNoterefs.contentRef.current.innerHTML,
-          heightClass: getHeightClass(editNoterefs.contentRef),
+          title: title,
+          content: content,
+          heightClass: getHeightClass(editNoterefs.contentElem),
         },
       };
     });
 
     setEditingNote(null);
+    setEditNoteDefaultText((editNoteDefaultText) => {
+      return {
+        ...editNoteDefaultText,
+        content: false,
+        title: false,
+      };
+    });
   }
 
   useEffect(() => {
@@ -113,7 +135,7 @@ export default function App() {
         <SideBar expanded={isSidebarExpanded}></SideBar>
         <div className="notesContainer">
           <NewNote
-            ref={refs}
+            ref={newNoterefs}
             isExpanded={isExpanded}
             setIsExpanded={setIsExpanded}
             isDefaultTextLoaded={isDefaultTextLoaded}
@@ -122,12 +144,17 @@ export default function App() {
           <NoteList setEditingNote={setEditingNote} notes={notes}></NoteList>
         </div>
       </div>
-      {editingNote && (
-        <>
-          <div class="overlayContainer" onClick={saveEditedNote}></div>
-          <EditNote ref={editNoterefs} editingNote={editingNote}></EditNote>
-        </>
-      )}
+
+      <div
+        className={editingNote ? 'overlayContainer active' : 'overlayContainer'}
+        onClick={saveEditedNote}
+      ></div>
+      <EditNote
+        ref={editNoterefs}
+        editingNote={editingNote}
+        editNoteDefaultText={editNoteDefaultText}
+        setEditNoteDefaultText={setEditNoteDefaultText}
+      ></EditNote>
     </div>
   );
 }

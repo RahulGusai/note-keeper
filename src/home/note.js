@@ -25,6 +25,9 @@ export function Note(props) {
   };
 
   useEffect(() => {
+    titleRef.current.innerHTML = '';
+    contentRef.current.innerHTML = '';
+
     if (title.length > 0 && content.length > 0) {
       titleRef.current.innerHTML = title;
       contentRef.current.innerHTML = content;
@@ -37,15 +40,19 @@ export function Note(props) {
     }
 
     titleRef.current.innerHTML = content;
-  }, [content, title]);
+  }, [content, id, title]);
 
   function handleNoteClick(e) {
     setEditingNote((editingNote) => {
       return {
         ...editingNote,
         id: id,
-        title: titleRef.current.innerHTML,
-        content: contentRef.current.innerHTML,
+        title: title,
+        content: content,
+        defaultText: {
+          title: false,
+          content: false,
+        },
       };
     });
   }

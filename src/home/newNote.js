@@ -69,7 +69,6 @@ function ComponentHandler(props, ref) {
   };
 
   const handleTitleClick = (e) => {
-    e.preventDefault();
     if (isDefaultTextLoaded.title) {
       const range = document.createRange();
       const selection = window.getSelection();

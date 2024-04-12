@@ -8,23 +8,94 @@ import { BiRedo } from 'react-icons/bi';
 import { CgMoreVerticalAlt } from 'react-icons/cg';
 
 function FunctionComponent(props, ref) {
-  const { editingNote } = props;
-  const { title, content } = editingNote;
+  const { editingNote, editNoteDefaultText, setEditNoteDefaultText } = props;
 
-  const { titleRef, contentRef } = ref;
+  const { titleElem, contentElem } = ref;
 
   useEffect(() => {
-    titleRef.current.innerHTML = title.length > 0 ? title : 'Title';
-    contentRef.current.innerHTML = content.length > 0 ? content : 'Note';
-    contentRef.current.focus();
-  }, [content, contentRef, title, titleRef]);
+    if (editingNote) {
+      const { title, content } = editingNote;
+
+      if (content.length > 0) {
+        contentElem.current.innerHTML = content;
+      } else {
+        contentElem.current.innerHTML = 'Note';
+        setEditNoteDefaultText((editNoteDefaultText) => {
+          return { ...editNoteDefaultText, content: true };
+        });
+      }
+
+      if (title.length > 0) {
+        titleElem.current.innerHTML = title;
+      } else {
+        titleElem.current.innerHTML = 'Title';
+        setEditNoteDefaultText((editNoteDefaultText) => {
+          return { ...editNoteDefaultText, title: true };
+        });
+      }
+    }
+  }, [contentElem, editingNote, setEditNoteDefaultText, titleElem]);
+
+  function handleKeyPressedTitle(e) {
+    if (editNoteDefaultText.title) {
+      setEditNoteDefaultText((editNoteDefaultText) => {
+        return { ...editNoteDefaultText, title: false };
+      });
+    } else {
+      if (titleElem.current.innerHTML.length === 0) {
+        titleElem.current.innerHTML = 'Title';
+        setEditNoteDefaultText((editNoteDefaultText) => {
+          return { ...editNoteDefaultText, title: true };
+        });
+      }
+    }
+  }
+
+  function handleKeyPressedContent(e) {
+    if (editNoteDefaultText.content) {
+      setEditNoteDefaultText((editNoteDefaultText) => {
+        return { ...editNoteDefaultText, content: false };
+      });
+    } else {
+      if (contentElem.current.innerHTML.length === 0) {
+        contentElem.current.innerHTML = 'Note';
+        setEditNoteDefaultText((editNoteDefaultText) => {
+          return { ...editNoteDefaultText, content: true };
+        });
+      }
+    }
+  }
+
+  function clearDefaultInput() {
+    if (editNoteDefaultText.title) {
+      titleElem.current.innerHTML = '';
+    }
+
+    if (editNoteDefaultText.content) {
+      contentElem.current.innerHTML = '';
+    }
+  }
 
   return (
-    <div className="editNoteContainer">
+    <div
+      className={editingNote ? 'editNoteContainer active' : 'editNoteContainer'}
+    >
       <div className="title-bar">
-        <div contentEditable ref={titleRef} className="note-title"></div>
+        <div
+          contentEditable
+          ref={titleElem}
+          className="note-title"
+          onKeyUp={handleKeyPressedTitle}
+          onBeforeInput={clearDefaultInput}
+        ></div>
       </div>
-      <div contentEditable ref={contentRef} className="note-content"></div>
+      <div
+        contentEditable
+        ref={contentElem}
+        className="note-content"
+        onKeyUp={handleKeyPressedContent}
+        onBeforeInput={clearDefaultInput}
+      ></div>
       <div className="note-footer">
         <div className="footerIcons">
           <div

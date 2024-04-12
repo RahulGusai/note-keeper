@@ -1,5 +1,6 @@
 export const notes_list = {
   1: {
+    id: 1,
     title: 'Demo Title 1',
     content: 'This is a demo note 1',
     heightClass: 'short',

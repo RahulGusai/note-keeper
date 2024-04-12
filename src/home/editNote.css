@@ -7,11 +7,19 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   cursor: text;
   resize: none;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  z-index: 101;
+}
+
+.editNoteContainer.active {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
 }
 
 .editNoteContainer .note-title {
