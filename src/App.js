@@ -32,6 +32,7 @@ export default function App() {
     content: false,
     title: false,
   });
+  const [latestNoteId, setLatestNoteId] = useState(null);
 
   function getHeightClass(contentRef) {
     const numberOfLines = countLines(contentRef.current.innerHTML);
@@ -70,6 +71,7 @@ export default function App() {
             ...notes,
           };
         });
+        setLatestNoteId(newNoteId);
       }
 
       setIsExpanded(false);
@@ -141,7 +143,11 @@ export default function App() {
             isDefaultTextLoaded={isDefaultTextLoaded}
             setisDefaultTextLoaded={setisDefaultTextLoaded}
           ></NewNote>
-          <NoteList setEditingNote={setEditingNote} notes={notes}></NoteList>
+          <NoteList
+            setEditingNote={setEditingNote}
+            notes={notes}
+            latestNoteId={latestNoteId}
+          ></NoteList>
         </div>
       </div>
 
