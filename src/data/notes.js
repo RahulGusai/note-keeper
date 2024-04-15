@@ -1,15 +1,15 @@
 export const notes_list = {
-  1: {
-    id: 1,
-    title: 'Demo Title 1',
-    content: 'This is a demo note 1',
-    heightClass: 'short',
-  },
   2: {
     id: 2,
     title: 'Demo Title 2',
     content: 'This is a demo note 2',
     heightClass: 'tall',
+  },
+  1: {
+    id: 1,
+    title: 'Demo Title 1',
+    content: 'This is a demo note 1',
+    heightClass: 'short',
   },
   3: {
     id: 3,

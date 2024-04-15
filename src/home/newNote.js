@@ -40,30 +40,22 @@ function ComponentHandler(props, ref) {
   }, [contentRef, isExpanded, setisDefaultTextLoaded, titleRef]);
 
   const handleKeyPressedOnContent = (e) => {
-    if (e.key === 'Tab' || e.target.className.includes('title')) {
-      return;
-    }
-
-    if (!isExpanded) {
-      setIsExpanded(true);
-    }
-
-    if (isDefaultTextLoaded.content) {
-      contentRef.current.innerHTML = '';
+    if (
+      !isDefaultTextLoaded.content &&
+      contentRef.current.innerHTML.length === 0
+    ) {
+      contentRef.current.innerHTML = 'Take a note...';
       setisDefaultTextLoaded((isDefaultTextLoaded) => {
-        return { ...isDefaultTextLoaded, content: false };
+        return { ...isDefaultTextLoaded, content: true };
       });
     }
   };
 
   const handleKeyPressedOnTitle = (e) => {
-    if (e.key === 'Tab') {
-      return;
-    }
-    if (isDefaultTextLoaded.title) {
-      titleRef.current.innerHTML = '';
+    if (!isDefaultTextLoaded.title && titleRef.current.innerHTML.length === 0) {
+      titleRef.current.innerHTML = 'Title';
       setisDefaultTextLoaded((isDefaultTextLoaded) => {
-        return { ...isDefaultTextLoaded, title: false };
+        return { ...isDefaultTextLoaded, title: true };
       });
     }
   };
@@ -92,6 +84,24 @@ function ComponentHandler(props, ref) {
     contentRef.current.focus();
   };
 
+  function clearDefaultInputTitle() {
+    if (isDefaultTextLoaded.title) {
+      titleRef.current.innerHTML = '';
+      setisDefaultTextLoaded((isDefaultTextLoaded) => {
+        return { ...isDefaultTextLoaded, title: false };
+      });
+    }
+  }
+
+  function clearDefaultInputContent() {
+    if (isDefaultTextLoaded.content) {
+      contentRef.current.innerHTML = '';
+      setisDefaultTextLoaded((isDefaultTextLoaded) => {
+        return { ...isDefaultTextLoaded, content: false };
+      });
+    }
+  }
+
   const contentClassesName = `content ${isExpanded ? 'expanded' : 'default'}`;
   const titleClassesname = `title ${isExpanded ? 'show' : 'hide'}`;
   const footerClassesName = `${!isExpanded ? 'hide' : 'footerContainer'}`;
@@ -101,23 +111,23 @@ function ComponentHandler(props, ref) {
       id="new_note"
       className="newNoteContainer"
       onClick={handleNewNoteClick}
-      onKeyDown={handleKeyPressedOnContent}
+      // onKeyUp={handleKeyPressedOnContent}
     >
       <div
         contentEditable
         ref={titleRef}
         className={titleClassesname}
-        onKeyDown={handleKeyPressedOnTitle}
+        onKeyUp={handleKeyPressedOnTitle}
         onClick={handleTitleClick}
-      >
-        Title
-      </div>
+        onBeforeInput={clearDefaultInputTitle}
+      ></div>
       <div
         contentEditable
         ref={contentRef}
         className={contentClassesName}
-        onKeyDown={handleKeyPressedOnContent}
+        onKeyUp={handleKeyPressedOnContent}
         onClick={handleContentClick}
+        onBeforeInput={clearDefaultInputContent}
       ></div>
 
       <div className={footerClassesName}>

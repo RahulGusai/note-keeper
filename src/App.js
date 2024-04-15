@@ -57,7 +57,6 @@ export default function App() {
         const newNoteId = Math.floor(Math.random() * 1000) + 1;
         setNotes((notes) => {
           return {
-            ...notes,
             [newNoteId]: {
               heightClass: getHeightClass(contentRef),
               id: newNoteId,
@@ -68,6 +67,7 @@ export default function App() {
                 ? ''
                 : contentRef.current.innerHTML,
             },
+            ...notes,
           };
         });
       }

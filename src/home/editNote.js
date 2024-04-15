@@ -37,42 +37,44 @@ function FunctionComponent(props, ref) {
   }, [contentElem, editingNote, setEditNoteDefaultText, titleElem]);
 
   function handleKeyPressedTitle(e) {
-    if (editNoteDefaultText.title) {
+    if (
+      !editNoteDefaultText.title &&
+      titleElem.current.innerHTML.length === 0
+    ) {
+      titleElem.current.innerHTML = 'Title';
       setEditNoteDefaultText((editNoteDefaultText) => {
-        return { ...editNoteDefaultText, title: false };
+        return { ...editNoteDefaultText, title: true };
       });
-    } else {
-      if (titleElem.current.innerHTML.length === 0) {
-        titleElem.current.innerHTML = 'Title';
-        setEditNoteDefaultText((editNoteDefaultText) => {
-          return { ...editNoteDefaultText, title: true };
-        });
-      }
     }
   }
 
   function handleKeyPressedContent(e) {
-    if (editNoteDefaultText.content) {
+    if (
+      !editNoteDefaultText.content &&
+      contentElem.current.innerHTML.length === 0
+    ) {
+      contentElem.current.innerHTML = 'Note';
       setEditNoteDefaultText((editNoteDefaultText) => {
-        return { ...editNoteDefaultText, content: false };
+        return { ...editNoteDefaultText, content: true };
       });
-    } else {
-      if (contentElem.current.innerHTML.length === 0) {
-        contentElem.current.innerHTML = 'Note';
-        setEditNoteDefaultText((editNoteDefaultText) => {
-          return { ...editNoteDefaultText, content: true };
-        });
-      }
     }
   }
 
-  function clearDefaultInput() {
+  function clearDefaultInputTitle() {
     if (editNoteDefaultText.title) {
       titleElem.current.innerHTML = '';
+      setEditNoteDefaultText((editNoteDefaultText) => {
+        return { ...editNoteDefaultText, title: false };
+      });
     }
+  }
 
+  function clearDefaultInputContent() {
     if (editNoteDefaultText.content) {
       contentElem.current.innerHTML = '';
+      setEditNoteDefaultText((editNoteDefaultText) => {
+        return { ...editNoteDefaultText, content: false };
+      });
     }
   }
 
@@ -86,7 +88,7 @@ function FunctionComponent(props, ref) {
           ref={titleElem}
           className="note-title"
           onKeyUp={handleKeyPressedTitle}
-          onBeforeInput={clearDefaultInput}
+          onBeforeInput={clearDefaultInputTitle}
         ></div>
       </div>
       <div
@@ -94,7 +96,7 @@ function FunctionComponent(props, ref) {
         ref={contentElem}
         className="note-content"
         onKeyUp={handleKeyPressedContent}
-        onBeforeInput={clearDefaultInput}
+        onBeforeInput={clearDefaultInputContent}
       ></div>
       <div className="note-footer">
         <div className="footerIcons">

@@ -28,6 +28,16 @@ export function Note(props) {
     titleRef.current.innerHTML = '';
     contentRef.current.innerHTML = '';
 
+    if (title.length === 0 && content.length === 0) {
+      titleRef.current.innerHTML = 'Empty Note';
+      titleRef.current.style.color = 'grey';
+      titleRef.current.style.fontSize = '20px';
+      return;
+    }
+
+    titleRef.current.style.color = 'white';
+    titleRef.current.style.fontSize = '14px';
+
     if (title.length > 0 && content.length > 0) {
       titleRef.current.innerHTML = title;
       contentRef.current.innerHTML = content;
