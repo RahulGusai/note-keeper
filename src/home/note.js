@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MdOutlineColorLens } from 'react-icons/md';
 import { BsImage } from 'react-icons/bs';
 import { BiArchiveIn } from 'react-icons/bi';
@@ -11,7 +11,7 @@ import { RiCheckboxCircleFill } from 'react-icons/ri';
 import './note.css';
 
 export function Note(props) {
-  const { note, setEditingNote } = props;
+  const { note, setEditingNote, selectedNoteIds, setSelectedNoteIds } = props;
   const { id, title, content, heightClass } = note;
 
   const titleRef = useRef(null);
@@ -23,6 +23,7 @@ export function Note(props) {
     taller: 'taller-height',
     tallest: 'tallest-height',
   };
+  const isSelected = selectedNoteIds.has(note.id);
 
   useEffect(() => {
     titleRef.current.innerHTML = '';
@@ -53,6 +54,24 @@ export function Note(props) {
   }, [content, id, title]);
 
   function handleNoteClick(e) {
+    if (isSelected) {
+      setSelectedNoteIds((selectedNoteIds) => {
+        const updatedSelectedNoteIds = new Set(selectedNoteIds);
+        updatedSelectedNoteIds.delete(note.id);
+        return updatedSelectedNoteIds;
+      });
+      return;
+    }
+
+    if (selectedNoteIds.size > 0) {
+      setSelectedNoteIds((selectedNoteIds) => {
+        const updatedSelectedNoteIds = new Set(selectedNoteIds);
+        updatedSelectedNoteIds.add(note.id);
+        return updatedSelectedNoteIds;
+      });
+      return;
+    }
+
     setEditingNote((editingNote) => {
       return {
         ...editingNote,
@@ -67,14 +86,27 @@ export function Note(props) {
     });
   }
 
+  function handleSelectIconClick() {
+    setSelectedNoteIds((selectedNoteIds) => {
+      const updatedSelectedNoteIds = new Set(selectedNoteIds);
+      if (updatedSelectedNoteIds.has(note.id)) {
+        updatedSelectedNoteIds.delete(note.id);
+      } else {
+        updatedSelectedNoteIds.add(note.id);
+      }
+      return updatedSelectedNoteIds;
+    });
+  }
+
   return (
-    <div className={`outerContainer ${heightClass}`} onClick={handleNoteClick}>
-      <div className="noteContainer">
+    <div className={`outerContainer ${heightClass}`}>
+      <div className={isSelected ? 'noteContainer selected' : 'noteContainer'}>
         <div
-          className="select-icon"
+          className={isSelected ? 'selectIcon show' : 'selectIcon'}
           style={{
             backgroundColor: 'transparent',
           }}
+          onClick={handleSelectIconClick}
         >
           <RiCheckboxCircleFill
             style={{
@@ -82,10 +114,10 @@ export function Note(props) {
             }}
           />
         </div>
-        <div className="title-bar">
+        <div className="title-bar" onClick={handleNoteClick}>
           <div ref={titleRef} className="note-title"></div>
           <div
-            className="pin-icon"
+            className={isSelected ? 'pinIcon' : 'pinIcon show'}
             style={{
               backgroundColor: '#202124',
             }}
@@ -100,8 +132,9 @@ export function Note(props) {
         <div
           ref={contentRef}
           className={`note-content ${rowSpanToHeight[heightClass]}`}
+          onClick={handleNoteClick}
         ></div>
-        <div className="note-footer">
+        <div className={isSelected ? 'noteFooter' : 'noteFooter show'}>
           <div
             style={{
               backgroundColor: '#202124',

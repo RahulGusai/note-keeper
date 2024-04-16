@@ -12,6 +12,11 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: border 0.1s ease-in;
+}
+
+.noteContainer.selected {
+  border: 2px solid white;
 }
 
 .noteContainer .title-bar {
@@ -27,7 +32,7 @@
   overflow-wrap: break-word;
 }
 
-.title-bar .pin-icon {
+.title-bar .pinIcon {
   display: none;
 }
 
@@ -46,26 +51,26 @@
   line-height: 20px;
 }
 
-.noteContainer .note-footer {
+.noteContainer .noteFooter {
   width: 100%;
   margin-bottom: 0px;
   display: none;
 }
 
-.noteContainer:hover .note-footer {
+.noteContainer:hover .noteFooter.show {
   display: flex;
   align-items: center;
   justify-content: space-between;
   opacity: 0.8;
 }
 
-.noteContainer:hover .pin-icon {
+.noteContainer:hover .pinIcon.show {
   display: block;
   scale: 1.2;
   opacity: 0.8;
 }
 
-.select-icon {
+.selectIcon {
   scale: 1.5;
   position: absolute;
   left: 0;
@@ -73,9 +78,14 @@
   margin-left: -5px;
   margin-top: -5px;
   display: none;
+  cursor: pointer;
 }
 
-.noteContainer:hover .select-icon {
+.selectIcon.show {
+  display: block;
+}
+
+.noteContainer:hover .selectIcon {
   display: block;
 }
 

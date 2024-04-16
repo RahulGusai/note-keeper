@@ -1,8 +1,10 @@
 import './navBar.css';
-import MenuIcon from '@mui/icons-material/Menu';
-import ViewStreamOutlinedIcon from '@mui/icons-material/ViewStreamOutlined';
-import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import { CgMenu } from 'react-icons/cg';
+import { IoRefreshSharp } from 'react-icons/io5';
+import { MdOutlineViewAgenda } from 'react-icons/md';
+import { RiSettings2Line } from 'react-icons/ri';
+import { CgProfile } from 'react-icons/cg';
+import { AiOutlineSearch } from 'react-icons/ai';
 
 export function NavBar(props) {
   const { sidebarState, changeSidebarState } = props;
@@ -14,16 +16,46 @@ export function NavBar(props) {
   return (
     <div className="navBarContainer">
       <div className="leftContainer">
-        <MenuIcon
+        <CgMenu
           className="burgerMenuIcon"
-          onClick={onMenuIconClick}
-        ></MenuIcon>
-        <h2>NoteKeeper</h2>
+          style={{
+            color: '#ffffff',
+          }}
+        ></CgMenu>
+        <div className="productName">NoteKeeper</div>
       </div>
+      <div className="searchBar">
+        <AiOutlineSearch
+          className="searchIcon"
+          style={{
+            color: '#ffffff',
+          }}
+        />
+        <input className="searchInput" placeholder="Search"></input>
+      </div>
+
       <div className="rightContainer">
-        <ViewStreamOutlinedIcon></ViewStreamOutlinedIcon>
-        <DarkModeOutlinedIcon></DarkModeOutlinedIcon>
-        <AccountCircleOutlinedIcon></AccountCircleOutlinedIcon>
+        <IoRefreshSharp
+          className="reloadIcon"
+          style={{
+            color: '#ffffff',
+          }}
+        />
+        <MdOutlineViewAgenda
+          style={{
+            color: '#ffffff',
+          }}
+        />
+        <RiSettings2Line
+          style={{
+            color: '#ffffff',
+          }}
+        />
+        <CgProfile
+          style={{
+            color: '#ffffff',
+          }}
+        />
       </div>
     </div>
   );

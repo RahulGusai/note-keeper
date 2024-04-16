@@ -33,6 +33,14 @@ export default function App() {
     title: false,
   });
   const [latestNoteId, setLatestNoteId] = useState(null);
+  const [selectedNoteIds, setSelectedNoteIds] = useState(new Set());
+
+  const selectorArea = {
+    x: 0,
+    y: 0,
+    startX: 0,
+    startY: 0,
+  };
 
   function getHeightClass(contentRef) {
     const numberOfLines = countLines(contentRef.current.innerHTML);
@@ -115,8 +123,26 @@ export default function App() {
     setNotes(notes_list);
   }, []);
 
+  function handleMouseDown() {
+    console.log('Mouse is clicked');
+  }
+
+  function handleMouseUp() {
+    console.log('Mouse left');
+  }
+
+  function handleMouseMovement() {
+    console.log('Mouse is being moved');
+  }
+
   return (
-    <div className="homeContainer" onClick={handleHomeContainerClick}>
+    <div
+      className="homeContainer"
+      onClick={handleHomeContainerClick}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onMouseMove={handleMouseMovement}
+    >
       <Helmet>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link
@@ -147,6 +173,8 @@ export default function App() {
             setEditingNote={setEditingNote}
             notes={notes}
             latestNoteId={latestNoteId}
+            selectedNoteIds={selectedNoteIds}
+            setSelectedNoteIds={setSelectedNoteIds}
           ></NoteList>
         </div>
       </div>
