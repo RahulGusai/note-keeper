@@ -2,18 +2,36 @@
   --nav-bar-height: 60px;
 }
 
-.sidebarContainer {
-  width: 300px;
-  height: calc(100vh - var(--nav-bar-height));
-  margin-top: 60px;
-  opacity: 0.3;
-  background-color: #c3c3c4;
-}
-
-.collapsed {
-  display: none;
-}
-
-.expanded {
+.sideBarContainer {
+  height: 100%;
+  background-color: transparent;
   display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  margin-left: 30px;
+  gap: 30px;
+}
+
+.tab {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.tab .tabIcon {
+  scale: 1.3;
+  color: grey;
+}
+
+.tab .tabText {
+  opacity: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  font-family: 'Roboto Slab', serif;
+  transition: 0.3s ease, height 0.3s ease;
+}
+
+.tab .tabText.active {
+  opacity: 1;
 }

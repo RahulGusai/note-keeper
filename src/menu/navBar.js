@@ -29,6 +29,7 @@ export function NavBar(props) {
           style={{
             color: '#ffffff',
           }}
+          onClick={() => changeSidebarState(!sidebarState)}
         ></CgMenu>
         <div className="productName">NoteKeeper</div>
       </div>
