@@ -122,26 +122,8 @@ export default function App() {
     setNotes(notes_list);
   }, []);
 
-  function handleMouseDown() {
-    console.log('Mouse is clicked');
-  }
-
-  function handleMouseUp() {
-    console.log('Mouse left');
-  }
-
-  function handleMouseMovement() {
-    console.log('Mouse is being moved');
-  }
-
   return (
-    <div
-      className="homeContainer"
-      onClick={handleHomeContainerClick}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMovement}
-    >
+    <div className="homeContainer" onClick={handleHomeContainerClick}>
       <Helmet>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link
@@ -176,6 +158,7 @@ export default function App() {
             latestNoteId={latestNoteId}
             selectedNoteIds={selectedNoteIds}
             setSelectedNoteIds={setSelectedNoteIds}
+            setNotes={setNotes}
           ></NoteList>
         </div>
       </div>

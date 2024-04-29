@@ -11,7 +11,14 @@ import { RiCheckboxCircleFill } from 'react-icons/ri';
 import './note.css';
 
 export function Note(props) {
-  const { note, setEditingNote, selectedNoteIds, setSelectedNoteIds } = props;
+  const {
+    note,
+    setEditingNote,
+    selectedNoteIds,
+    setSelectedNoteIds,
+    notes,
+    setNotes,
+  } = props;
   const { id, title, content, heightClass } = note;
 
   const titleRef = useRef(null);
@@ -98,6 +105,26 @@ export function Note(props) {
     });
   }
 
+  function handlePinIconClick(e) {
+    const { others, pinned } = notes;
+    if (others.hasOwnProperty(id)) {
+      const pinnedNote = others[id];
+      const updatedOthers = { ...others };
+      const updatedPinned = { ...pinned };
+      delete updatedOthers[id];
+      updatedPinned[id] = pinnedNote;
+      setNotes({ others: updatedOthers, pinned: updatedPinned });
+    } else {
+      const otherNote = pinned[id];
+      const updatedOthers = { ...others };
+      const updatedPinned = { ...pinned };
+      delete updatedPinned[id];
+      updatedOthers[id] = otherNote;
+      setNotes({ others: updatedOthers, pinned: updatedPinned });
+    }
+    e.stopPropagation();
+  }
+
   return (
     <div className={`outerContainer ${heightClass}`}>
       <div className={isSelected ? 'noteContainer selected' : 'noteContainer'}>
@@ -121,6 +148,7 @@ export function Note(props) {
             style={{
               backgroundColor: '#202124',
             }}
+            onClick={handlePinIconClick}
           >
             <TbPinned
               style={{

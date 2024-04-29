@@ -24,14 +24,16 @@
 }
 
 .tab .tabText {
-  opacity: 0;
   font-size: 13px;
   font-weight: 600;
   color: white;
   font-family: 'Roboto Slab', serif;
-  transition: 0.3s ease, height 0.3s ease;
+  width: 0px;
+  opacity: 0;
+  transition: width 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
-.tab .tabText.active {
+.tabText.active {
   opacity: 1;
+  width: auto;
 }
