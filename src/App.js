@@ -34,13 +34,7 @@ export default function App() {
   });
   const [latestNoteId, setLatestNoteId] = useState(null);
   const [selectedNoteIds, setSelectedNoteIds] = useState(new Set());
-
-  const selectorArea = {
-    x: 0,
-    y: 0,
-    startX: 0,
-    startY: 0,
-  };
+  const [isSearchBarActive, setIsSearchBarActive] = useState(false);
 
   function getHeightClass(contentRef) {
     const numberOfLines = countLines(contentRef.current.innerHTML);
@@ -53,6 +47,7 @@ export default function App() {
 
   function handleHomeContainerClick(e) {
     const classes = [
+      'navBarContainer',
       'homeContainer',
       'noteContainer',
       'notesContainer',
@@ -83,6 +78,10 @@ export default function App() {
       }
 
       setIsExpanded(false);
+    }
+
+    if (classes.includes(e.target.className)) {
+      setIsSearchBarActive(false);
     }
   }
 
@@ -158,6 +157,8 @@ export default function App() {
       <NavBar
         sidebarState={isSidebarExpanded}
         changeSidebarState={setIsSidebarExpanded}
+        isSearchBarActive={isSearchBarActive}
+        setIsSearchBarActive={setIsSearchBarActive}
       ></NavBar>
       <div className="scrollableContent">
         <SideBar expanded={isSidebarExpanded}></SideBar>

@@ -1,11 +1,12 @@
 import './sideBar.css';
+import { FaRegNoteSticky } from 'react-icons/fa6';
 
 export function SideBar(props) {
   const { expanded } = props;
 
-  const containerClasses = `sidebarContainer ${
-    expanded ? 'expanded' : 'collapsed'
-  }`;
-
-  return <div className={containerClasses}></div>;
+  return (
+    <div className="sideBarContainer">
+      <FaRegNoteSticky></FaRegNoteSticky>
+    </div>
+  );
 }

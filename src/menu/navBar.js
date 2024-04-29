@@ -5,12 +5,20 @@ import { MdOutlineViewAgenda } from 'react-icons/md';
 import { RiSettings2Line } from 'react-icons/ri';
 import { CgProfile } from 'react-icons/cg';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { IoMdClose } from 'react-icons/io';
 
 export function NavBar(props) {
-  const { sidebarState, changeSidebarState } = props;
+  const {
+    sidebarState,
+    changeSidebarState,
+    isSearchBarActive,
+    setIsSearchBarActive,
+  } = props;
 
-  function onMenuIconClick() {
-    changeSidebarState(!sidebarState);
+  function handleSearchBarClick() {
+    if (!isSearchBarActive) {
+      setIsSearchBarActive(true);
+    }
   }
 
   return (
@@ -24,14 +32,18 @@ export function NavBar(props) {
         ></CgMenu>
         <div className="productName">NoteKeeper</div>
       </div>
-      <div className="searchBar">
+      <div
+        className={isSearchBarActive ? 'searchBar active' : 'searchBar'}
+        onClick={handleSearchBarClick}
+      >
         <AiOutlineSearch
-          className="searchIcon"
-          style={{
-            color: '#ffffff',
-          }}
+          className={isSearchBarActive ? 'searchIcon active' : 'searchIcon'}
         />
         <input className="searchInput" placeholder="Search"></input>
+        <IoMdClose
+          className={isSearchBarActive ? 'closeIcon active' : 'closeIcon'}
+          onClick={() => setIsSearchBarActive(!isSearchBarActive)}
+        ></IoMdClose>
       </div>
 
       <div className="rightContainer">
