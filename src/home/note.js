@@ -7,6 +7,8 @@ import { BiRedo } from 'react-icons/bi';
 import { CgMoreVerticalAlt } from 'react-icons/cg';
 import { TbPinned } from 'react-icons/tb';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
+import { GiPlainCircle } from 'react-icons/gi';
+import { MdInvertColorsOff } from 'react-icons/md';
 
 import './note.css';
 
@@ -18,11 +20,19 @@ export function Note(props) {
     setSelectedNoteIds,
     notes,
     setNotes,
+    defaultFooter,
+    setDefaultFooter,
+    setErrorMessage,
   } = props;
   const { id, title, content, heightClass } = note;
 
+  const noteContainerRef = useRef(null);
   const titleRef = useRef(null);
   const contentRef = useRef(null);
+  const imageUploadRef = useRef(null);
+  const [footerOptions, setFooterOptions] = useState({
+    bgColorSelector: false,
+  });
 
   const rowSpanToHeight = {
     short: 'short-height',
@@ -59,6 +69,14 @@ export function Note(props) {
 
     titleRef.current.innerHTML = content;
   }, [content, id, title]);
+
+  useEffect(() => {
+    if (defaultFooter) {
+      setFooterOptions((footerOptions) => {
+        return { ...footerOptions, bgColorSelector: false };
+      });
+    }
+  }, [defaultFooter]);
 
   function handleNoteClick(e) {
     if (isSelected) {
@@ -125,14 +143,81 @@ export function Note(props) {
     e.stopPropagation();
   }
 
+  function handleColorPickerClick(color) {
+    noteContainerRef.current.style.backgroundColor = color;
+    noteContainerRef.current.style.border = 'none';
+  }
+
+  const openImageUploadDialog = () => {
+    imageUploadRef.current.click();
+  };
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
+    const fileExtension = file.name
+      .substring(file.name.lastIndexOf('.'))
+      .toLowerCase();
+
+    if (!allowedExtensions.includes(fileExtension)) {
+      setErrorMessage(
+        'Can’t upload this file. We accept GIF, JPEG, JPG, PNG files less than 10MB and 25 megapixels.'
+      );
+      return;
+    }
+
+    const maxSizeMB = 10;
+    const maxSizeBytes = maxSizeMB * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+      setErrorMessage(
+        'Can’t upload this file. We accept GIF, JPEG, JPG, PNG files less than 10MB and 25 megapixels.'
+      );
+      return;
+    }
+
+    const maxResolutionMP = 25;
+    const maxResolutionPixels = maxResolutionMP * 1000000;
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = function () {
+      const resolution = img.width * img.height;
+      if (resolution > maxResolutionPixels) {
+        setErrorMessage(
+          'Can’t upload this file. We accept GIF, JPEG, JPG, PNG files less than 10MB and 25 megapixels.'
+        );
+        return;
+      }
+
+      addImageUrlToNote(img.src);
+    };
+  };
+
+  function addImageUrlToNote(imgSrc) {
+    let updatedOthers, updatedPinned;
+    const { others, pinned } = notes;
+    if (others.hasOwnProperty(id)) {
+      const updatedNote = { ...others[id], imgSrc: imgSrc };
+      updatedOthers = { ...others, [id]: updatedNote };
+      updatedPinned = { ...updatedPinned };
+    } else {
+      const updatedNote = { ...pinned[id], imgSrc: imgSrc };
+      updatedPinned = { ...pinned, [id]: updatedNote };
+      updatedOthers = { ...updatedOthers };
+    }
+
+    setNotes((notes) => {
+      return { ...notes, others: updatedOthers, pinned: updatedPinned };
+    });
+  }
+
   return (
     <div className={`outerContainer ${heightClass}`}>
-      <div className={isSelected ? 'noteContainer selected' : 'noteContainer'}>
+      <div
+        ref={noteContainerRef}
+        className={isSelected ? 'noteContainer selected' : 'noteContainer'}
+      >
         <div
           className={isSelected ? 'selectIcon show' : 'selectIcon'}
-          style={{
-            backgroundColor: 'transparent',
-          }}
           onClick={handleSelectIconClick}
         >
           <RiCheckboxCircleFill
@@ -141,13 +226,63 @@ export function Note(props) {
             }}
           />
         </div>
+        <input
+          ref={imageUploadRef}
+          type="file"
+          style={{ display: 'none' }}
+          onChange={handleImageUpload}
+        />
+        <div
+          className={
+            footerOptions.bgColorSelector
+              ? 'bgColorSelector active'
+              : 'bgColorSelector'
+          }
+        >
+          <MdInvertColorsOff></MdInvertColorsOff>
+          <GiPlainCircle
+            onClick={() => handleColorPickerClick('coral')}
+            style={{ color: 'coral' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorPickerClick('white')}
+            style={{ color: 'white' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorPickerClick('red')}
+            style={{ color: 'red' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => {
+              handleColorPickerClick('brown');
+            }}
+            style={{ color: 'brown' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorPickerClick('teal')}
+            style={{ color: 'teal' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorPickerClick('purple')}
+            style={{ color: 'purple' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorPickerClick('pink')}
+            style={{ color: 'pink' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorPickerClick('blue')}
+            style={{ color: 'blue' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorPickerClick('skyblue')}
+            style={{ color: 'skyblue' }}
+          ></GiPlainCircle>
+        </div>
         <div className="title-bar" onClick={handleNoteClick}>
           <div ref={titleRef} className="note-title"></div>
           <div
             className={isSelected ? 'pinIcon' : 'pinIcon show'}
-            style={{
-              backgroundColor: '#202124',
-            }}
             onClick={handlePinIconClick}
           >
             <TbPinned
@@ -164,9 +299,17 @@ export function Note(props) {
         ></div>
         <div className={isSelected ? 'noteFooter' : 'noteFooter show'}>
           <div
-            style={{
-              backgroundColor: '#202124',
-            }}
+            onClick={() =>
+              setFooterOptions((footerOptions) => {
+                if (defaultFooter) {
+                  setDefaultFooter(false);
+                }
+                return {
+                  ...footerOptions,
+                  bgColorSelector: !footerOptions.bgColorSelector,
+                };
+              })
+            }
           >
             <MdOutlineColorLens
               style={{
@@ -174,55 +317,35 @@ export function Note(props) {
               }}
             />
           </div>
-          <div
-            style={{
-              backgroundColor: '#202124',
-            }}
-          >
+          <div onClick={openImageUploadDialog}>
             <BsImage
               style={{
                 color: '#ffffff',
               }}
             />
           </div>
-          <div
-            style={{
-              backgroundColor: '#202124',
-            }}
-          >
+          <div>
             <BiArchiveIn
               style={{
                 color: '#ffffff',
               }}
             />
           </div>
-          <div
-            style={{
-              backgroundColor: '#202124',
-            }}
-          >
+          <div>
             <CgMoreVerticalAlt
               style={{
                 color: '#ffffff',
               }}
             />
           </div>
-          <div
-            style={{
-              backgroundColor: '#202124',
-            }}
-          >
+          <div>
             <BiUndo
               style={{
                 color: '#ffffff',
               }}
             />
           </div>
-          <div
-            style={{
-              backgroundColor: '#202124',
-            }}
-          >
+          <div>
             <BiRedo
               style={{
                 color: '#ffffff',

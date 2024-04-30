@@ -9,7 +9,12 @@ export function NoteList(props) {
     latestNoteId,
     selectedNoteIds,
     setSelectedNoteIds,
+    defaultFooter,
+    setDefaultFooter,
+    setErrorMessage,
   } = props;
+
+  console.log(notes);
 
   const { pinned, others } = notes;
 
@@ -35,6 +40,9 @@ export function NoteList(props) {
                   setSelectedNoteIds={setSelectedNoteIds}
                   notes={notes}
                   setNotes={setNotes}
+                  defaultFooter={defaultFooter}
+                  setDefaultFooter={setDefaultFooter}
+                  setErrorMessage={setErrorMessage}
                 ></Note>
               );
             })}
@@ -54,6 +62,9 @@ export function NoteList(props) {
               setSelectedNoteIds={setSelectedNoteIds}
               notes={notes}
               setNotes={setNotes}
+              defaultFooter={defaultFooter}
+              setDefaultFooter={setDefaultFooter}
+              setErrorMessage={setErrorMessage}
             ></Note>
           )}
           {Object.values(others).map((other) => {
@@ -68,6 +79,9 @@ export function NoteList(props) {
                 setSelectedNoteIds={setSelectedNoteIds}
                 notes={notes}
                 setNotes={setNotes}
+                defaultFooter={defaultFooter}
+                setDefaultFooter={setDefaultFooter}
+                setErrorMessage={setErrorMessage}
               ></Note>
             );
           })}

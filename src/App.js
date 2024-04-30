@@ -8,6 +8,7 @@ import { NavBar } from './menu/navBar';
 import { SideBar } from './menu/sideBar';
 import { EditNote } from './home/editNote';
 import { countLines } from './utils';
+import { ErrorDialog } from './home/errorDialog';
 
 export default function App() {
   const newNoterefs = {
@@ -35,6 +36,8 @@ export default function App() {
   const [latestNoteId, setLatestNoteId] = useState(null);
   const [selectedNoteIds, setSelectedNoteIds] = useState(new Set());
   const [isSearchBarActive, setIsSearchBarActive] = useState(false);
+  const [defaultFooter, setDefaultFooter] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   function getHeightClass(contentRef) {
     const numberOfLines = countLines(contentRef.current.innerHTML);
@@ -52,6 +55,7 @@ export default function App() {
       'noteContainer',
       'notesContainer',
       'noteListContainer',
+      'notes',
     ];
 
     if (isExpanded && classes.includes(e.target.className)) {
@@ -84,6 +88,7 @@ export default function App() {
 
     if (classes.includes(e.target.className)) {
       setIsSearchBarActive(false);
+      setDefaultFooter(true);
     }
   }
 
@@ -182,6 +187,9 @@ export default function App() {
             selectedNoteIds={selectedNoteIds}
             setSelectedNoteIds={setSelectedNoteIds}
             setNotes={setNotes}
+            defaultFooter={defaultFooter}
+            setDefaultFooter={setDefaultFooter}
+            setErrorMessage={setErrorMessage}
           ></NoteList>
         </div>
       </div>
@@ -196,6 +204,13 @@ export default function App() {
         editNoteDefaultText={editNoteDefaultText}
         setEditNoteDefaultText={setEditNoteDefaultText}
       ></EditNote>
+
+      {errorMessage && (
+        <ErrorDialog
+          errorMessage={errorMessage}
+          setErrorMessage={setErrorMessage}
+        ></ErrorDialog>
+      )}
     </div>
   );
 }
