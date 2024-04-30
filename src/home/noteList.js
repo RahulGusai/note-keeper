@@ -17,9 +17,6 @@ export function NoteList(props) {
     return <></>;
   }
 
-  console.log(pinned);
-  console.log(Object.keys(pinned).length);
-
   return (
     <div className="noteListContainer">
       {Object.keys(pinned).length > 0 && (

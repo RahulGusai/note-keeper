@@ -59,19 +59,21 @@ export default function App() {
 
       if (!isDefaultTextLoaded.title || !isDefaultTextLoaded.content) {
         const newNoteId = Math.floor(Math.random() * 1000) + 1;
+        const updatedOthers = {
+          ...notes.others,
+          [newNoteId]: {
+            heightClass: getHeightClass(contentRef),
+            id: newNoteId,
+            title: isDefaultTextLoaded.title ? '' : titleRef.current.innerHTML,
+            content: isDefaultTextLoaded.content
+              ? ''
+              : contentRef.current.innerHTML,
+          },
+        };
         setNotes((notes) => {
           return {
-            [newNoteId]: {
-              heightClass: getHeightClass(contentRef),
-              id: newNoteId,
-              title: isDefaultTextLoaded.title
-                ? ''
-                : titleRef.current.innerHTML,
-              content: isDefaultTextLoaded.content
-                ? ''
-                : contentRef.current.innerHTML,
-            },
             ...notes,
+            others: updatedOthers,
           };
         });
         setLatestNoteId(newNoteId);
@@ -89,6 +91,7 @@ export default function App() {
     const noteId = editingNote.id;
 
     setNotes((notes) => {
+      let updatedOthers, updatedPinned;
       const title = editNoteDefaultText.title
         ? ''
         : editNoterefs.titleElem.current.innerHTML;
@@ -96,14 +99,34 @@ export default function App() {
         ? ''
         : editNoterefs.contentElem.current.innerHTML;
 
+      if (notes.others.hasOwnProperty(noteId)) {
+        updatedOthers = {
+          ...notes.others,
+          [noteId]: {
+            id: noteId,
+            title: title,
+            content: content,
+            heightClass: getHeightClass(editNoterefs.contentElem),
+          },
+        };
+        updatedPinned = { ...notes.pinned };
+      } else {
+        updatedPinned = {
+          ...notes.pinned,
+          [noteId]: {
+            id: noteId,
+            title: title,
+            content: content,
+            heightClass: getHeightClass(editNoterefs.contentElem),
+          },
+        };
+        updatedOthers = { ...notes.others };
+      }
+
       return {
         ...notes,
-        [noteId]: {
-          id: noteId,
-          title: title,
-          content: content,
-          heightClass: getHeightClass(editNoterefs.contentElem),
-        },
+        others: updatedOthers,
+        pinned: updatedPinned,
       };
     });
 
