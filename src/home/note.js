@@ -24,7 +24,7 @@ export function Note(props) {
     setDefaultFooter,
     setErrorMessage,
   } = props;
-  const { id, title, content, heightClass } = note;
+  const { id, title, content, heightClass, image } = note;
 
   const noteContainerRef = useRef(null);
   const titleRef = useRef(null);
@@ -188,19 +188,25 @@ export function Note(props) {
         return;
       }
 
-      addImageUrlToNote(img.src);
+      addImageUrlToNote(img.src, img.width, img.height);
     };
   };
 
-  function addImageUrlToNote(imgSrc) {
+  function addImageUrlToNote(imgSrc, imgWidth, imgHeight) {
     let updatedOthers, updatedPinned;
     const { others, pinned } = notes;
     if (others.hasOwnProperty(id)) {
-      const updatedNote = { ...others[id], imgSrc: imgSrc };
+      const updatedNote = {
+        ...others[id],
+        image: { src: imgSrc, width: imgWidth, height: imgHeight },
+      };
       updatedOthers = { ...others, [id]: updatedNote };
       updatedPinned = { ...updatedPinned };
     } else {
-      const updatedNote = { ...pinned[id], imgSrc: imgSrc };
+      const updatedNote = {
+        ...pinned[id],
+        image: { src: imgSrc, width: imgWidth, height: imgHeight },
+      };
       updatedPinned = { ...pinned, [id]: updatedNote };
       updatedOthers = { ...updatedOthers };
     }
@@ -279,6 +285,14 @@ export function Note(props) {
             style={{ color: 'skyblue' }}
           ></GiPlainCircle>
         </div>
+        {image && (
+          <img
+            src={image.src}
+            alt="noteImage"
+            style={{ width: '250px', height: '200px' }}
+          />
+        )}
+
         <div className="title-bar" onClick={handleNoteClick}>
           <div ref={titleRef} className="note-title"></div>
           <div

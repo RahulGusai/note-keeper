@@ -14,8 +14,6 @@ export function NoteList(props) {
     setErrorMessage,
   } = props;
 
-  console.log(notes);
-
   const { pinned, others } = notes;
 
   if (!others && !pinned) {
