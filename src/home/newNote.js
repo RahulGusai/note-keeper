@@ -40,6 +40,10 @@ function ComponentHandler(props, ref) {
   }, [contentRef, isExpanded, setisDefaultTextLoaded, titleRef]);
 
   const handleKeyPressedOnContent = (e) => {
+    if (!isExpanded) {
+      setIsExpanded(true);
+    }
+
     if (
       !isDefaultTextLoaded.content &&
       contentRef.current.innerHTML.length === 0
@@ -111,7 +115,6 @@ function ComponentHandler(props, ref) {
       id="new_note"
       className="newNoteContainer"
       onClick={handleNewNoteClick}
-      // onKeyUp={handleKeyPressedOnContent}
     >
       <div
         contentEditable

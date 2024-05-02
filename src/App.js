@@ -39,7 +39,38 @@ export default function App() {
   const [defaultFooter, setDefaultFooter] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  function createNote() {
+    const { titleRef, contentRef } = newNoterefs;
+
+    if (!isDefaultTextLoaded.title || !isDefaultTextLoaded.content) {
+      const newNoteId = Math.floor(Math.random() * 1000) + 1;
+      const updatedOthers = {
+        ...notes.others,
+        [newNoteId]: {
+          heightClass: getHeightClass(contentRef),
+          id: newNoteId,
+          title: isDefaultTextLoaded.title ? '' : titleRef.current.innerHTML,
+          content: isDefaultTextLoaded.content
+            ? ''
+            : contentRef.current.innerHTML,
+        },
+      };
+      setNotes((notes) => {
+        return {
+          ...notes,
+          others: updatedOthers,
+        };
+      });
+      setLatestNoteId(newNoteId);
+    }
+
+    setIsExpanded(false);
+    setIsSearchBarActive(false);
+    setDefaultFooter(true);
+  }
+
   function handleHomeContainerClick(e) {
+    console.log('clicked');
     const classes = [
       'navBarContainer',
       'homeContainer',
@@ -50,36 +81,7 @@ export default function App() {
     ];
 
     if (isExpanded && classes.includes(e.target.className)) {
-      const { titleRef, contentRef } = newNoterefs;
-
-      if (!isDefaultTextLoaded.title || !isDefaultTextLoaded.content) {
-        const newNoteId = Math.floor(Math.random() * 1000) + 1;
-        const updatedOthers = {
-          ...notes.others,
-          [newNoteId]: {
-            heightClass: getHeightClass(contentRef),
-            id: newNoteId,
-            title: isDefaultTextLoaded.title ? '' : titleRef.current.innerHTML,
-            content: isDefaultTextLoaded.content
-              ? ''
-              : contentRef.current.innerHTML,
-          },
-        };
-        setNotes((notes) => {
-          return {
-            ...notes,
-            others: updatedOthers,
-          };
-        });
-        setLatestNoteId(newNoteId);
-      }
-
-      setIsExpanded(false);
-    }
-
-    if (classes.includes(e.target.className)) {
-      setIsSearchBarActive(false);
-      setDefaultFooter(true);
+      createNote();
     }
   }
 
@@ -115,6 +117,7 @@ export default function App() {
             id: noteId,
             title: title,
             content: content,
+            image: editingNote.image,
             heightClass: getHeightClass(contentElem, editingNote.image),
           },
         };
@@ -138,13 +141,30 @@ export default function App() {
     });
   }
 
+  const handleKeyUp = (event) => {
+    if (event.keyCode === 27) {
+      if (isExpanded) {
+        createNote();
+        return;
+      }
+      if (editingNote) {
+        saveEditedNote();
+        return;
+      }
+    }
+  };
   useEffect(() => {
     //TODO fetch the contents from the API here
     setNotes(notes_list);
   }, []);
 
   return (
-    <div className="homeContainer" onClick={handleHomeContainerClick}>
+    <div
+      className="homeContainer"
+      onClick={handleHomeContainerClick}
+      onKeyUp={handleKeyUp}
+      tabIndex="0"
+    >
       <Helmet>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link
@@ -195,8 +215,11 @@ export default function App() {
       <EditNote
         ref={editNoteRefs}
         editingNote={editingNote}
+        setEditingNote={setEditingNote}
         editNoteDefaultText={editNoteDefaultText}
         setEditNoteDefaultText={setEditNoteDefaultText}
+        notes={notes}
+        setNotes={setNotes}
       ></EditNote>
 
       {errorMessage && (

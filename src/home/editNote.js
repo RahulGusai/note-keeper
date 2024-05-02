@@ -1,14 +1,23 @@
 import './editNote.css';
-import { forwardRef, useEffect, useRef } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { MdOutlineColorLens } from 'react-icons/md';
 import { BsImage } from 'react-icons/bs';
 import { BiArchiveIn } from 'react-icons/bi';
 import { BiUndo } from 'react-icons/bi';
 import { BiRedo } from 'react-icons/bi';
 import { CgMoreVerticalAlt } from 'react-icons/cg';
+import { MdDelete } from 'react-icons/md';
+import { getHeightClass } from '../utils';
 
 function FunctionComponent(props, ref) {
-  const { editingNote, editNoteDefaultText, setEditNoteDefaultText } = props;
+  const {
+    editingNote,
+    setEditingNote,
+    editNoteDefaultText,
+    setEditNoteDefaultText,
+    notes,
+    setNotes,
+  } = props;
 
   const { titleElem, contentElem } = ref;
 
@@ -78,12 +87,24 @@ function FunctionComponent(props, ref) {
     }
   }
 
+  function deleteImage() {
+    setEditingNote((editingNote) => {
+      return { ...editingNote, image: null };
+    });
+  }
+
   return (
     <div
       className={editingNote ? 'editNoteContainer active' : 'editNoteContainer'}
     >
       {editingNote && editingNote.image && (
-        <img className="image" src={editingNote.image.src} alt="noteImage" />
+        <div className="imageContainer">
+          <MdDelete
+            onClick={deleteImage}
+            className="deleteImageIcon"
+          ></MdDelete>
+          <img className="image" src={editingNote.image.src} alt="noteImage" />
+        </div>
       )}
 
       <div className="title-bar">
