@@ -12,9 +12,34 @@ export function NoteList(props) {
     defaultFooter,
     setDefaultFooter,
     setErrorMessage,
+    notesListOptions,
   } = props;
 
-  const { pinned, others } = notes;
+  const { pinned, others, archives } = notes;
+
+  if (notesListOptions.showArchives) {
+    return (
+      <div className="noteListContainer">
+        <div className="notes">
+          {Object.values(archives).map((archive) => {
+            return (
+              <Note
+                setEditingNote={setEditingNote}
+                note={archive}
+                selectedNoteIds={selectedNoteIds}
+                setSelectedNoteIds={setSelectedNoteIds}
+                notes={notes}
+                setNotes={setNotes}
+                defaultFooter={defaultFooter}
+                setDefaultFooter={setDefaultFooter}
+                setErrorMessage={setErrorMessage}
+              ></Note>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   if (!others && !pinned) {
     return <></>;

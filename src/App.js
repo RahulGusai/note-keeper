@@ -38,6 +38,10 @@ export default function App() {
   const [isSearchBarActive, setIsSearchBarActive] = useState(false);
   const [defaultFooter, setDefaultFooter] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [notesListOptions, setNotesListOptions] = useState({
+    showArchives: false,
+    showTrash: false,
+  });
 
   function createNote() {
     const { titleRef, contentRef } = newNoterefs;
@@ -65,8 +69,6 @@ export default function App() {
     }
 
     setIsExpanded(false);
-    setIsSearchBarActive(false);
-    setDefaultFooter(true);
   }
 
   function handleHomeContainerClick(e) {
@@ -82,6 +84,11 @@ export default function App() {
 
     if (isExpanded && classes.includes(e.target.className)) {
       createNote();
+    }
+
+    if (classes.includes(e.target.className)) {
+      setIsSearchBarActive(false);
+      setDefaultFooter(true);
     }
   }
 
@@ -145,12 +152,12 @@ export default function App() {
     if (event.keyCode === 27) {
       if (isExpanded) {
         createNote();
-        return;
       }
       if (editingNote) {
         saveEditedNote();
-        return;
       }
+      setIsSearchBarActive(false);
+      setDefaultFooter(true);
     }
   };
   useEffect(() => {
@@ -184,7 +191,10 @@ export default function App() {
         setIsSearchBarActive={setIsSearchBarActive}
       ></NavBar>
       <div className="scrollableContent">
-        <SideBar expanded={isSidebarExpanded}></SideBar>
+        <SideBar
+          expanded={isSidebarExpanded}
+          setNotesListOptions={setNotesListOptions}
+        ></SideBar>
         <div className="notesContainer">
           <NewNote
             ref={newNoterefs}
@@ -203,6 +213,7 @@ export default function App() {
             defaultFooter={defaultFooter}
             setDefaultFooter={setDefaultFooter}
             setErrorMessage={setErrorMessage}
+            notesListOptions={notesListOptions}
           ></NoteList>
         </div>
       </div>

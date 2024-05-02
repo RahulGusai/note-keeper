@@ -227,6 +227,31 @@ export function Note(props) {
     });
   }
 
+  function archiveNote() {
+    let updatedOthers, updatedPinned;
+
+    const { others, pinned, archives } = notes;
+    if (others.hasOwnProperty(id)) {
+      updatedOthers = { ...others };
+      delete updatedOthers[id];
+      updatedPinned = { ...updatedPinned };
+    } else {
+      updatedPinned = { ...pinned };
+      delete updatedPinned[id];
+      updatedOthers = { ...updatedOthers };
+    }
+    const updatedArchives = { ...archives, [id]: note };
+
+    setNotes((notes) => {
+      return {
+        ...notes,
+        others: updatedOthers,
+        pinned: updatedPinned,
+        archives: updatedArchives,
+      };
+    });
+  }
+
   return (
     <div ref={outerContainerRef} className={`outerContainer ${heightClass}`}>
       <div
@@ -350,7 +375,7 @@ export function Note(props) {
               }}
             />
           </div>
-          <div>
+          <div onClick={archiveNote}>
             <BiArchiveIn
               style={{
                 color: '#ffffff',

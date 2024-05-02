@@ -26,4 +26,5 @@ export const notes_list = {
     },
   },
   pinned: {},
+  archives: {},
 };
