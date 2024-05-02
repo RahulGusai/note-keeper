@@ -7,8 +7,8 @@ import { notes_list } from './data/notes';
 import { NavBar } from './menu/navBar';
 import { SideBar } from './menu/sideBar';
 import { EditNote } from './home/editNote';
-import { countLines } from './utils';
 import { ErrorDialog } from './home/errorDialog';
+import { getHeightClass } from './utils';
 
 export default function App() {
   const newNoterefs = {
@@ -16,7 +16,7 @@ export default function App() {
     contentRef: useRef(null),
   };
 
-  const editNoterefs = {
+  const editNoteRefs = {
     titleElem: useRef(null),
     contentElem: useRef(null),
   };
@@ -38,15 +38,6 @@ export default function App() {
   const [isSearchBarActive, setIsSearchBarActive] = useState(false);
   const [defaultFooter, setDefaultFooter] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-
-  function getHeightClass(contentRef) {
-    const numberOfLines = countLines(contentRef.current.innerHTML);
-
-    if (numberOfLines <= 2) return 'short';
-    if (numberOfLines > 2 && numberOfLines <= 5) return 'tall';
-    if (numberOfLines > 5 && numberOfLines <= 8) return 'taller';
-    if (numberOfLines > 8) return 'tallest';
-  }
 
   function handleHomeContainerClick(e) {
     const classes = [
@@ -94,15 +85,16 @@ export default function App() {
 
   function saveEditedNote() {
     const noteId = editingNote.id;
+    const { titleElem, contentElem } = editNoteRefs;
 
     setNotes((notes) => {
       let updatedOthers, updatedPinned;
       const title = editNoteDefaultText.title
         ? ''
-        : editNoterefs.titleElem.current.innerHTML;
+        : titleElem.current.innerHTML;
       const content = editNoteDefaultText.content
         ? ''
-        : editNoterefs.contentElem.current.innerHTML;
+        : contentElem.current.innerHTML;
 
       if (notes.others.hasOwnProperty(noteId)) {
         updatedOthers = {
@@ -111,7 +103,8 @@ export default function App() {
             id: noteId,
             title: title,
             content: content,
-            heightClass: getHeightClass(editNoterefs.contentElem),
+            image: editingNote.image,
+            heightClass: getHeightClass(contentElem, editingNote.image),
           },
         };
         updatedPinned = { ...notes.pinned };
@@ -122,7 +115,7 @@ export default function App() {
             id: noteId,
             title: title,
             content: content,
-            heightClass: getHeightClass(editNoterefs.contentElem),
+            heightClass: getHeightClass(contentElem, editingNote.image),
           },
         };
         updatedOthers = { ...notes.others };
@@ -198,8 +191,9 @@ export default function App() {
         className={editingNote ? 'overlayContainer active' : 'overlayContainer'}
         onClick={saveEditedNote}
       ></div>
+
       <EditNote
-        ref={editNoterefs}
+        ref={editNoteRefs}
         editingNote={editingNote}
         editNoteDefaultText={editNoteDefaultText}
         setEditNoteDefaultText={setEditNoteDefaultText}

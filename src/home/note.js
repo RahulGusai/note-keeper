@@ -9,6 +9,7 @@ import { TbPinned } from 'react-icons/tb';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
 import { GiPlainCircle } from 'react-icons/gi';
 import { MdInvertColorsOff } from 'react-icons/md';
+import { getHeightClass, scaleHeightToValues } from '../utils';
 
 import './note.css';
 
@@ -26,20 +27,16 @@ export function Note(props) {
   } = props;
   const { id, title, content, heightClass, image } = note;
 
+  const outerContainerRef = useRef(null);
   const noteContainerRef = useRef(null);
   const titleRef = useRef(null);
   const contentRef = useRef(null);
   const imageUploadRef = useRef(null);
+  const noteImageRef = useRef(null);
   const [footerOptions, setFooterOptions] = useState({
     bgColorSelector: false,
   });
 
-  const rowSpanToHeight = {
-    short: 'short-height',
-    tall: 'tall-height',
-    taller: 'taller-height',
-    tallest: 'tallest-height',
-  };
   const isSelected = selectedNoteIds.has(note.id);
 
   useEffect(() => {
@@ -78,6 +75,14 @@ export function Note(props) {
     }
   }, [defaultFooter]);
 
+  useEffect(() => {
+    if (image) {
+      const scaledheight = scaleHeightToValues(image.height);
+      noteImageRef.current.style.height = `${scaledheight}px`;
+      noteImageRef.current.style.width = '250px';
+    }
+  }, [image]);
+
   function handleNoteClick(e) {
     if (isSelected) {
       setSelectedNoteIds((selectedNoteIds) => {
@@ -103,6 +108,7 @@ export function Note(props) {
         id: id,
         title: title,
         content: content,
+        image: image,
         defaultText: {
           title: false,
           content: false,
@@ -188,24 +194,29 @@ export function Note(props) {
         return;
       }
 
-      addImageUrlToNote(img.src, img.width, img.height);
+      const scaledheight = scaleHeightToValues(img.height);
+      updateNotes(scaledheight, img);
     };
   };
 
-  function addImageUrlToNote(imgSrc, imgWidth, imgHeight) {
+  function updateNotes(scaledheight, img) {
+    const updatedHeightClass = getHeightClass(contentRef, img);
+
     let updatedOthers, updatedPinned;
     const { others, pinned } = notes;
     if (others.hasOwnProperty(id)) {
       const updatedNote = {
         ...others[id],
-        image: { src: imgSrc, width: imgWidth, height: imgHeight },
+        image: { src: img.src, width: img.width, height: img.height },
+        heightClass: updatedHeightClass,
       };
       updatedOthers = { ...others, [id]: updatedNote };
       updatedPinned = { ...updatedPinned };
     } else {
       const updatedNote = {
         ...pinned[id],
-        image: { src: imgSrc, width: imgWidth, height: imgHeight },
+        image: { src: img.src, width: img.width, height: img.height },
+        heightClass: updatedHeightClass,
       };
       updatedPinned = { ...pinned, [id]: updatedNote };
       updatedOthers = { ...updatedOthers };
@@ -217,7 +228,7 @@ export function Note(props) {
   }
 
   return (
-    <div className={`outerContainer ${heightClass}`}>
+    <div ref={outerContainerRef} className={`outerContainer ${heightClass}`}>
       <div
         ref={noteContainerRef}
         className={isSelected ? 'noteContainer selected' : 'noteContainer'}
@@ -287,9 +298,10 @@ export function Note(props) {
         </div>
         {image && (
           <img
+            class="image"
+            ref={noteImageRef}
             src={image.src}
             alt="noteImage"
-            style={{ width: '250px', height: '200px' }}
           />
         )}
 
@@ -308,7 +320,7 @@ export function Note(props) {
         </div>
         <div
           ref={contentRef}
-          className={`note-content ${rowSpanToHeight[heightClass]}`}
+          className="note-content"
           onClick={handleNoteClick}
         ></div>
         <div className={isSelected ? 'noteFooter' : 'noteFooter show'}>

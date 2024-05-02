@@ -82,6 +82,10 @@ function FunctionComponent(props, ref) {
     <div
       className={editingNote ? 'editNoteContainer active' : 'editNoteContainer'}
     >
+      {editingNote && editingNote.image && (
+        <img className="image" src={editingNote.image.src} alt="noteImage" />
+      )}
+
       <div className="title-bar">
         <div
           contentEditable
