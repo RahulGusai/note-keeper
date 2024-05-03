@@ -1,13 +1,12 @@
 import './editNote.css';
-import { forwardRef, useEffect } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { MdOutlineColorLens } from 'react-icons/md';
 import { BsImage } from 'react-icons/bs';
 import { BiArchiveIn } from 'react-icons/bi';
 import { BiUndo } from 'react-icons/bi';
 import { BiRedo } from 'react-icons/bi';
-import { CgMoreVerticalAlt } from 'react-icons/cg';
+import { CgKey, CgMoreVerticalAlt } from 'react-icons/cg';
 import { MdDelete } from 'react-icons/md';
-import { getHeightClass } from '../utils';
 
 function FunctionComponent(props, ref) {
   const {
@@ -15,11 +14,15 @@ function FunctionComponent(props, ref) {
     setEditingNote,
     editNoteDefaultText,
     setEditNoteDefaultText,
-    notes,
-    setNotes,
   } = props;
 
   const { titleElem, contentElem } = ref;
+
+  const [backspaceStack, setBackspaceStack] = useState([]);
+  const [backspaceText, setBackspaceText] = useState('');
+  const [currentText, setCurrentText] = useState('');
+  const [undoStack, setUndoStack] = useState([]);
+  const [lastKeyPressTimestamp, setLastKeyPressTimestamp] = useState(null);
 
   useEffect(() => {
     if (editingNote) {
@@ -58,6 +61,22 @@ function FunctionComponent(props, ref) {
   }
 
   function handleKeyPressedContent(e) {
+    if (lastKeyPressTimestamp && Date.now() - lastKeyPressTimestamp > 500) {
+      setUndoStack((undoStack) => {
+        return [...undoStack, currentText];
+      });
+      const updatedCurrentText =
+        contentElem.current.innerHTML[contentElem.current.innerHTML.length - 1];
+      setCurrentText(updatedCurrentText);
+    } else {
+      const updatedCurrentText =
+        currentText +
+        contentElem.current.innerHTML[contentElem.current.innerHTML.length - 1];
+      setCurrentText(updatedCurrentText);
+    }
+
+    setLastKeyPressTimestamp(Date.now());
+
     if (
       !editNoteDefaultText.content &&
       contentElem.current.innerHTML.length === 0
@@ -93,6 +112,71 @@ function FunctionComponent(props, ref) {
     });
   }
 
+  function undoText() {
+    let updatedText;
+
+    if (backspaceText.length > 0) {
+      contentElem.current.innerHTML += backspaceText;
+      setBackspaceText('');
+      return;
+    }
+
+    if (backspaceStack.length > 0) {
+      contentElem.current.innerHTML +=
+        backspaceStack[backspaceStack.length - 1];
+      setBackspaceStack((backspaceStack) => {
+        const updatedBackspaceStack = [...backspaceStack];
+        updatedBackspaceStack.pop();
+        setBackspaceStack(updatedBackspaceStack);
+      });
+      return;
+    }
+
+    if (undoStack.length === 0) {
+      contentElem.current.innerHTML = editingNote.content;
+      return;
+    }
+
+    updatedText = editingNote.content;
+    for (const text of undoStack) {
+      updatedText += text;
+    }
+    contentElem.current.innerHTML = updatedText;
+
+    setUndoStack((undoStack) => {
+      const updatedUndoStack = [...undoStack];
+      updatedUndoStack.pop();
+      return updatedUndoStack;
+    });
+    setLastKeyPressTimestamp(null);
+    setCurrentText('');
+  }
+
+  function redoText() {}
+
+  function handleKeyDown(e) {
+    if (e.key === 'Backspace') {
+      if (lastKeyPressTimestamp && Date.now() - lastKeyPressTimestamp > 500) {
+        setBackspaceStack((backspaceStack) => {
+          return [...backspaceStack, backspaceText];
+        });
+        setBackspaceText(
+          contentElem.current.innerHTML[
+            contentElem.current.innerHTML.length - 1
+          ]
+        );
+      } else {
+        const updatedBackspaceText =
+          contentElem.current.innerHTML[
+            contentElem.current.innerHTML.length - 1
+          ] + backspaceText;
+        console.log(updatedBackspaceText);
+        setBackspaceText(updatedBackspaceText);
+      }
+      setLastKeyPressTimestamp(Date.now());
+    }
+  }
+
   return (
     <div
       className={editingNote ? 'editNoteContainer active' : 'editNoteContainer'}
@@ -122,6 +206,7 @@ function FunctionComponent(props, ref) {
         className="note-content"
         onKeyUp={handleKeyPressedContent}
         onBeforeInput={clearDefaultInputContent}
+        onKeyDown={handleKeyDown}
       ></div>
       <div className="note-footer">
         <div className="footerIcons">
@@ -173,6 +258,7 @@ function FunctionComponent(props, ref) {
             style={{
               backgroundColor: '#202124',
             }}
+            onClick={undoText}
           >
             <BiUndo
               style={{
@@ -184,6 +270,7 @@ function FunctionComponent(props, ref) {
             style={{
               backgroundColor: '#202124',
             }}
+            onClick={redoText}
           >
             <BiRedo
               style={{

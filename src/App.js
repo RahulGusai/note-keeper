@@ -72,7 +72,6 @@ export default function App() {
   }
 
   function handleHomeContainerClick(e) {
-    console.log('clicked');
     const classes = [
       'navBarContainer',
       'homeContainer',
@@ -223,15 +222,15 @@ export default function App() {
         onClick={saveEditedNote}
       ></div>
 
-      <EditNote
-        ref={editNoteRefs}
-        editingNote={editingNote}
-        setEditingNote={setEditingNote}
-        editNoteDefaultText={editNoteDefaultText}
-        setEditNoteDefaultText={setEditNoteDefaultText}
-        notes={notes}
-        setNotes={setNotes}
-      ></EditNote>
+      {editingNote && (
+        <EditNote
+          ref={editNoteRefs}
+          editingNote={editingNote}
+          setEditingNote={setEditingNote}
+          editNoteDefaultText={editNoteDefaultText}
+          setEditNoteDefaultText={setEditNoteDefaultText}
+        ></EditNote>
+      )}
 
       {errorMessage && (
         <ErrorDialog

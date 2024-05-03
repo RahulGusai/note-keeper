@@ -25,6 +25,15 @@ export function SideBar(props) {
     });
   }
 
+  function showTrash() {
+    setNotesListOptions((notesListOptions) => {
+      return {
+        ...notesListOptions,
+        showTrash: true,
+      };
+    });
+  }
+
   return (
     <div className="sideBarContainer">
       <div className="tab" onClick={showNotes}>
@@ -35,7 +44,7 @@ export function SideBar(props) {
         <IoArchiveOutline className="tabIcon"></IoArchiveOutline>
         <div className={expanded ? 'tabText active' : 'tabText'}>Archive</div>
       </div>
-      <div className="tab">
+      <div className="tab" onClick={showTrash}>
         <FaRegTrashAlt className="tabIcon"></FaRegTrashAlt>
         <div className={expanded ? 'tabText active' : 'tabText'}>Trash</div>
       </div>
