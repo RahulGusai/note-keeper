@@ -1,16 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
-import { SignupPage } from './signupPage';
 import reportWebVitals from './reportWebVitals';
 import 'semantic-ui-css/semantic.min.css';
+import AppRoutes from './routes';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    {/* <App /> */}
-    <SignupPage></SignupPage>
+    <AppRoutes></AppRoutes>
   </React.StrictMode>
 );
 

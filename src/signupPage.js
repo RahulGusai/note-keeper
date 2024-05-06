@@ -1,7 +1,14 @@
 import './signupPage.css';
 import googleLogo from './logos/google.png';
+import { useNavigate } from 'react-router-dom';
 
 export function SignupPage(props) {
+  const navigate = useNavigate();
+
+  function handleSignupBtnClick() {
+    navigate('/home');
+  }
+
   return (
     <div className="signupPage">
       <div className="signupForm">
@@ -12,7 +19,9 @@ export function SignupPage(props) {
             type="textbox"
             placeholder="Enter your email"
           ></input>
-          <div className="signupButton">Sign up</div>
+          <div onClick={handleSignupBtnClick} className="signupButton">
+            Sign up
+          </div>
         </div>
         <div>Or continue with:</div>
 
