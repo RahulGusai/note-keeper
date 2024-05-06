@@ -33,6 +33,15 @@ export function Note(props) {
   const contentRef = useRef(null);
   const imageUploadRef = useRef(null);
   const noteImageRef = useRef(null);
+  const pinIconRef = useRef(null);
+  const footerRefs = {
+    bgColorSelectorRef: useRef(null),
+    addImageRef: useRef(null),
+    archiveNoteRef: useRef(null),
+    moreOptionsRef: useRef(null),
+    undoRef: useRef(null),
+    redoRef: useRef(null),
+  };
   const [footerOptions, setFooterOptions] = useState({
     bgColorSelector: false,
   });
@@ -259,6 +268,55 @@ export function Note(props) {
         className={isSelected ? 'noteContainer selected' : 'noteContainer'}
       >
         <div
+          ref={pinIconRef}
+          className="toolTip"
+          style={{ top: '30px', right: '0px', 'margin-right': '-0px' }}
+        >
+          Pin note
+        </div>
+        <div
+          ref={footerRefs.addImageRef}
+          className="toolTip"
+          style={{ bottom: '-20px', left: '15%' }}
+        >
+          Add Image
+        </div>
+        <div
+          ref={footerRefs.bgColorSelectorRef}
+          className="toolTip"
+          style={{ bottom: '-20px', left: '-5%' }}
+        >
+          Background options
+        </div>
+        <div
+          ref={footerRefs.archiveNoteRef}
+          className="toolTip"
+          style={{ bottom: '-20px', left: '35%' }}
+        >
+          Archive
+        </div>
+        <div
+          ref={footerRefs.moreOptionsRef}
+          className="toolTip"
+          style={{ bottom: '-20px', left: '55%' }}
+        >
+          More
+        </div>
+        <div
+          ref={footerRefs.undoRef}
+          className="toolTip"
+          style={{ bottom: '-20px', left: '70%' }}
+        >
+          Undo
+        </div>
+        <div
+          ref={footerRefs.redoRef}
+          className="toolTip"
+          style={{ bottom: '-20px', left: '85%' }}
+        >
+          Redo
+        </div>
+        <div
           className={isSelected ? 'selectIcon show' : 'selectIcon'}
           onClick={handleSelectIconClick}
         >
@@ -333,6 +391,12 @@ export function Note(props) {
         <div className="title-bar" onClick={handleNoteClick}>
           <div ref={titleRef} className="note-title"></div>
           <div
+            onMouseOver={() => {
+              pinIconRef.current.style.visibility = 'visible';
+            }}
+            onMouseOut={() => {
+              pinIconRef.current.style.visibility = 'hidden';
+            }}
             className={isSelected ? 'pinIcon' : 'pinIcon show'}
             onClick={handlePinIconClick}
           >
@@ -350,6 +414,14 @@ export function Note(props) {
         ></div>
         <div className={isSelected ? 'noteFooter' : 'noteFooter show'}>
           <div
+            className="bgSelectorIcon"
+            onMouseOver={() => {
+              footerRefs.bgColorSelectorRef.current.style.visibility =
+                'visible';
+            }}
+            onMouseOut={() => {
+              footerRefs.bgColorSelectorRef.current.style.visibility = 'hidden';
+            }}
             onClick={() =>
               setFooterOptions((footerOptions) => {
                 if (defaultFooter) {
@@ -368,35 +440,77 @@ export function Note(props) {
               }}
             />
           </div>
-          <div onClick={openImageUploadDialog}>
+          <div
+            onMouseOver={() => {
+              footerRefs.addImageRef.current.style.visibility = 'visible';
+            }}
+            onMouseOut={() => {
+              footerRefs.addImageRef.current.style.visibility = 'hidden';
+            }}
+            className="noteImageSelector"
+            onClick={openImageUploadDialog}
+          >
             <BsImage
               style={{
                 color: '#ffffff',
               }}
             />
           </div>
-          <div onClick={archiveNote}>
+          <div
+            onMouseOver={() => {
+              footerRefs.archiveNoteRef.current.style.visibility = 'visible';
+            }}
+            onMouseOut={() => {
+              footerRefs.archiveNoteRef.current.style.visibility = 'hidden';
+            }}
+            className="archiveNote"
+            onClick={archiveNote}
+          >
             <BiArchiveIn
               style={{
                 color: '#ffffff',
               }}
             />
           </div>
-          <div>
+          <div
+            onMouseOver={() => {
+              footerRefs.moreOptionsRef.current.style.visibility = 'visible';
+            }}
+            onMouseOut={() => {
+              footerRefs.moreOptionsRef.current.style.visibility = 'hidden';
+            }}
+            className="moreOptions"
+          >
             <CgMoreVerticalAlt
               style={{
                 color: '#ffffff',
               }}
             />
           </div>
-          <div>
+          <div
+            onMouseOver={() => {
+              footerRefs.undoRef.current.style.visibility = 'visible';
+            }}
+            onMouseOut={() => {
+              footerRefs.undoRef.current.style.visibility = 'hidden';
+            }}
+            className="undoAction"
+          >
             <BiUndo
               style={{
                 color: '#ffffff',
               }}
             />
           </div>
-          <div>
+          <div
+            onMouseOver={() => {
+              footerRefs.redoRef.current.style.visibility = 'visible';
+            }}
+            onMouseOut={() => {
+              footerRefs.redoRef.current.style.visibility = 'hidden';
+            }}
+            className="redoAction"
+          >
             <BiRedo
               style={{
                 color: '#ffffff',
