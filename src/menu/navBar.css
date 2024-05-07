@@ -13,6 +13,7 @@
   padding-right: 30px;
   padding-top: 7px;
   padding-bottom: 7px;
+  position: relative;
 }
 
 .burgerMenuIcon {
@@ -42,6 +43,7 @@
 
 .rightContainer > * {
   scale: 1.5;
+  cursor: pointer;
 }
 
 .searchBar {
@@ -95,4 +97,83 @@
   display: inline;
   cursor: pointer;
   color: #202124;
+}
+
+.userProfileDialog {
+  width: 200px;
+  height: 200px;
+  padding: 10px;
+  background-color: #313235;
+  position: absolute;
+  top: 65px;
+  right: 5px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  display: none;
+}
+
+.userProfileDialog.show {
+  display: block;
+}
+
+.userProfileDialog .imageSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.imageSection .image {
+  position: relative;
+}
+.image .profileIcon {
+  width: 100px;
+  height: 100px;
+}
+
+.image .editIcon {
+  padding: 1px;
+  position: absolute;
+  bottom: 10px;
+  left: 75px;
+  scale: 1.5;
+  z-index: 1000;
+  background-color: black;
+  border-radius: 15px;
+}
+
+.imageSection .name {
+  font-size: 20px;
+}
+
+.userProfileDialog .userProfileOptions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.signout {
+  padding: 10px;
+  background-color: black;
+  opacity: 0.5;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: auto;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.signout .logo {
+  scale: 1.5;
+}
+
+.signout span {
+  font-size: 14px;
 }

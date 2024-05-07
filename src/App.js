@@ -9,8 +9,10 @@ import { SideBar } from './menu/sideBar';
 import { EditNote } from './home/editNote';
 import { ErrorDialog } from './home/errorDialog';
 import { getHeightClass } from './utils';
+import { useNavigate } from 'react-router-dom';
 
-export default function App() {
+export default function App(props) {
+  const navigate = useNavigate();
   const newNoterefs = {
     titleRef: useRef(null),
     contentRef: useRef(null),
@@ -159,6 +161,7 @@ export default function App() {
       setDefaultFooter(true);
     }
   };
+
   useEffect(() => {
     //TODO fetch the contents from the API here
     setNotes(notes_list);

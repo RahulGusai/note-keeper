@@ -2,10 +2,12 @@ import { useState } from 'react';
 import './loginPage.css';
 import googleLogo from './logos/google.png';
 import { PiDotOutlineFill } from 'react-icons/pi';
+import { useNavigate } from 'react-router-dom';
 
 const loginBtnText = 'Continue';
 export function LoginPage(props) {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   function handleLoginBtnClick() {
     setShowPassword(!showPassword);
@@ -40,7 +42,14 @@ export function LoginPage(props) {
           <PiDotOutlineFill></PiDotOutlineFill>
           <span>Create a account </span>
         </div>
-        <span className="guestAccount">Create a guest account </span>
+        <span
+          onClick={() => {
+            navigate('./guest');
+          }}
+          className="guestAccount"
+        >
+          Create a guest account{' '}
+        </span>
         {/* <hr className="lineBreak"></hr> */}
       </div>
     </div>

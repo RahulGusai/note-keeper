@@ -6,6 +6,9 @@ import { RiSettings2Line } from 'react-icons/ri';
 import { CgProfile } from 'react-icons/cg';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { IoMdClose } from 'react-icons/io';
+import { useState } from 'react';
+import { IoLogOutOutline } from 'react-icons/io5';
+import { MdEdit } from 'react-icons/md';
 
 export function NavBar(props) {
   const {
@@ -15,14 +18,56 @@ export function NavBar(props) {
     setIsSearchBarActive,
   } = props;
 
+  const [navBarOptions, setNavBarOptions] = useState({
+    showUserProfileDialog: false,
+  });
+
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+
   function handleSearchBarClick() {
     if (!isSearchBarActive) {
       setIsSearchBarActive(true);
     }
   }
 
+  function toggleUserProfileDialog() {
+    setNavBarOptions((navBarOptions) => {
+      return {
+        ...navBarOptions,
+        showUserProfileDialog: !navBarOptions.showUserProfileDialog,
+      };
+    });
+  }
+
   return (
     <div className="navBarContainer">
+      <div
+        className={`${
+          navBarOptions.showUserProfileDialog
+            ? 'userProfileDialog show'
+            : 'userProfileDialog'
+        }`}
+      >
+        <div className="imageSection">
+          <div className="image">
+            <CgProfile
+              className="profileIcon"
+              style={{
+                color: '#ffffff',
+              }}
+            />
+            <MdEdit className="editIcon"></MdEdit>
+          </div>
+
+          <div className="name">{`Hi, ${userInfo.name}!`}</div>
+        </div>
+        <div className="userProfileOptions">
+          <div className="signout">
+            <IoLogOutOutline className="logo"></IoLogOutOutline>
+            <span>Sign out</span>
+          </div>
+        </div>
+      </div>
       <div className="leftContainer">
         <CgMenu
           className="burgerMenuIcon"
@@ -65,10 +110,11 @@ export function NavBar(props) {
           }}
         />
         <CgProfile
+          onClick={toggleUserProfileDialog}
           style={{
             color: '#ffffff',
           }}
-        />
+        ></CgProfile>
       </div>
     </div>
   );

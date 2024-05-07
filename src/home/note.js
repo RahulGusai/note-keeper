@@ -270,7 +270,7 @@ export function Note(props) {
         <div
           ref={pinIconRef}
           className="toolTip"
-          style={{ top: '30px', right: '0px', 'margin-right': '-0px' }}
+          style={{ top: '30px', right: '0px' }}
         >
           Pin note
         </div>
