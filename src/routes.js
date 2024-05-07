@@ -25,9 +25,21 @@ const AppRoutes = () => {
     <Router>
       {isLoggedIn && <Navigate to="/home" />}
       <Routes>
-        <Route path="/home" element={<App></App>} />
+        <Route
+          path="/home"
+          element={
+            isLoggedIn ? (
+              <App setIsLoggedIn={setIsLoggedIn} />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
         <Route path="/signup" element={<SignupPage></SignupPage>} />
-        <Route path="/guest" element={<GuestLogin></GuestLogin>} />
+        <Route
+          path="/guest"
+          element={<GuestLogin setIsLoggedIn={setIsLoggedIn}></GuestLogin>}
+        />
         <Route path="/" element={<LoginPage></LoginPage>} />
       </Routes>
     </Router>

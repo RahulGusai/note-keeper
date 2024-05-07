@@ -9,10 +9,9 @@ import { SideBar } from './menu/sideBar';
 import { EditNote } from './home/editNote';
 import { ErrorDialog } from './home/errorDialog';
 import { getHeightClass } from './utils';
-import { useNavigate } from 'react-router-dom';
 
 export default function App(props) {
-  const navigate = useNavigate();
+  const { setIsLoggedIn } = props;
   const newNoterefs = {
     titleRef: useRef(null),
     contentRef: useRef(null),
@@ -191,6 +190,7 @@ export default function App(props) {
         changeSidebarState={setIsSidebarExpanded}
         isSearchBarActive={isSearchBarActive}
         setIsSearchBarActive={setIsSearchBarActive}
+        setIsLoggedIn={setIsLoggedIn}
       ></NavBar>
       <div className="scrollableContent">
         <SideBar

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRef, useState } from 'react';
 
 export function GuestLogin(props) {
+  const { setIsLoggedIn } = props;
   const navigate = useNavigate();
   const nameInputRef = useRef(null);
   const [errorMessages, setErrorMessages] = useState({
@@ -31,7 +32,7 @@ export function GuestLogin(props) {
       'userInfo',
       JSON.stringify({ isGuest: true, name: nameInputRef.current.value.trim() })
     );
-    navigate('/home');
+    setIsLoggedIn(true);
   }
 
   return (

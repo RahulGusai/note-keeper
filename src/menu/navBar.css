@@ -101,8 +101,8 @@
 
 .userProfileDialog {
   width: 200px;
-  height: 200px;
-  padding: 10px;
+  height: auto;
+  padding: 15px;
   background-color: #313235;
   position: absolute;
   top: 65px;
@@ -115,7 +115,7 @@
 }
 
 .userProfileDialog.show {
-  display: block;
+  display: inline-block;
 }
 
 .userProfileDialog .imageSection {
@@ -127,6 +127,9 @@
 
 .imageSection .image {
   position: relative;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
 }
 .image .profileIcon {
   width: 100px;
@@ -137,11 +140,16 @@
   padding: 1px;
   position: absolute;
   bottom: 10px;
-  left: 75px;
+  right: 50px;
   scale: 1.5;
   z-index: 1000;
   background-color: black;
   border-radius: 15px;
+}
+
+.image:hover .editIcon {
+  background-color: #313235;
+  opacity: 0.9;
 }
 
 .imageSection .name {
@@ -168,6 +176,10 @@
   height: auto;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.signout:hover {
+  scale: 1.1;
 }
 
 .signout .logo {

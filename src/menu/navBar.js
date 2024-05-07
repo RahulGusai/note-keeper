@@ -9,8 +9,12 @@ import { IoMdClose } from 'react-icons/io';
 import { useState } from 'react';
 import { IoLogOutOutline } from 'react-icons/io5';
 import { MdEdit } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 export function NavBar(props) {
+  const { setIsLoggedIn } = props;
+  const navigate = useNavigate();
+
   const {
     sidebarState,
     changeSidebarState,
@@ -39,6 +43,11 @@ export function NavBar(props) {
     });
   }
 
+  function signOutUser() {
+    localStorage.removeItem('userInfo');
+    setIsLoggedIn(false);
+  }
+
   return (
     <div className="navBarContainer">
       <div
@@ -62,7 +71,7 @@ export function NavBar(props) {
           <div className="name">{`Hi, ${userInfo.name}!`}</div>
         </div>
         <div className="userProfileOptions">
-          <div className="signout">
+          <div onClick={signOutUser} className="signout">
             <IoLogOutOutline className="logo"></IoLogOutOutline>
             <span>Sign out</span>
           </div>
