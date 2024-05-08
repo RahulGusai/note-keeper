@@ -268,7 +268,7 @@ export function Note(props) {
     <div ref={outerContainerRef} className={`outerContainer ${heightClass}`}>
       <div
         ref={noteContainerRef}
-        className={isSelected ? 'noteContainer selected' : 'noteContainer'}
+        className={isSelected ? 'noteContainer  selected' : 'noteContainer'}
       >
         <div
           ref={pinIconRef}

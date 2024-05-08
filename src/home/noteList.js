@@ -18,6 +18,8 @@ export function NoteList(props) {
 
   const { pinned, others, archives } = notes;
   const notesClass = gridView ? 'notes gridView' : 'notes listView';
+  const pinnedClass = gridView ? 'pinned' : 'pinned listView';
+  const othersClass = gridView ? 'others' : 'others listView';
 
   if (notesListOptions.showArchives) {
     return (
@@ -50,7 +52,7 @@ export function NoteList(props) {
   return (
     <div className="noteListContainer">
       {Object.keys(pinned).length > 0 && (
-        <div className="pinned">
+        <div className={pinnedClass}>
           <div className="heading">PINNED</div>
           <div className={notesClass}>
             {Object.values(pinned).map((pinned) => {
@@ -74,7 +76,7 @@ export function NoteList(props) {
           </div>
         </div>
       )}
-      <div className="others">
+      <div className={othersClass}>
         {Object.keys(pinned).length > 0 && (
           <div className="heading">OTHERS</div>
         )}
