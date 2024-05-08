@@ -201,7 +201,8 @@ export default function App(props) {
       ></NavBar>
       <div className="scrollableContent">
         <SideBar
-          expanded={isSidebarExpanded}
+          isSidebarExpanded={isSidebarExpanded}
+          setIsSidebarExpanded={setIsSidebarExpanded}
           setNotesListOptions={setNotesListOptions}
         ></SideBar>
         <div className="notesContainer">

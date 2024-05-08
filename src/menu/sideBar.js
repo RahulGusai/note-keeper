@@ -4,7 +4,8 @@ import { IoArchiveOutline } from 'react-icons/io5';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 export function SideBar(props) {
-  const { expanded, setNotesListOptions } = props;
+  const { isSidebarExpanded, setIsSidebarExpanded, setNotesListOptions } =
+    props;
 
   function showArchives() {
     setNotesListOptions((notesListOptions) => {
@@ -37,18 +38,30 @@ export function SideBar(props) {
   }
 
   return (
-    <div className="sideBarContainer">
+    <div
+      className="sideBarContainer"
+      // onMouseOver={() => setIsSidebarExpanded(true)}
+      // onMouseOut={() => {
+      //   setIsSidebarExpanded(false);
+      // }}
+    >
       <div className="tab" onClick={showNotes}>
         <FaRegNoteSticky className="tabIcon"></FaRegNoteSticky>
-        <div className={expanded ? 'tabText active' : 'tabText'}>Notes</div>
+        <div className={isSidebarExpanded ? 'tabText active' : 'tabText'}>
+          Notes
+        </div>
       </div>
       <div className="tab" onClick={showArchives}>
         <IoArchiveOutline className="tabIcon"></IoArchiveOutline>
-        <div className={expanded ? 'tabText active' : 'tabText'}>Archive</div>
+        <div className={isSidebarExpanded ? 'tabText active' : 'tabText'}>
+          Archive
+        </div>
       </div>
       <div className="tab" onClick={showTrash}>
         <FaRegTrashAlt className="tabIcon"></FaRegTrashAlt>
-        <div className={expanded ? 'tabText active' : 'tabText'}>Trash</div>
+        <div className={isSidebarExpanded ? 'tabText active' : 'tabText'}>
+          Trash
+        </div>
       </div>
     </div>
   );
