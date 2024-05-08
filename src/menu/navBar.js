@@ -9,24 +9,31 @@ import { IoMdClose } from 'react-icons/io';
 import { useState } from 'react';
 import { IoLogOutOutline } from 'react-icons/io5';
 import { MdEdit } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
+import { CiGrid41 } from 'react-icons/ci';
 
 export function NavBar(props) {
   const { setIsLoggedIn } = props;
-  const navigate = useNavigate();
 
   const {
     sidebarState,
     changeSidebarState,
     isSearchBarActive,
     setIsSearchBarActive,
+    gridView,
+    setGridView,
+    setDefaultFooter,
   } = props;
 
   const [navBarOptions, setNavBarOptions] = useState({
     showUserProfileDialog: false,
+    showSettingsDialog: false,
   });
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+
+  function handleNavBarContainerClick() {
+    setDefaultFooter(true);
+  }
 
   function handleSearchBarClick() {
     if (!isSearchBarActive) {
@@ -39,6 +46,17 @@ export function NavBar(props) {
       return {
         ...navBarOptions,
         showUserProfileDialog: !navBarOptions.showUserProfileDialog,
+        showSettingsDialog: false,
+      };
+    });
+  }
+
+  function toggleSettingsDialog() {
+    setNavBarOptions((navBarOptions) => {
+      return {
+        ...navBarOptions,
+        showUserProfileDialog: false,
+        showSettingsDialog: !navBarOptions.showSettingsDialog,
       };
     });
   }
@@ -48,8 +66,12 @@ export function NavBar(props) {
     setIsLoggedIn(false);
   }
 
+  function switchView() {
+    setGridView(!gridView);
+  }
+
   return (
-    <div className="navBarContainer">
+    <div onClick={handleNavBarContainerClick} className="navBarContainer">
       <div
         className={`${
           navBarOptions.showUserProfileDialog
@@ -77,6 +99,18 @@ export function NavBar(props) {
           </div>
         </div>
       </div>
+
+      <div
+        className={`${
+          navBarOptions.showSettingsDialog
+            ? 'settingsDialog show'
+            : 'settingsDialog'
+        }`}
+      >
+        <div>Disable Dark Theme</div>
+        <div>Settings</div>
+      </div>
+
       <div className="leftContainer">
         <CgMenu
           className="burgerMenuIcon"
@@ -108,12 +142,25 @@ export function NavBar(props) {
             color: '#ffffff',
           }}
         />
-        <MdOutlineViewAgenda
-          style={{
-            color: '#ffffff',
-          }}
-        />
+        {gridView && (
+          <MdOutlineViewAgenda
+            onClick={switchView}
+            style={{
+              color: '#ffffff',
+            }}
+          />
+        )}
+
+        {!gridView && (
+          <CiGrid41
+            onClick={switchView}
+            style={{
+              color: '#ffffff',
+            }}
+          />
+        )}
         <RiSettings2Line
+          onClick={toggleSettingsDialog}
           style={{
             color: '#ffffff',
           }}

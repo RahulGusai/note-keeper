@@ -13,14 +13,16 @@ export function NoteList(props) {
     setDefaultFooter,
     setErrorMessage,
     notesListOptions,
+    gridView,
   } = props;
 
   const { pinned, others, archives } = notes;
+  const notesClass = gridView ? 'notes gridView' : 'notes listView';
 
   if (notesListOptions.showArchives) {
     return (
       <div className="noteListContainer">
-        <div className="notes">
+        <div className={notesClass}>
           {Object.values(archives).map((archive) => {
             return (
               <Note
@@ -50,7 +52,7 @@ export function NoteList(props) {
       {Object.keys(pinned).length > 0 && (
         <div className="pinned">
           <div className="heading">PINNED</div>
-          <div className="notes">
+          <div className={notesClass}>
             {Object.values(pinned).map((pinned) => {
               if (pinned.id === latestNoteId) {
                 return <></>;
@@ -76,7 +78,7 @@ export function NoteList(props) {
         {Object.keys(pinned).length > 0 && (
           <div className="heading">OTHERS</div>
         )}
-        <div className="notes">
+        <div className={notesClass}>
           {latestNoteId && (
             <Note
               setEditingNote={setEditingNote}

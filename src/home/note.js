@@ -261,6 +261,9 @@ export function Note(props) {
     });
   }
 
+  const pinToolTipText = notes.pinned.hasOwnProperty(id)
+    ? 'Unpin note'
+    : 'Pin note';
   return (
     <div ref={outerContainerRef} className={`outerContainer ${heightClass}`}>
       <div
@@ -272,7 +275,7 @@ export function Note(props) {
           className="toolTip"
           style={{ top: '30px', right: '0px' }}
         >
-          Pin note
+          {pinToolTipText}
         </div>
         <div
           ref={footerRefs.addImageRef}

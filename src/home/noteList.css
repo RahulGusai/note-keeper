@@ -13,7 +13,15 @@
   grid-auto-rows: 50px;
   grid-gap: 20px;
   width: 100%;
+}
+
+.notes.gridView {
   grid-template-columns: repeat(auto-fill, 250px);
+}
+
+.notes.listView {
+  grid-template-columns: repeat(1, 250px);
+  justify-content: center;
 }
 
 .others,

@@ -43,6 +43,7 @@ export default function App(props) {
     showArchives: false,
     showTrash: false,
   });
+  const [gridView, setGridView] = useState(true);
 
   function createNote() {
     const { titleRef, contentRef } = newNoterefs;
@@ -74,12 +75,15 @@ export default function App(props) {
 
   function handleHomeContainerClick(e) {
     const classes = [
+      'sideBarContainer',
       'navBarContainer',
       'homeContainer',
       'noteContainer',
       'notesContainer',
       'noteListContainer',
-      'notes',
+      'notes gridView',
+      'notes listView',
+      'note-content',
     ];
 
     if (isExpanded && classes.includes(e.target.className)) {
@@ -191,6 +195,9 @@ export default function App(props) {
         isSearchBarActive={isSearchBarActive}
         setIsSearchBarActive={setIsSearchBarActive}
         setIsLoggedIn={setIsLoggedIn}
+        gridView={gridView}
+        setGridView={setGridView}
+        setDefaultFooter={setDefaultFooter}
       ></NavBar>
       <div className="scrollableContent">
         <SideBar
@@ -216,6 +223,7 @@ export default function App(props) {
             setDefaultFooter={setDefaultFooter}
             setErrorMessage={setErrorMessage}
             notesListOptions={notesListOptions}
+            gridView={gridView}
           ></NoteList>
         </div>
       </div>
