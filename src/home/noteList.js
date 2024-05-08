@@ -1,4 +1,6 @@
 import { Note } from './note';
+import { TrashNote } from './trashNote';
+import { RiDeleteBin5Line } from 'react-icons/ri';
 import './noteList.css';
 
 export function NoteList(props) {
@@ -16,7 +18,7 @@ export function NoteList(props) {
     gridView,
   } = props;
 
-  const { pinned, others, archives } = notes;
+  const { pinned, others, archives, trash } = notes;
   const notesClass = gridView ? 'notes gridView' : 'notes listView';
   const pinnedClass = gridView ? 'pinned' : 'pinned listView';
   const othersClass = gridView ? 'others' : 'others listView';
@@ -38,6 +40,38 @@ export function NoteList(props) {
                 setDefaultFooter={setDefaultFooter}
                 setErrorMessage={setErrorMessage}
               ></Note>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  if (notesListOptions.showTrash) {
+    if (Object.keys(trash).length === 0) {
+      return (
+        <div className="emptyNotesContainer">
+          <RiDeleteBin5Line className="emptyTrashIcon"></RiDeleteBin5Line>
+          <div className="emptyTrashText">No notes in Trash</div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="noteListContainer">
+        <div className={notesClass}>
+          {Object.values(trash).map((trash) => {
+            return (
+              <TrashNote
+                note={trash}
+                selectedNoteIds={selectedNoteIds}
+                setSelectedNoteIds={setSelectedNoteIds}
+                notes={notes}
+                setNotes={setNotes}
+                defaultFooter={defaultFooter}
+                setDefaultFooter={setDefaultFooter}
+                setErrorMessage={setErrorMessage}
+              ></TrashNote>
             );
           })}
         </div>

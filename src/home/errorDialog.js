@@ -7,7 +7,7 @@ export function ErrorDialog(props) {
   useEffect(() => {
     setTimeout(() => {
       setErrorMessage(null);
-    }, 10000);
+    }, 8000);
   }, [setErrorMessage]);
 
   return <div className="errorDialog">{errorMessage}</div>;

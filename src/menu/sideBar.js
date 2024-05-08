@@ -1,5 +1,5 @@
 import './sideBar.css';
-import { FaRegNoteSticky } from 'react-icons/fa6';
+import { FaRegNoteSticky, FaSleigh } from 'react-icons/fa6';
 import { IoArchiveOutline } from 'react-icons/io5';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
@@ -11,6 +11,7 @@ export function SideBar(props) {
       return {
         ...notesListOptions,
         showArchives: true,
+        showTrash: false,
       };
     });
   }
@@ -30,6 +31,7 @@ export function SideBar(props) {
       return {
         ...notesListOptions,
         showTrash: true,
+        showArchives: false,
       };
     });
   }

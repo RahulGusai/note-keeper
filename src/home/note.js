@@ -44,6 +44,7 @@ export function Note(props) {
   };
   const [footerOptions, setFooterOptions] = useState({
     bgColorSelector: false,
+    moreOptionsDialog: false,
   });
 
   const isSelected = selectedNoteIds.has(note.id);
@@ -79,7 +80,11 @@ export function Note(props) {
   useEffect(() => {
     if (defaultFooter) {
       setFooterOptions((footerOptions) => {
-        return { ...footerOptions, bgColorSelector: false };
+        return {
+          ...footerOptions,
+          bgColorSelector: false,
+          moreOptionsDialog: false,
+        };
       });
     }
   }, [defaultFooter]);
@@ -260,6 +265,47 @@ export function Note(props) {
       };
     });
   }
+  function updateFooterOptions(updadtedOptions) {
+    setFooterOptions((footerOptions) => {
+      if (defaultFooter) {
+        setDefaultFooter(false);
+      }
+      return {
+        ...footerOptions,
+        ...updadtedOptions,
+      };
+    });
+  }
+
+  function deleteNote() {
+    const { others, pinned, archives, trash } = notes;
+
+    let updatedOthers, updatedPinned, updatedArchives;
+    updatedOthers = { ...others };
+    updatedPinned = { ...pinned };
+    updatedArchives = { ...archives };
+
+    if (others.hasOwnProperty(id)) {
+      delete updatedOthers[id];
+    } else if (pinned.hasOwnProperty(id)) {
+      delete updatedPinned[id];
+    } else {
+      delete updatedArchives[id];
+    }
+    const updatedTrash = { ...trash, [id]: note };
+
+    setNotes((notes) => {
+      return {
+        ...notes,
+        others: updatedOthers,
+        pinned: updatedPinned,
+        archives: updatedArchives,
+        trash: updatedTrash,
+      };
+    });
+
+    updateFooterOptions({ moreOptionsDialog: false });
+  }
 
   const pinToolTipText = notes.pinned.hasOwnProperty(id)
     ? 'Unpin note'
@@ -301,21 +347,21 @@ export function Note(props) {
         <div
           ref={footerRefs.moreOptionsRef}
           className="toolTip"
-          style={{ bottom: '-20px', left: '55%' }}
+          style={{ bottom: '-20px', left: '85%' }}
         >
           More
         </div>
         <div
           ref={footerRefs.undoRef}
           className="toolTip"
-          style={{ bottom: '-20px', left: '70%' }}
+          style={{ bottom: '-20px', left: '55%' }}
         >
           Undo
         </div>
         <div
           ref={footerRefs.redoRef}
           className="toolTip"
-          style={{ bottom: '-20px', left: '85%' }}
+          style={{ bottom: '-20px', left: '75%' }}
         >
           Redo
         </div>
@@ -382,6 +428,18 @@ export function Note(props) {
             style={{ color: 'skyblue' }}
           ></GiPlainCircle>
         </div>
+
+        <div
+          className={`${
+            footerOptions.moreOptionsDialog
+              ? 'moreOptionsDialog show'
+              : 'moreOptionsDialog'
+          }`}
+        >
+          <div onClick={deleteNote}>Delete note</div>
+          <div>Make a copy</div>
+        </div>
+
         {image && (
           <img
             class="image"
@@ -426,14 +484,9 @@ export function Note(props) {
               footerRefs.bgColorSelectorRef.current.style.visibility = 'hidden';
             }}
             onClick={() =>
-              setFooterOptions((footerOptions) => {
-                if (defaultFooter) {
-                  setDefaultFooter(false);
-                }
-                return {
-                  ...footerOptions,
-                  bgColorSelector: !footerOptions.bgColorSelector,
-                };
+              updateFooterOptions({
+                bgColorSelector: !footerOptions.bgColorSelector,
+                moreOptionsDialog: false,
               })
             }
           >
@@ -451,7 +504,13 @@ export function Note(props) {
               footerRefs.addImageRef.current.style.visibility = 'hidden';
             }}
             className="noteImageSelector"
-            onClick={openImageUploadDialog}
+            onClick={() => {
+              updateFooterOptions({
+                bgColorSelector: false,
+                moreOptionsDialog: false,
+              });
+              openImageUploadDialog();
+            }}
           >
             <BsImage
               style={{
@@ -467,7 +526,13 @@ export function Note(props) {
               footerRefs.archiveNoteRef.current.style.visibility = 'hidden';
             }}
             className="archiveNote"
-            onClick={archiveNote}
+            onClick={() => {
+              updateFooterOptions({
+                bgColorSelector: false,
+                moreOptionsDialog: false,
+              });
+              archiveNote();
+            }}
           >
             <BiArchiveIn
               style={{
@@ -475,21 +540,7 @@ export function Note(props) {
               }}
             />
           </div>
-          <div
-            onMouseOver={() => {
-              footerRefs.moreOptionsRef.current.style.visibility = 'visible';
-            }}
-            onMouseOut={() => {
-              footerRefs.moreOptionsRef.current.style.visibility = 'hidden';
-            }}
-            className="moreOptions"
-          >
-            <CgMoreVerticalAlt
-              style={{
-                color: '#ffffff',
-              }}
-            />
-          </div>
+
           <div
             onMouseOver={() => {
               footerRefs.undoRef.current.style.visibility = 'visible';
@@ -498,6 +549,12 @@ export function Note(props) {
               footerRefs.undoRef.current.style.visibility = 'hidden';
             }}
             className="undoAction"
+            onClick={() => {
+              updateFooterOptions({
+                bgColorSelector: false,
+                moreOptionsDialog: false,
+              });
+            }}
           >
             <BiUndo
               style={{
@@ -513,8 +570,35 @@ export function Note(props) {
               footerRefs.redoRef.current.style.visibility = 'hidden';
             }}
             className="redoAction"
+            onClick={() => {
+              updateFooterOptions({
+                bgColorSelector: false,
+                moreOptionsDialog: false,
+              });
+            }}
           >
             <BiRedo
+              style={{
+                color: '#ffffff',
+              }}
+            />
+          </div>
+          <div
+            onMouseOver={() => {
+              footerRefs.moreOptionsRef.current.style.visibility = 'visible';
+            }}
+            onMouseOut={() => {
+              footerRefs.moreOptionsRef.current.style.visibility = 'hidden';
+            }}
+            className="moreOptions"
+            onClick={() => {
+              updateFooterOptions({
+                bgColorSelector: false,
+                moreOptionsDialog: !footerOptions.moreOptionsDialog,
+              });
+            }}
+          >
+            <CgMoreVerticalAlt
               style={{
                 color: '#ffffff',
               }}
