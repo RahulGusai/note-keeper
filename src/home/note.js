@@ -307,6 +307,21 @@ export function Note(props) {
     updateFooterOptions({ moreOptionsDialog: false });
   }
 
+  function createNoteCopy() {
+    const { others } = notes;
+    const newNoteId = Math.floor(Math.random() * 1000) + 1;
+    const updatedOthers = { ...others, [newNoteId]: note };
+
+    setNotes((notes) => {
+      return {
+        ...notes,
+        others: updatedOthers,
+      };
+    });
+
+    updateFooterOptions({ moreOptionsDialog: false });
+  }
+
   const pinToolTipText = notes.pinned.hasOwnProperty(id)
     ? 'Unpin note'
     : 'Pin note';
@@ -437,7 +452,7 @@ export function Note(props) {
           }`}
         >
           <div onClick={deleteNote}>Delete note</div>
-          <div>Make a copy</div>
+          <div onClick={createNoteCopy}>Make a copy</div>
         </div>
 
         {image && (

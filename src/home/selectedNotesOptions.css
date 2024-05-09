@@ -1,0 +1,50 @@
+.selectedNotesOptions {
+  width: 100%;
+  height: 65px;
+  background-color: #202124;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid grey;
+  z-index: 10000;
+  display: none;
+  color: white;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  opacity: 0;
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in, visibility 0.3s ease-in;
+  font-family: 'Roboto Slab', serif;
+}
+
+.selectedNotesOptions.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.closeBarIcon {
+  scale: 2;
+  color: grey;
+}
+
+.info {
+  font-size: 22px;
+  width: 100%;
+}
+
+.noteOptions {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.noteOptions > * {
+  scale: 1.8;
+  color: skyblue;
+}

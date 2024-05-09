@@ -9,6 +9,7 @@ import { SideBar } from './menu/sideBar';
 import { EditNote } from './home/editNote';
 import { ErrorDialog } from './home/errorDialog';
 import { getHeightClass } from './utils';
+import { SelectedNotesOptions } from './home/selectedNotesOptions';
 
 export default function App(props) {
   const { setIsLoggedIn } = props;
@@ -74,7 +75,7 @@ export default function App(props) {
   }
 
   function handleHomeContainerClick(e) {
-    const classes = [
+    const bodyClasses = [
       'sideBarContainer',
       'navBarContainer',
       'homeContainer',
@@ -86,13 +87,25 @@ export default function App(props) {
       'note-content',
     ];
 
-    if (isExpanded && classes.includes(e.target.className)) {
+    if (isExpanded && bodyClasses.includes(e.target.className)) {
       createNote();
     }
 
-    if (classes.includes(e.target.className)) {
+    if (bodyClasses.includes(e.target.className)) {
       setIsSearchBarActive(false);
       setDefaultFooter(true);
+    }
+
+    const noteListContainerClasses = [
+      'homeContainer',
+      'notesContainer',
+      'noteListContainer',
+      'notes gridView',
+      'notes listView',
+    ];
+
+    if (noteListContainerClasses.includes(e.target.className)) {
+      setSelectedNoteIds(new Set());
     }
   }
 
@@ -189,6 +202,10 @@ export default function App(props) {
           rel="stylesheet"
         ></link>
       </Helmet>
+      <SelectedNotesOptions
+        selectedNoteIds={selectedNoteIds}
+        setSelectedNoteIds={setSelectedNoteIds}
+      ></SelectedNotesOptions>
       <NavBar
         sidebarState={isSidebarExpanded}
         changeSidebarState={setIsSidebarExpanded}
@@ -199,6 +216,7 @@ export default function App(props) {
         setGridView={setGridView}
         setDefaultFooter={setDefaultFooter}
       ></NavBar>
+
       <div className="scrollableContent">
         <SideBar
           isSidebarExpanded={isSidebarExpanded}
