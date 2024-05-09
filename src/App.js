@@ -203,6 +203,8 @@ export default function App(props) {
         ></link>
       </Helmet>
       <SelectedNotesOptions
+        notes={notes}
+        setNotes={setNotes}
         selectedNoteIds={selectedNoteIds}
         setSelectedNoteIds={setSelectedNoteIds}
       ></SelectedNotesOptions>

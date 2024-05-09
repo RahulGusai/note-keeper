@@ -10,6 +10,7 @@
   padding-top: 20px;
   padding-left: 30px;
   gap: 30px;
+  font-family: 'Roboto Slab', serif;
 }
 
 .sideBarContainer:hover .tabText {
@@ -30,7 +31,7 @@
 }
 
 .tab .tabText {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: white;
   font-family: 'Roboto Slab', serif;

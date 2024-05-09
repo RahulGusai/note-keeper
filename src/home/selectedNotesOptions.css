@@ -31,6 +31,7 @@
 .closeBarIcon {
   scale: 2;
   color: grey;
+  cursor: pointer;
 }
 
 .info {
@@ -45,6 +46,7 @@
 }
 
 .noteOptions > * {
+  cursor: pointer;
   scale: 1.8;
   color: skyblue;
 }
