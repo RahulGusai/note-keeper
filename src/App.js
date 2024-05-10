@@ -140,7 +140,6 @@ export default function App(props) {
         };
         updatedPinned = { ...pinned };
       } else {
-        console.log('ELSE');
         updatedPinned = {
           ...pinned,
           [id]: {
@@ -271,6 +270,7 @@ export default function App(props) {
           saveEditedNote={saveEditedNote}
           notes={notes}
           setNotes={setNotes}
+          setErrorMessage={setErrorMessage}
         ></EditNote>
       )}
 

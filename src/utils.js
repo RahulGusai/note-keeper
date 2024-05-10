@@ -1,3 +1,5 @@
+import { VpnLock } from '@mui/icons-material';
+
 const heightCorrectionAsPerScaledHeight = {
   200: 150,
   250: 100,
@@ -126,10 +128,53 @@ function archiveNote(id, notes, setNotes) {
   });
 }
 
+function updateBackgroundColor(noteId, color, notes, setNotes) {
+  const { others, pinned, archives } = notes;
+  let updatedOthers = { ...others };
+  let updatedPinned = { ...pinned };
+  let updatedArchives = { ...archives };
+
+  if (others.hasOwnProperty(noteId)) {
+    const updatedNote = {
+      ...others[noteId],
+      metaData: {
+        backgroundColor: color,
+      },
+    };
+    updatedOthers = { ...updatedOthers, [noteId]: updatedNote };
+  } else if (pinned.hasOwnProperty(noteId)) {
+    const updatedNote = {
+      ...pinned[noteId],
+      metaData: {
+        backgroundColor: color,
+      },
+    };
+    updatedPinned = { ...updatedPinned, [noteId]: updatedNote };
+  } else {
+    const updatedNote = {
+      ...archives[noteId],
+      metaData: {
+        backgroundColor: color,
+      },
+    };
+    updatedArchives = { ...updatedArchives, [noteId]: updatedNote };
+  }
+
+  setNotes((notes) => {
+    return {
+      ...notes,
+      others: updatedOthers,
+      pinned: updatedPinned,
+      archives: updatedArchives,
+    };
+  });
+}
+
 export {
   isCharacterKey,
   scaleHeightToValues,
   getHeightClass,
   heightCorrectionAsPerScaledHeight,
   archiveNote,
+  updateBackgroundColor,
 };

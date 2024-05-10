@@ -9,7 +9,13 @@ import { TbPinned } from 'react-icons/tb';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
 import { GiPlainCircle } from 'react-icons/gi';
 import { MdInvertColorsOff } from 'react-icons/md';
-import { getHeightClass, scaleHeightToValues, archiveNote } from '../utils';
+import {
+  getHeightClass,
+  scaleHeightToValues,
+  archiveNote,
+  updateBackgroundColor,
+  handleImageUpload,
+} from '../utils';
 
 import './note.css';
 
@@ -171,49 +177,6 @@ export function Note(props) {
     e.stopPropagation();
   }
 
-  function updatedBackgroundColor(color) {
-    const { others, pinned, archives } = notes;
-    let updatedOthers = { ...others };
-    let updatedPinned = { ...pinned };
-    let updatedArchives = { ...archives };
-
-    if (others.hasOwnProperty(id)) {
-      const updatedNote = {
-        ...others[id],
-        metaData: {
-          backgroundColor: color,
-        },
-      };
-      updatedOthers = { ...updatedOthers, [id]: updatedNote };
-    } else if (pinned.hasOwnProperty(id)) {
-      const updatedNote = {
-        ...pinned[id],
-        metaData: {
-          backgroundColor: color,
-        },
-      };
-      updatedPinned = { ...updatedPinned, [id]: updatedNote };
-    } else {
-      const updatedNote = {
-        ...archives[id],
-        metaData: {
-          backgroundColor: color,
-        },
-      };
-      updatedArchives = { ...updatedArchives, [id]: updatedNote };
-    }
-
-    console.log('Setting the notes state.');
-    setNotes((notes) => {
-      return {
-        ...notes,
-        others: updatedOthers,
-        pinned: updatedPinned,
-        archives: updatedArchives,
-      };
-    });
-  }
-
   const openImageUploadDialog = () => {
     imageUploadRef.current.click();
   };
@@ -254,12 +217,11 @@ export function Note(props) {
         return;
       }
 
-      const scaledheight = scaleHeightToValues(img.height);
-      updateNotes(scaledheight, img);
+      updateNotes(img);
     };
   };
 
-  function updateNotes(scaledheight, img) {
+  function updateNotes(img) {
     const updatedHeightClass = getHeightClass(contentRef, img);
 
     let updatedOthers, updatedPinned;
@@ -287,14 +249,14 @@ export function Note(props) {
     });
   }
 
-  function updateFooterOptions(updadtedOptions) {
+  function updateFooterOptions(updatedOptions) {
     setFooterOptions((footerOptions) => {
       if (defaultFooter) {
         setDefaultFooter(false);
       }
       return {
         ...footerOptions,
-        ...updadtedOptions,
+        ...updatedOptions,
       };
     });
   }
@@ -343,6 +305,16 @@ export function Note(props) {
     });
 
     updateFooterOptions({ moreOptionsDialog: false });
+  }
+
+  function processImage(event) {
+    const img = handleImageUpload(event, setErrorMessage);
+    console.log('DEBUG');
+    console.log(img);
+    if (img) {
+      console.log('Updating note');
+      updateNotes(img);
+    }
   }
 
   const pinToolTipText = notes.pinned.hasOwnProperty(id)
@@ -417,7 +389,7 @@ export function Note(props) {
           ref={imageUploadRef}
           type="file"
           style={{ display: 'none' }}
-          onChange={handleImageUpload}
+          onChange={processImage}
         />
         <div
           className={
@@ -428,41 +400,43 @@ export function Note(props) {
         >
           <MdInvertColorsOff></MdInvertColorsOff>
           <GiPlainCircle
-            onClick={() => updatedBackgroundColor('coral')}
+            onClick={() => updateBackgroundColor(id, 'coral', notes, setNotes)}
             style={{ color: 'coral' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => updatedBackgroundColor('white')}
+            onClick={() => updateBackgroundColor(id, 'white', notes, setNotes)}
             style={{ color: 'white' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => updatedBackgroundColor('red')}
+            onClick={() => updateBackgroundColor(id, 'red', notes, setNotes)}
             style={{ color: 'red' }}
           ></GiPlainCircle>
           <GiPlainCircle
             onClick={() => {
-              updatedBackgroundColor('brown');
+              updateBackgroundColor(id, 'brown', notes, setNotes);
             }}
             style={{ color: 'brown' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => updatedBackgroundColor('teal')}
+            onClick={() => updateBackgroundColor(id, 'teal', notes, setNotes)}
             style={{ color: 'teal' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => updatedBackgroundColor('purple')}
+            onClick={() => updateBackgroundColor(id, 'purple', notes, setNotes)}
             style={{ color: 'purple' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => updatedBackgroundColor('pink')}
+            onClick={() => updateBackgroundColor(id, 'pink', notes, setNotes)}
             style={{ color: 'pink' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => updatedBackgroundColor('blue')}
+            onClick={() => updateBackgroundColor(id, 'blue', notes, setNotes)}
             style={{ color: 'blue' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => updatedBackgroundColor('skyblue')}
+            onClick={() =>
+              updateBackgroundColor(id, 'skyblue', notes, setNotes)
+            }
             style={{ color: 'skyblue' }}
           ></GiPlainCircle>
         </div>

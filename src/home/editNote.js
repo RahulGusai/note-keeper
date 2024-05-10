@@ -7,7 +7,9 @@ import { BiUndo } from 'react-icons/bi';
 import { BiRedo } from 'react-icons/bi';
 import { CgMoreVerticalAlt } from 'react-icons/cg';
 import { MdDelete } from 'react-icons/md';
-import { archiveNote } from '../utils';
+import { archiveNote, updateBackgroundColor } from '../utils';
+import { GiPlainCircle } from 'react-icons/gi';
+import { MdInvertColorsOff } from 'react-icons/md';
 
 function FunctionComponent(props, ref) {
   const {
@@ -18,6 +20,7 @@ function FunctionComponent(props, ref) {
     saveEditedNote,
     notes,
     setNotes,
+    setErrorMessage,
   } = props;
 
   const { titleElem, contentElem } = ref;
@@ -27,6 +30,10 @@ function FunctionComponent(props, ref) {
   const [currentText, setCurrentText] = useState('');
   const [undoStack, setUndoStack] = useState([]);
   const [lastKeyPressTimestamp, setLastKeyPressTimestamp] = useState(null);
+  const [footerOptions, setFooterOptions] = useState({
+    showColorSelector: false,
+  });
+
   const editNoteContainerRef = useRef(null);
   const imageUploadRef = useRef(null);
 
@@ -191,13 +198,116 @@ function FunctionComponent(props, ref) {
     }
   }
 
-  function handleImageUpload() {}
+  function processImage(event) {
+    const file = event.target.files[0];
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
+    const fileExtension = file.name
+      .substring(file.name.lastIndexOf('.'))
+      .toLowerCase();
+
+    if (!allowedExtensions.includes(fileExtension)) {
+      setErrorMessage(
+        'Can’t upload this file. We accept GIF, JPEG, JPG, PNG files less than 10MB and 25 megapixels.'
+      );
+      return;
+    }
+
+    const maxSizeMB = 10;
+    const maxSizeBytes = maxSizeMB * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+      setErrorMessage(
+        'Can’t upload this file. We accept GIF, JPEG, JPG, PNG files less than 10MB and 25 megapixels.'
+      );
+      return;
+    }
+
+    const maxResolutionMP = 25;
+    const maxResolutionPixels = maxResolutionMP * 1000000;
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = function () {
+      const resolution = img.width * img.height;
+      if (resolution > maxResolutionPixels) {
+        setErrorMessage(
+          'Can’t upload this file. We accept GIF, JPEG, JPG, PNG files less than 10MB and 25 megapixels.'
+        );
+        return;
+      }
+
+      updateNotes(img);
+      setEditingNote((editingNote) => {
+        return {
+          ...editingNote,
+          image: img,
+        };
+      });
+    };
+  }
+
+  function updateNotes(img) {
+    const { id } = editingNote;
+    let updatedOthers, updatedPinned;
+    const { others, pinned } = notes;
+    if (others.hasOwnProperty(id)) {
+      const updatedNote = {
+        ...others[id],
+        image: { src: img.src, width: img.width, height: img.height },
+      };
+      updatedOthers = { ...others, [id]: updatedNote };
+      updatedPinned = { ...updatedPinned };
+    } else {
+      const updatedNote = {
+        ...pinned[id],
+        image: { src: img.src, width: img.width, height: img.height },
+      };
+      updatedPinned = { ...pinned, [id]: updatedNote };
+      updatedOthers = { ...updatedOthers };
+    }
+
+    setNotes((notes) => {
+      return { ...notes, others: updatedOthers, pinned: updatedPinned };
+    });
+  }
 
   function handleArchiveButtonClick() {
-    //TODO disable all menu options here
     const { id } = editingNote;
     archiveNote(id, notes, setNotes);
     setEditingNote(null);
+    setFooterOptions((footerOptions) => {
+      return {
+        ...footerOptions,
+        showColorSelector: false,
+      };
+    });
+  }
+
+  function handleColorSelectorClick(color) {
+    const { id } = editingNote;
+    updateBackgroundColor(id, color, notes, setNotes);
+    setEditingNote((editingNote) => {
+      return {
+        ...editingNote,
+        metaData: {
+          ...editingNote.metaData,
+          backgroundColor: color,
+        },
+      };
+    });
+    setFooterOptions((footerOptions) => {
+      return {
+        ...footerOptions,
+        showColorSelector: false,
+      };
+    });
+  }
+
+  function toggleColorSelectorMenu() {
+    setFooterOptions((footerOptions) => {
+      return {
+        ...footerOptions,
+        showColorSelector: !footerOptions.showColorSelector,
+      };
+    });
   }
 
   return (
@@ -205,11 +315,59 @@ function FunctionComponent(props, ref) {
       ref={editNoteContainerRef}
       className={editingNote ? 'editNoteContainer active' : 'editNoteContainer'}
     >
+      <div
+        className={
+          footerOptions.showColorSelector
+            ? 'colorSelector active'
+            : 'colorSelector'
+        }
+      >
+        <MdInvertColorsOff></MdInvertColorsOff>
+        <GiPlainCircle
+          onClick={() => handleColorSelectorClick('coral')}
+          style={{ color: 'coral' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => handleColorSelectorClick('white')}
+          style={{ color: 'white' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => handleColorSelectorClick('red')}
+          style={{ color: 'red' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => {
+            handleColorSelectorClick('brown');
+          }}
+          style={{ color: 'brown' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => handleColorSelectorClick('teal')}
+          style={{ color: 'teal' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => handleColorSelectorClick('purple')}
+          style={{ color: 'purple' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => handleColorSelectorClick('pink')}
+          style={{ color: 'pink' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => handleColorSelectorClick('blue')}
+          style={{ color: 'blue' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => handleColorSelectorClick('skyblue')}
+          style={{ color: 'skyblue' }}
+        ></GiPlainCircle>
+      </div>
+
       <input
         ref={imageUploadRef}
         type="file"
         style={{ display: 'none' }}
-        onChange={handleImageUpload}
+        onChange={processImage}
       />
 
       {editingNote && editingNote.image && (
@@ -241,7 +399,7 @@ function FunctionComponent(props, ref) {
       ></div>
       <div className="note-footer">
         <div className="footerIcons">
-          <MdOutlineColorLens />
+          <MdOutlineColorLens onClick={toggleColorSelectorMenu} />
           <BsImage
             onClick={() => {
               imageUploadRef.current.click();
