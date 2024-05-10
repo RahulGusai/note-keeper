@@ -60,6 +60,9 @@ export default function App(props) {
           content: isDefaultTextLoaded.content
             ? ''
             : contentRef.current.innerHTML,
+          metaData: {
+            backgroundColor: 'transparent',
+          },
         },
       };
       setNotes((notes) => {
@@ -131,6 +134,9 @@ export default function App(props) {
             content: content,
             image: editingNote.image,
             heightClass: getHeightClass(contentElem, editingNote.image),
+            metaData: {
+              backgroundColor: 'transparent',
+            },
           },
         };
         updatedPinned = { ...notes.pinned };
@@ -143,6 +149,9 @@ export default function App(props) {
             content: content,
             image: editingNote.image,
             heightClass: getHeightClass(contentElem, editingNote.image),
+            metaData: {
+              backgroundColor: 'transparent',
+            },
           },
         };
         updatedOthers = { ...notes.others };

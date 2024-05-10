@@ -25,7 +25,7 @@ export function Note(props) {
     setDefaultFooter,
     setErrorMessage,
   } = props;
-  const { id, title, content, heightClass, image } = note;
+  const { id, title, content, heightClass, image, metaData } = note;
 
   const outerContainerRef = useRef(null);
   const noteContainerRef = useRef(null);
@@ -48,6 +48,12 @@ export function Note(props) {
   });
 
   const isSelected = selectedNoteIds.has(note.id);
+
+  useEffect(() => {
+    if (metaData.backgroundColor !== 'transparent') {
+      handleColorPickerClick(metaData.backgroundColor);
+    }
+  }, [metaData.backgroundColor]);
 
   useEffect(() => {
     titleRef.current.innerHTML = '';

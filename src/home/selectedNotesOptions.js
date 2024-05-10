@@ -6,10 +6,28 @@ import { BiArchiveIn } from 'react-icons/bi';
 import { CgMoreVerticalAlt } from 'react-icons/cg';
 import './selectedNotesOptions.css';
 import { useEffect, useState } from 'react';
+import { GiPlainCircle } from 'react-icons/gi';
+import { MdInvertColorsOff } from 'react-icons/md';
 
 export function SelectedNotesOptions(props) {
   const { notes, setNotes, selectedNoteIds, setSelectedNoteIds } = props;
   const [allNotesPinned, setAllNotesPinned] = useState(false);
+  const [noteOptions, setNoteOptions] = useState({
+    showColorPicker: false,
+    showMoreOptions: false,
+  });
+
+  useEffect(() => {
+    if (selectedNoteIds.size === 0) {
+      setNoteOptions((noteOptions) => {
+        return {
+          ...noteOptions,
+          showColorPicker: false,
+          showMoreOptions: false,
+        };
+      });
+    }
+  }, [selectedNoteIds]);
 
   useEffect(() => {
     const { others } = notes;
@@ -113,6 +131,64 @@ export function SelectedNotesOptions(props) {
     setSelectedNoteIds(new Set());
   }
 
+  function updateBackgroundColor(color) {
+    const { others, pinned } = notes;
+    let updatedOthers = { ...others };
+    let updatedPinned = { ...pinned };
+
+    for (const noteId of selectedNoteIds) {
+      if (others.hasOwnProperty(noteId)) {
+        const updatedNote = {
+          ...others[noteId],
+          metaData: {
+            backgroundColor: color,
+          },
+        };
+        updatedOthers = { ...updatedOthers, [noteId]: updatedNote };
+      } else {
+        const updatedNote = {
+          ...pinned[noteId],
+          metaData: {
+            backgroundColor: color,
+          },
+        };
+        updatedPinned = { ...updatedPinned, [noteId]: updatedNote };
+      }
+    }
+    setNotes((notes) => {
+      return {
+        ...notes,
+        others: updatedOthers,
+        pinned: updatedPinned,
+      };
+    });
+    setSelectedNoteIds(new Set());
+  }
+
+  function toggleColorPicker() {
+    setNoteOptions((noteOptions) => {
+      return {
+        ...noteOptions,
+        showColorPicker: !noteOptions.showColorPicker,
+        showMoreOptions: false,
+      };
+    });
+  }
+
+  function toggleMoreOptions() {
+    setNoteOptions((noteOptions) => {
+      return {
+        ...noteOptions,
+        showColorPicker: false,
+        showMoreOptions: !noteOptions.showMoreOptions,
+      };
+    });
+  }
+
+  function deleteNotes() {}
+
+  function createNotesCopy() {}
+
   return (
     <div
       className={`${
@@ -121,6 +197,65 @@ export function SelectedNotesOptions(props) {
           : 'selectedNotesOptions active'
       }`}
     >
+      <div
+        className={
+          noteOptions.showColorPicker ? 'colorPicker active' : 'colorPicker'
+        }
+      >
+        <MdInvertColorsOff></MdInvertColorsOff>
+        <GiPlainCircle
+          onClick={() => updateBackgroundColor('coral')}
+          style={{ color: 'coral' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => updateBackgroundColor('white')}
+          style={{ color: 'white' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => updateBackgroundColor('red')}
+          style={{ color: 'red' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => {
+            updateBackgroundColor('brown');
+          }}
+          style={{ color: 'brown' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => updateBackgroundColor('teal')}
+          style={{ color: 'teal' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => updateBackgroundColor('purple')}
+          style={{ color: 'purple' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => updateBackgroundColor('pink')}
+          style={{ color: 'pink' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => updateBackgroundColor('blue')}
+          style={{ color: 'blue' }}
+        ></GiPlainCircle>
+        <GiPlainCircle
+          onClick={() => updateBackgroundColor('skyblue')}
+          style={{ color: 'skyblue' }}
+        ></GiPlainCircle>
+      </div>
+
+      <div
+        className={`${
+          noteOptions.showMoreOptions
+            ? 'moreOptionsMenu show'
+            : 'moreOptionsMenu'
+        }`}
+      >
+        <div onClick={deleteNotes}>{`Delete note${
+          selectedNoteIds.size > 1 ? 's' : ''
+        }`}</div>
+        <div onClick={createNotesCopy}>Make a copy</div>
+      </div>
+
       <IoCloseSharp
         onClick={handleCloseBarIconClick}
         className="closeBarIcon"
@@ -132,9 +267,9 @@ export function SelectedNotesOptions(props) {
         ) : (
           <TbPinned onClick={pinNotes}></TbPinned>
         )}
-        <MdOutlineColorLens></MdOutlineColorLens>
+        <MdOutlineColorLens onClick={toggleColorPicker}></MdOutlineColorLens>
         <BiArchiveIn onClick={archiveNotes}></BiArchiveIn>
-        <CgMoreVerticalAlt></CgMoreVerticalAlt>
+        <CgMoreVerticalAlt onClick={toggleMoreOptions}></CgMoreVerticalAlt>
       </div>
     </div>
   );
