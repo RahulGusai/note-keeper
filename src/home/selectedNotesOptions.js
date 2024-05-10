@@ -185,9 +185,59 @@ export function SelectedNotesOptions(props) {
     });
   }
 
-  function deleteNotes() {}
+  function deleteNotes() {
+    const { others, pinned, trash } = notes;
+    let updatedOthers = { ...others };
+    let updatedPinned = { ...pinned };
+    let updatedTrash = { ...trash };
 
-  function createNotesCopy() {}
+    for (const noteId of selectedNoteIds) {
+      if (others.hasOwnProperty(noteId)) {
+        updatedTrash = { ...updatedTrash, [noteId]: others[noteId] };
+        delete updatedOthers[noteId];
+      } else {
+        updatedTrash = { ...updatedTrash, [noteId]: pinned[noteId] };
+        delete updatedPinned[noteId];
+      }
+    }
+
+    setNotes((notes) => {
+      return {
+        ...notes,
+        others: updatedOthers,
+        pinned: updatedPinned,
+        trash: updatedTrash,
+      };
+    });
+    setSelectedNoteIds(new Set());
+  }
+
+  function createNotesCopy() {
+    const { others, pinned, archives } = notes;
+    let updatedOthers = { ...others };
+    let newNote;
+
+    for (const noteId of selectedNoteIds) {
+      const newNoteId = Math.floor(Math.random() * 1000) + 1;
+      if (others.hasOwnProperty(noteId)) {
+        newNote = { ...others[noteId], id: newNoteId };
+      } else if (pinned.hasOwnProperty(noteId)) {
+        newNote = { ...pinned[noteId], id: newNoteId };
+      } else {
+        newNote = { ...archives[noteId], id: newNoteId };
+      }
+
+      updatedOthers = { ...updatedOthers, [newNoteId]: newNote };
+    }
+
+    setNotes((notes) => {
+      return {
+        ...notes,
+        others: updatedOthers,
+      };
+    });
+    setSelectedNoteIds(new Set());
+  }
 
   return (
     <div

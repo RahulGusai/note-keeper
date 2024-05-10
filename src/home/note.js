@@ -316,7 +316,8 @@ export function Note(props) {
   function createNoteCopy() {
     const { others } = notes;
     const newNoteId = Math.floor(Math.random() * 1000) + 1;
-    const updatedOthers = { ...others, [newNoteId]: note };
+    const newNote = { ...note, id: newNoteId };
+    const updatedOthers = { ...others, [newNoteId]: newNote };
 
     setNotes((notes) => {
       return {
