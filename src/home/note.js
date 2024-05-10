@@ -9,7 +9,7 @@ import { TbPinned } from 'react-icons/tb';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
 import { GiPlainCircle } from 'react-icons/gi';
 import { MdInvertColorsOff } from 'react-icons/md';
-import { getHeightClass, scaleHeightToValues } from '../utils';
+import { getHeightClass, scaleHeightToValues, archiveNote } from '../utils';
 
 import './note.css';
 
@@ -51,9 +51,10 @@ export function Note(props) {
 
   useEffect(() => {
     if (metaData.backgroundColor !== 'transparent') {
-      handleColorPickerClick(metaData.backgroundColor);
+      noteContainerRef.current.style.backgroundColor = metaData.backgroundColor;
+      noteContainerRef.current.style.border = 'none';
     }
-  }, [metaData.backgroundColor]);
+  }, [metaData]);
 
   useEffect(() => {
     titleRef.current.innerHTML = '';
@@ -125,10 +126,11 @@ export function Note(props) {
     setEditingNote((editingNote) => {
       return {
         ...editingNote,
-        id: id,
-        title: title,
-        content: content,
+        id,
+        title,
+        content,
         image: image,
+        metaData,
         defaultText: {
           title: false,
           content: false,
@@ -169,9 +171,47 @@ export function Note(props) {
     e.stopPropagation();
   }
 
-  function handleColorPickerClick(color) {
-    noteContainerRef.current.style.backgroundColor = color;
-    noteContainerRef.current.style.border = 'none';
+  function updatedBackgroundColor(color) {
+    const { others, pinned, archives } = notes;
+    let updatedOthers = { ...others };
+    let updatedPinned = { ...pinned };
+    let updatedArchives = { ...archives };
+
+    if (others.hasOwnProperty(id)) {
+      const updatedNote = {
+        ...others[id],
+        metaData: {
+          backgroundColor: color,
+        },
+      };
+      updatedOthers = { ...updatedOthers, [id]: updatedNote };
+    } else if (pinned.hasOwnProperty(id)) {
+      const updatedNote = {
+        ...pinned[id],
+        metaData: {
+          backgroundColor: color,
+        },
+      };
+      updatedPinned = { ...updatedPinned, [id]: updatedNote };
+    } else {
+      const updatedNote = {
+        ...archives[id],
+        metaData: {
+          backgroundColor: color,
+        },
+      };
+      updatedArchives = { ...updatedArchives, [id]: updatedNote };
+    }
+
+    console.log('Setting the notes state.');
+    setNotes((notes) => {
+      return {
+        ...notes,
+        others: updatedOthers,
+        pinned: updatedPinned,
+        archives: updatedArchives,
+      };
+    });
   }
 
   const openImageUploadDialog = () => {
@@ -247,30 +287,6 @@ export function Note(props) {
     });
   }
 
-  function archiveNote() {
-    let updatedOthers, updatedPinned;
-
-    const { others, pinned, archives } = notes;
-    if (others.hasOwnProperty(id)) {
-      updatedOthers = { ...others };
-      delete updatedOthers[id];
-      updatedPinned = { ...updatedPinned };
-    } else {
-      updatedPinned = { ...pinned };
-      delete updatedPinned[id];
-      updatedOthers = { ...updatedOthers };
-    }
-    const updatedArchives = { ...archives, [id]: note };
-
-    setNotes((notes) => {
-      return {
-        ...notes,
-        others: updatedOthers,
-        pinned: updatedPinned,
-        archives: updatedArchives,
-      };
-    });
-  }
   function updateFooterOptions(updadtedOptions) {
     setFooterOptions((footerOptions) => {
       if (defaultFooter) {
@@ -412,41 +428,41 @@ export function Note(props) {
         >
           <MdInvertColorsOff></MdInvertColorsOff>
           <GiPlainCircle
-            onClick={() => handleColorPickerClick('coral')}
+            onClick={() => updatedBackgroundColor('coral')}
             style={{ color: 'coral' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorPickerClick('white')}
+            onClick={() => updatedBackgroundColor('white')}
             style={{ color: 'white' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorPickerClick('red')}
+            onClick={() => updatedBackgroundColor('red')}
             style={{ color: 'red' }}
           ></GiPlainCircle>
           <GiPlainCircle
             onClick={() => {
-              handleColorPickerClick('brown');
+              updatedBackgroundColor('brown');
             }}
             style={{ color: 'brown' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorPickerClick('teal')}
+            onClick={() => updatedBackgroundColor('teal')}
             style={{ color: 'teal' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorPickerClick('purple')}
+            onClick={() => updatedBackgroundColor('purple')}
             style={{ color: 'purple' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorPickerClick('pink')}
+            onClick={() => updatedBackgroundColor('pink')}
             style={{ color: 'pink' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorPickerClick('blue')}
+            onClick={() => updatedBackgroundColor('blue')}
             style={{ color: 'blue' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorPickerClick('skyblue')}
+            onClick={() => updatedBackgroundColor('skyblue')}
             style={{ color: 'skyblue' }}
           ></GiPlainCircle>
         </div>
@@ -553,7 +569,7 @@ export function Note(props) {
                 bgColorSelector: false,
                 moreOptionsDialog: false,
               });
-              archiveNote();
+              archiveNote(id, notes, setNotes);
             }}
           >
             <BiArchiveIn

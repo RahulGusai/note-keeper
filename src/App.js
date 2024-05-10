@@ -113,8 +113,9 @@ export default function App(props) {
   }
 
   function saveEditedNote() {
-    const noteId = editingNote.id;
+    const { id, metaData } = editingNote;
     const { titleElem, contentElem } = editNoteRefs;
+    const { others, pinned } = notes;
 
     setNotes((notes) => {
       let updatedOthers, updatedPinned;
@@ -125,36 +126,33 @@ export default function App(props) {
         ? ''
         : contentElem.current.innerHTML;
 
-      if (notes.others.hasOwnProperty(noteId)) {
+      if (others.hasOwnProperty(id)) {
         updatedOthers = {
-          ...notes.others,
-          [noteId]: {
-            id: noteId,
+          ...others,
+          [id]: {
+            id: id,
             title: title,
             content: content,
             image: editingNote.image,
             heightClass: getHeightClass(contentElem, editingNote.image),
-            metaData: {
-              backgroundColor: 'transparent',
-            },
+            metaData,
           },
         };
-        updatedPinned = { ...notes.pinned };
+        updatedPinned = { ...pinned };
       } else {
+        console.log('ELSE');
         updatedPinned = {
-          ...notes.pinned,
-          [noteId]: {
-            id: noteId,
+          ...pinned,
+          [id]: {
+            id: id,
             title: title,
             content: content,
             image: editingNote.image,
             heightClass: getHeightClass(contentElem, editingNote.image),
-            metaData: {
-              backgroundColor: 'transparent',
-            },
+            metaData,
           },
         };
-        updatedOthers = { ...notes.others };
+        updatedOthers = { ...others };
       }
 
       return {
@@ -270,6 +268,9 @@ export default function App(props) {
           setEditingNote={setEditingNote}
           editNoteDefaultText={editNoteDefaultText}
           setEditNoteDefaultText={setEditNoteDefaultText}
+          saveEditedNote={saveEditedNote}
+          notes={notes}
+          setNotes={setNotes}
         ></EditNote>
       )}
 

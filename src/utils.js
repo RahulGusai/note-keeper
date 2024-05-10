@@ -98,9 +98,38 @@ function getHeightClass(contentRef, image) {
   return heightClass;
 }
 
+function archiveNote(id, notes, setNotes) {
+  let updatedOthers, updatedPinned;
+
+  const { others, pinned, archives } = notes;
+  let note;
+  if (others.hasOwnProperty(id)) {
+    note = others[id];
+    updatedOthers = { ...others };
+    delete updatedOthers[id];
+    updatedPinned = { ...updatedPinned };
+  } else {
+    note = pinned[id];
+    updatedPinned = { ...pinned };
+    delete updatedPinned[id];
+    updatedOthers = { ...updatedOthers };
+  }
+  const updatedArchives = { ...archives, [id]: note };
+
+  setNotes((notes) => {
+    return {
+      ...notes,
+      others: updatedOthers,
+      pinned: updatedPinned,
+      archives: updatedArchives,
+    };
+  });
+}
+
 export {
   isCharacterKey,
   scaleHeightToValues,
   getHeightClass,
   heightCorrectionAsPerScaledHeight,
+  archiveNote,
 };

@@ -1,12 +1,13 @@
 import './editNote.css';
-import { forwardRef, useEffect, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 import { MdOutlineColorLens } from 'react-icons/md';
 import { BsImage } from 'react-icons/bs';
 import { BiArchiveIn } from 'react-icons/bi';
 import { BiUndo } from 'react-icons/bi';
 import { BiRedo } from 'react-icons/bi';
-import { CgKey, CgMoreVerticalAlt } from 'react-icons/cg';
+import { CgMoreVerticalAlt } from 'react-icons/cg';
 import { MdDelete } from 'react-icons/md';
+import { archiveNote } from '../utils';
 
 function FunctionComponent(props, ref) {
   const {
@@ -14,6 +15,9 @@ function FunctionComponent(props, ref) {
     setEditingNote,
     editNoteDefaultText,
     setEditNoteDefaultText,
+    saveEditedNote,
+    notes,
+    setNotes,
   } = props;
 
   const { titleElem, contentElem } = ref;
@@ -23,6 +27,17 @@ function FunctionComponent(props, ref) {
   const [currentText, setCurrentText] = useState('');
   const [undoStack, setUndoStack] = useState([]);
   const [lastKeyPressTimestamp, setLastKeyPressTimestamp] = useState(null);
+  const editNoteContainerRef = useRef(null);
+  const imageUploadRef = useRef(null);
+
+  useEffect(() => {
+    const { metaData } = editingNote;
+    if (metaData.backgroundColor !== 'transparent') {
+      editNoteContainerRef.current.style.backgroundColor =
+        metaData.backgroundColor;
+      editNoteContainerRef.current.style.border = 'none';
+    }
+  }, [editingNote]);
 
   useEffect(() => {
     if (editingNote) {
@@ -170,17 +185,33 @@ function FunctionComponent(props, ref) {
           contentElem.current.innerHTML[
             contentElem.current.innerHTML.length - 1
           ] + backspaceText;
-        console.log(updatedBackspaceText);
         setBackspaceText(updatedBackspaceText);
       }
       setLastKeyPressTimestamp(Date.now());
     }
   }
 
+  function handleImageUpload() {}
+
+  function handleArchiveButtonClick() {
+    //TODO disable all menu options here
+    const { id } = editingNote;
+    archiveNote(id, notes, setNotes);
+    setEditingNote(null);
+  }
+
   return (
     <div
+      ref={editNoteContainerRef}
       className={editingNote ? 'editNoteContainer active' : 'editNoteContainer'}
     >
+      <input
+        ref={imageUploadRef}
+        type="file"
+        style={{ display: 'none' }}
+        onChange={handleImageUpload}
+      />
+
       {editingNote && editingNote.image && (
         <div className="imageContainer">
           <MdDelete
@@ -210,76 +241,25 @@ function FunctionComponent(props, ref) {
       ></div>
       <div className="note-footer">
         <div className="footerIcons">
-          <div
-            style={{
-              backgroundColor: '#202124',
+          <MdOutlineColorLens />
+          <BsImage
+            onClick={() => {
+              imageUploadRef.current.click();
             }}
-          >
-            <MdOutlineColorLens
-              style={{
-                color: '#ffffff',
-              }}
-            />
-          </div>
-          <div
-            style={{
-              backgroundColor: '#202124',
-            }}
-          >
-            <BsImage
-              style={{
-                color: '#ffffff',
-              }}
-            />
-          </div>
-          <div
-            style={{
-              backgroundColor: '#202124',
-            }}
-          >
-            <BiArchiveIn
-              style={{
-                color: '#ffffff',
-              }}
-            />
-          </div>
-          <div
-            style={{
-              backgroundColor: '#202124',
-            }}
-          >
-            <CgMoreVerticalAlt
-              style={{
-                color: '#ffffff',
-              }}
-            />
-          </div>
-          <div
-            style={{
-              backgroundColor: '#202124',
-            }}
-            onClick={undoText}
-          >
-            <BiUndo
-              style={{
-                color: '#ffffff',
-              }}
-            />
-          </div>
-          <div
-            style={{
-              backgroundColor: '#202124',
-            }}
-            onClick={redoText}
-          >
-            <BiRedo
-              style={{
-                color: '#ffffff',
-              }}
-            />
-          </div>
+          />
+          <BiArchiveIn onClick={handleArchiveButtonClick} />
+          <CgMoreVerticalAlt />
+          <BiUndo onClick={undoText} />
+          <BiRedo onClick={redoText} />
         </div>
-        <div className="closeButton">Close</div>
+        <div
+          onClick={() => {
+            saveEditedNote();
+          }}
+          className="closeButton"
+        >
+          Close
+        </div>
       </div>
     </div>
   );

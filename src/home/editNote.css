@@ -1,4 +1,5 @@
 .editNoteContainer {
+  padding: 5px;
   width: 600px;
   max-height: 90vh;
   background-color: #202124;
@@ -16,6 +17,7 @@
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   z-index: 101;
   overflow-y: auto;
+  font-family: 'Roboto Slab', serif;
 }
 
 .editNoteContainer.active {
@@ -66,11 +68,14 @@
 
 .note-footer .footerIcons {
   display: flex;
-  gap: 30px;
+  gap: 40px;
 }
 
-.footerIcons * {
+.footerIcons > * {
   cursor: pointer;
+  scale: 1.3;
+  color: white;
+  opacity: 0.8;
 }
 
 .imageContainer {
@@ -96,4 +101,10 @@
 
 .imageContainer:hover .deleteImageIcon {
   opacity: 1;
+}
+
+.closeButton {
+  font-size: 15px;
+  margin-right: 15px;
+  font-weight: bold;
 }
