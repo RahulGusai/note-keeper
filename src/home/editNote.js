@@ -484,16 +484,28 @@ function FunctionComponent(props, ref) {
       ></div>
       <div className="note-footer">
         <div className="footerIcons">
-          <MdOutlineColorLens onClick={toggleColorSelectorMenu} />
-          <BsImage
-            onClick={() => {
-              imageUploadRef.current.click();
-            }}
-          />
-          <BiArchiveIn onClick={handleArchiveButtonClick} />
-          <CgMoreVerticalAlt onClick={toggleMoreOptionsDialog} />
-          <BiUndo onClick={undoText} />
-          <BiRedo onClick={redoText} />
+          <div>
+            <MdOutlineColorLens onClick={toggleColorSelectorMenu} />
+          </div>
+          <div>
+            <BsImage
+              onClick={() => {
+                imageUploadRef.current.click();
+              }}
+            />
+          </div>
+          <div>
+            <BiArchiveIn onClick={handleArchiveButtonClick} />
+          </div>
+          <div>
+            <CgMoreVerticalAlt onClick={toggleMoreOptionsDialog} />
+          </div>
+          <div>
+            <BiUndo onClick={undoText} />
+          </div>
+          <div>
+            <BiRedo onClick={redoText} />
+          </div>
         </div>
         <div
           onClick={() => {

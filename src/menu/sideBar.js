@@ -37,10 +37,7 @@ export function SideBar(props) {
   }
 
   return (
-    <div
-      className="sideBarContainer"
-      // }}
-    >
+    <div className="sideBarContainer">
       <div className="tab" onClick={showNotes}>
         <FaRegNoteSticky className="tabIcon"></FaRegNoteSticky>
         <div className={isSidebarExpanded ? 'tabText active' : 'tabText'}>
