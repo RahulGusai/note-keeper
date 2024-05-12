@@ -5,7 +5,6 @@ import { MdOutlineRestoreFromTrash } from 'react-icons/md';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
 
 import './trashNote.css';
-import { NoEncryption } from '@mui/icons-material';
 
 export function TrashNote(props) {
   const { note, selectedNoteIds, setSelectedNoteIds, notes, setNotes } = props;

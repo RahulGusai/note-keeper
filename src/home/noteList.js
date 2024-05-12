@@ -1,6 +1,7 @@
 import { Note } from './note';
 import { TrashNote } from './trashNote';
 import { RiDeleteBin5Line } from 'react-icons/ri';
+import { BiArchiveIn } from 'react-icons/bi';
 import './noteList.css';
 
 export function NoteList(props) {
@@ -24,6 +25,16 @@ export function NoteList(props) {
   const othersClass = gridView ? 'others' : 'others listView';
 
   if (notesListOptions.showArchives) {
+    if (Object.keys(archives).length === 0) {
+      return (
+        <div className="emptyNotesContainer">
+          <BiArchiveIn className="emptyArchiveIcon"></BiArchiveIn>
+          <div className="emptyArchiveText">
+            Your archived notes appear here
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="noteListContainer">
         <div className={notesClass}>

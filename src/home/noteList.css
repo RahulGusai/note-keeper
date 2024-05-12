@@ -52,12 +52,14 @@
   margin-top: 200px;
 }
 
-.emptyTrashIcon {
+.emptyTrashIcon,
+.emptyArchiveIcon {
   scale: 10;
   color: grey;
 }
 
-.emptyTrashText {
+.emptyTrashText,
+.emptyArchiveText {
   color: white;
   font-size: 20px;
   opacity: 0.8;

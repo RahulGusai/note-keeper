@@ -9,10 +9,12 @@ import { TbPinned } from 'react-icons/tb';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
 import { GiPlainCircle } from 'react-icons/gi';
 import { MdInvertColorsOff } from 'react-icons/md';
+import { MdOutlineUnarchive } from 'react-icons/md';
 import {
   getHeightClass,
   scaleHeightToValues,
   archiveNote,
+  unArchiveNote,
   updateBackgroundColor,
 } from '../utils';
 
@@ -55,12 +57,19 @@ export function Note(props) {
   const isSelected = selectedNoteIds.has(note.id);
 
   useEffect(() => {
-    noteContainerRef.current.style.backgroundColor = metaData.backgroundColor;
-    if (metaData.backgroundColor !== 'transparent') {
-      noteContainerRef.current.style.border = 'none';
+    if (isSelected) {
+      noteContainerRef.current.style.border = '2px solid white';
     } else {
-      noteContainerRef.current.style.border = '1px solid grey';
+      if (metaData.backgroundColor !== 'transparent') {
+        noteContainerRef.current.style.border = 'none';
+      } else {
+        noteContainerRef.current.style.border = '1px solid grey';
+      }
     }
+  }, [isSelected, metaData]);
+
+  useEffect(() => {
+    noteContainerRef.current.style.backgroundColor = metaData.backgroundColor;
   }, [metaData]);
 
   useEffect(() => {
@@ -321,6 +330,9 @@ export function Note(props) {
   const pinToolTipText = notes.pinned.hasOwnProperty(id)
     ? 'Unpin note'
     : 'Pin note';
+
+  const isArchived = notes.archives.hasOwnProperty(id) ? true : false;
+
   return (
     <div ref={outerContainerRef} className={`outerContainer ${heightClass}`}>
       <div
@@ -330,7 +342,7 @@ export function Note(props) {
         <div
           ref={pinIconRef}
           className="toolTip"
-          style={{ top: '30px', right: '0px' }}
+          style={{ top: '40px', right: '0px' }}
         >
           {pinToolTipText}
         </div>
@@ -399,46 +411,64 @@ export function Note(props) {
               : 'bgColorSelector'
           }
         >
-          <MdInvertColorsOff></MdInvertColorsOff>
+          <MdInvertColorsOff
+            onClick={() =>
+              updateBackgroundColor(id, 'transparent', notes, setNotes)
+            }
+          ></MdInvertColorsOff>
           <GiPlainCircle
-            onClick={() => updateBackgroundColor(id, 'coral', notes, setNotes)}
-            style={{ color: 'coral' }}
-          ></GiPlainCircle>
-          <GiPlainCircle
-            onClick={() => updateBackgroundColor(id, 'white', notes, setNotes)}
-            style={{ color: 'white' }}
-          ></GiPlainCircle>
-          <GiPlainCircle
-            onClick={() => updateBackgroundColor(id, 'red', notes, setNotes)}
-            style={{ color: 'red' }}
-          ></GiPlainCircle>
-          <GiPlainCircle
-            onClick={() => {
-              updateBackgroundColor(id, 'brown', notes, setNotes);
-            }}
-            style={{ color: 'brown' }}
-          ></GiPlainCircle>
-          <GiPlainCircle
-            onClick={() => updateBackgroundColor(id, 'teal', notes, setNotes)}
-            style={{ color: 'teal' }}
-          ></GiPlainCircle>
-          <GiPlainCircle
-            onClick={() => updateBackgroundColor(id, 'purple', notes, setNotes)}
-            style={{ color: 'purple' }}
-          ></GiPlainCircle>
-          <GiPlainCircle
-            onClick={() => updateBackgroundColor(id, 'pink', notes, setNotes)}
-            style={{ color: 'pink' }}
-          ></GiPlainCircle>
-          <GiPlainCircle
-            onClick={() => updateBackgroundColor(id, 'blue', notes, setNotes)}
-            style={{ color: 'blue' }}
+            onClick={() =>
+              updateBackgroundColor(id, '#77172e', notes, setNotes)
+            }
+            style={{ color: '#77172e' }}
           ></GiPlainCircle>
           <GiPlainCircle
             onClick={() =>
-              updateBackgroundColor(id, 'skyblue', notes, setNotes)
+              updateBackgroundColor(id, '#692b17', notes, setNotes)
             }
-            style={{ color: 'skyblue' }}
+            style={{ color: '#692b17' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() =>
+              updateBackgroundColor(id, '#7c4a03', notes, setNotes)
+            }
+            style={{ color: '#7c4a03' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => {
+              updateBackgroundColor(id, '#7c4a03', notes, setNotes);
+            }}
+            style={{ color: '#7c4a03' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() =>
+              updateBackgroundColor(id, '#0c625d', notes, setNotes)
+            }
+            style={{ color: '#0c625d' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() =>
+              updateBackgroundColor(id, '#256377', notes, setNotes)
+            }
+            style={{ color: '#256377' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() =>
+              updateBackgroundColor(id, '#284255', notes, setNotes)
+            }
+            style={{ color: '#284255' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() =>
+              updateBackgroundColor(id, '#472e5b', notes, setNotes)
+            }
+            style={{ color: '#472e5b' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() =>
+              updateBackgroundColor(id, '#6c394f', notes, setNotes)
+            }
+            style={{ color: '#6c394f' }}
           ></GiPlainCircle>
         </div>
 
@@ -503,11 +533,7 @@ export function Note(props) {
               })
             }
           >
-            <MdOutlineColorLens
-              style={{
-                color: '#ffffff',
-              }}
-            />
+            <MdOutlineColorLens className="bgSelectorIconTest" />
           </div>
           <div
             onMouseOver={() => {
@@ -525,11 +551,7 @@ export function Note(props) {
               openImageUploadDialog();
             }}
           >
-            <BsImage
-              style={{
-                color: '#ffffff',
-              }}
-            />
+            <BsImage />
           </div>
           <div
             onMouseOver={() => {
@@ -539,19 +561,28 @@ export function Note(props) {
               footerRefs.archiveNoteRef.current.style.visibility = 'hidden';
             }}
             className="archiveNote"
-            onClick={() => {
-              updateFooterOptions({
-                bgColorSelector: false,
-                moreOptionsDialog: false,
-              });
-              archiveNote(id, notes, setNotes);
-            }}
           >
-            <BiArchiveIn
-              style={{
-                color: '#ffffff',
-              }}
-            />
+            {isArchived ? (
+              <MdOutlineUnarchive
+                onClick={() => {
+                  updateFooterOptions({
+                    bgColorSelector: false,
+                    moreOptionsDialog: false,
+                  });
+                  unArchiveNote(id, notes, setNotes);
+                }}
+              ></MdOutlineUnarchive>
+            ) : (
+              <BiArchiveIn
+                onClick={() => {
+                  updateFooterOptions({
+                    bgColorSelector: false,
+                    moreOptionsDialog: false,
+                  });
+                  archiveNote(id, notes, setNotes);
+                }}
+              />
+            )}
           </div>
 
           <div
@@ -569,11 +600,7 @@ export function Note(props) {
               });
             }}
           >
-            <BiUndo
-              style={{
-                color: '#ffffff',
-              }}
-            />
+            <BiUndo />
           </div>
           <div
             onMouseOver={() => {
@@ -590,11 +617,7 @@ export function Note(props) {
               });
             }}
           >
-            <BiRedo
-              style={{
-                color: '#ffffff',
-              }}
-            />
+            <BiRedo />
           </div>
           <div
             onMouseOver={() => {
@@ -611,11 +634,7 @@ export function Note(props) {
               });
             }}
           >
-            <CgMoreVerticalAlt
-              style={{
-                color: '#ffffff',
-              }}
-            />
+            <CgMoreVerticalAlt />
           </div>
         </div>
       </div>

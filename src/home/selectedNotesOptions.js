@@ -8,6 +8,7 @@ import './selectedNotesOptions.css';
 import { useEffect, useState } from 'react';
 import { GiPlainCircle } from 'react-icons/gi';
 import { MdInvertColorsOff } from 'react-icons/md';
+import { MdOutlineUnarchive } from 'react-icons/md';
 
 export function SelectedNotesOptions(props) {
   const { notes, setNotes, selectedNoteIds, setSelectedNoteIds } = props;
@@ -77,6 +78,26 @@ export function SelectedNotesOptions(props) {
         ...notes,
         others: updatedOthers,
         pinned: updatedPinned,
+        archives: updatedArchives,
+      };
+    });
+    setSelectedNoteIds(new Set());
+  }
+
+  function unArchiveNotes() {
+    const { others, archives } = notes;
+    let updatedOthers = { ...others };
+    const updatedArchives = { ...archives };
+
+    for (const noteId of selectedNoteIds) {
+      updatedOthers = { ...updatedOthers, [noteId]: updatedArchives[noteId] };
+      delete updatedArchives[noteId];
+    }
+
+    setNotes((notes) => {
+      return {
+        ...notes,
+        others: updatedOthers,
         archives: updatedArchives,
       };
     });
@@ -239,6 +260,14 @@ export function SelectedNotesOptions(props) {
     setSelectedNoteIds(new Set());
   }
 
+  let isArchived = false;
+  for (const noteId of selectedNoteIds) {
+    if (notes.archives.hasOwnProperty(noteId)) {
+      isArchived = true;
+      break;
+    }
+  }
+
   return (
     <div
       className={`${
@@ -318,7 +347,11 @@ export function SelectedNotesOptions(props) {
           <TbPinned onClick={pinNotes}></TbPinned>
         )}
         <MdOutlineColorLens onClick={toggleColorPicker}></MdOutlineColorLens>
-        <BiArchiveIn onClick={archiveNotes}></BiArchiveIn>
+        {isArchived ? (
+          <MdOutlineUnarchive onClick={unArchiveNotes}></MdOutlineUnarchive>
+        ) : (
+          <BiArchiveIn onClick={archiveNotes} />
+        )}
         <CgMoreVerticalAlt onClick={toggleMoreOptions}></CgMoreVerticalAlt>
       </div>
     </div>

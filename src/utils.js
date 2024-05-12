@@ -131,6 +131,21 @@ function archiveNote(id, notes, setNotes) {
   });
 }
 
+function unArchiveNote(id, notes, setNotes) {
+  const { others, archives } = notes;
+  const updatedArchives = { ...archives };
+  const updatedOthers = { ...others, [id]: archives[id] };
+  delete updatedArchives[id];
+
+  setNotes((notes) => {
+    return {
+      ...notes,
+      others: updatedOthers,
+      archives: updatedArchives,
+    };
+  });
+}
+
 function updateBackgroundColor(noteId, color, notes, setNotes) {
   const { others, pinned, archives } = notes;
   let updatedOthers = { ...others };
@@ -141,6 +156,7 @@ function updateBackgroundColor(noteId, color, notes, setNotes) {
     const updatedNote = {
       ...others[noteId],
       metaData: {
+        ...others[noteId].metaData,
         backgroundColor: color,
       },
     };
@@ -149,6 +165,7 @@ function updateBackgroundColor(noteId, color, notes, setNotes) {
     const updatedNote = {
       ...pinned[noteId],
       metaData: {
+        ...pinned[noteId].metaData,
         backgroundColor: color,
       },
     };
@@ -157,6 +174,7 @@ function updateBackgroundColor(noteId, color, notes, setNotes) {
     const updatedNote = {
       ...archives[noteId],
       metaData: {
+        ...archives[noteId].metaData,
         backgroundColor: color,
       },
     };
@@ -179,5 +197,6 @@ export {
   getHeightClass,
   heightCorrectionAsPerScaledHeight,
   archiveNote,
+  unArchiveNote,
   updateBackgroundColor,
 };

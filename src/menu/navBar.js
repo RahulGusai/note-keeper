@@ -112,13 +112,14 @@ export function NavBar(props) {
       </div>
 
       <div className="leftContainer">
-        <CgMenu
-          className="burgerMenuIcon"
-          style={{
-            color: '#ffffff',
-          }}
-          onClick={() => changeSidebarState(!sidebarState)}
-        ></CgMenu>
+        <div className="burgerMenuIcon">
+          <CgMenu
+            style={{
+              color: '#ffffff',
+            }}
+            onClick={() => changeSidebarState(!sidebarState)}
+          ></CgMenu>
+        </div>
         <div className="productName">NoteKeeper</div>
       </div>
       <div
@@ -136,41 +137,51 @@ export function NavBar(props) {
       </div>
 
       <div className="rightContainer">
-        <IoRefreshSharp
-          className="reloadIcon"
-          style={{
-            color: '#ffffff',
-          }}
-        />
-        {gridView && (
-          <MdOutlineViewAgenda
-            onClick={switchView}
+        <div>
+          <IoRefreshSharp
+            className="reloadIcon"
             style={{
               color: '#ffffff',
             }}
           />
+        </div>
+        {gridView && (
+          <div>
+            <MdOutlineViewAgenda
+              onClick={switchView}
+              style={{
+                color: '#ffffff',
+              }}
+            />
+          </div>
         )}
 
         {!gridView && (
-          <CiGrid41
-            onClick={switchView}
+          <div>
+            <CiGrid41
+              onClick={switchView}
+              style={{
+                color: '#ffffff',
+              }}
+            />
+          </div>
+        )}
+        <div>
+          <RiSettings2Line
+            onClick={toggleSettingsDialog}
             style={{
               color: '#ffffff',
             }}
           />
-        )}
-        <RiSettings2Line
-          onClick={toggleSettingsDialog}
-          style={{
-            color: '#ffffff',
-          }}
-        />
-        <CgProfile
-          onClick={toggleUserProfileDialog}
-          style={{
-            color: '#ffffff',
-          }}
-        ></CgProfile>
+        </div>
+        <div>
+          <CgProfile
+            onClick={toggleUserProfileDialog}
+            style={{
+              color: '#ffffff',
+            }}
+          ></CgProfile>
+        </div>
       </div>
     </div>
   );
