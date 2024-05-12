@@ -14,7 +14,6 @@ import {
   scaleHeightToValues,
   archiveNote,
   updateBackgroundColor,
-  handleImageUpload,
 } from '../utils';
 
 import './note.css';
@@ -56,9 +55,11 @@ export function Note(props) {
   const isSelected = selectedNoteIds.has(note.id);
 
   useEffect(() => {
+    noteContainerRef.current.style.backgroundColor = metaData.backgroundColor;
     if (metaData.backgroundColor !== 'transparent') {
-      noteContainerRef.current.style.backgroundColor = metaData.backgroundColor;
       noteContainerRef.current.style.border = 'none';
+    } else {
+      noteContainerRef.current.style.border = '1px solid grey';
     }
   }, [metaData]);
 

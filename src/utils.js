@@ -110,6 +110,9 @@ function archiveNote(id, notes, setNotes) {
     updatedOthers = { ...others };
     delete updatedOthers[id];
     updatedPinned = { ...updatedPinned };
+    console.log('DEBUG');
+    console.log(note);
+    console.log(updatedOthers);
   } else {
     note = pinned[id];
     updatedPinned = { ...pinned };

@@ -18,6 +18,7 @@ function FunctionComponent(props, ref) {
     editNoteDefaultText,
     setEditNoteDefaultText,
     saveEditedNote,
+    saveEditedNoteAsCopy,
     notes,
     setNotes,
     setErrorMessage,
@@ -32,6 +33,7 @@ function FunctionComponent(props, ref) {
   const [lastKeyPressTimestamp, setLastKeyPressTimestamp] = useState(null);
   const [footerOptions, setFooterOptions] = useState({
     showColorSelector: false,
+    showMoreOptionsDialog: false,
   });
 
   const editNoteContainerRef = useRef(null);
@@ -39,6 +41,7 @@ function FunctionComponent(props, ref) {
 
   useEffect(() => {
     const { metaData } = editingNote;
+
     if (metaData.backgroundColor !== 'transparent') {
       editNoteContainerRef.current.style.backgroundColor =
         metaData.backgroundColor;
@@ -310,6 +313,75 @@ function FunctionComponent(props, ref) {
     });
   }
 
+  function createNoteCopy() {
+    saveEditedNoteAsCopy();
+    setFooterOptions((footerOptions) => {
+      return {
+        ...footerOptions,
+        showMoreOptionsDialog: false,
+      };
+    });
+  }
+
+  function deleteNote() {
+    const { id } = editingNote;
+    const { others, pinned, archives, trash } = notes;
+
+    let note;
+    const updatedOthers = { ...others };
+    const updatedPinned = { ...pinned };
+    const updatedArchives = { ...archives };
+
+    if (others.hasOwnProperty(id)) {
+      note = others[id];
+      delete updatedOthers[id];
+    } else if (pinned.hasOwnProperty(id)) {
+      note = pinned[id];
+      delete updatedPinned[id];
+    } else {
+      note = archives[id];
+
+      delete updatedArchives[id];
+    }
+    const updatedTrash = { ...trash, [id]: note };
+
+    setNotes((notes) => {
+      return {
+        ...notes,
+        others: updatedOthers,
+        pinned: updatedPinned,
+        archives: updatedArchives,
+        trash: updatedTrash,
+      };
+    });
+    setEditingNote(null);
+    setFooterOptions(() => {
+      return {
+        ...footerOptions,
+        showMoreOptionsDialog: false,
+      };
+    });
+  }
+
+  function toggleMoreOptionsDialog() {
+    setFooterOptions(() => {
+      return {
+        ...footerOptions,
+        showMoreOptionsDialog: !footerOptions.showMoreOptionsDialog,
+      };
+    });
+  }
+
+  function disableFooterOptions() {
+    setFooterOptions(() => {
+      return {
+        ...footerOptions,
+        showMoreOptionsDialog: false,
+        showColorSelector: false,
+      };
+    });
+  }
+
   return (
     <div
       ref={editNoteContainerRef}
@@ -363,6 +435,17 @@ function FunctionComponent(props, ref) {
         ></GiPlainCircle>
       </div>
 
+      <div
+        className={`${
+          footerOptions.showMoreOptionsDialog
+            ? 'editNoteMoreOptions show'
+            : 'editNoteMoreOptions'
+        }`}
+      >
+        <div onClick={deleteNote}>Delete note</div>
+        <div onClick={createNoteCopy}>Make a copy</div>
+      </div>
+
       <input
         ref={imageUploadRef}
         type="file"
@@ -382,6 +465,7 @@ function FunctionComponent(props, ref) {
 
       <div className="title-bar">
         <div
+          onClick={disableFooterOptions}
           contentEditable
           ref={titleElem}
           className="note-title"
@@ -390,6 +474,7 @@ function FunctionComponent(props, ref) {
         ></div>
       </div>
       <div
+        onClick={disableFooterOptions}
         contentEditable
         ref={contentElem}
         className="note-content"
@@ -406,7 +491,7 @@ function FunctionComponent(props, ref) {
             }}
           />
           <BiArchiveIn onClick={handleArchiveButtonClick} />
-          <CgMoreVerticalAlt />
+          <CgMoreVerticalAlt onClick={toggleMoreOptionsDialog} />
           <BiUndo onClick={undoText} />
           <BiRedo onClick={redoText} />
         </div>

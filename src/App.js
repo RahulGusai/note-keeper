@@ -171,6 +171,37 @@ export default function App(props) {
     });
   }
 
+  function saveEditedNoteAsCopy() {
+    const { id, metaData } = editingNote;
+    const { titleElem, contentElem } = editNoteRefs;
+    const { others } = notes;
+
+    setNotes((notes) => {
+      const title = editNoteDefaultText.title
+        ? ''
+        : titleElem.current.innerHTML;
+      const content = editNoteDefaultText.content
+        ? ''
+        : contentElem.current.innerHTML;
+
+      const newNoteId = null;
+      const newNote = {
+        id,
+        title,
+        content,
+        image: editingNote.image,
+        heightClass: getHeightClass(contentElem, editingNote.image),
+        metaData,
+      };
+      const updatedOthers = { ...others, [newNoteId]: newNote };
+
+      return {
+        ...notes,
+        others: updatedOthers,
+      };
+    });
+  }
+
   const handleKeyUp = (event) => {
     if (event.keyCode === 27) {
       if (isExpanded) {
@@ -271,6 +302,7 @@ export default function App(props) {
           notes={notes}
           setNotes={setNotes}
           setErrorMessage={setErrorMessage}
+          saveEditedNoteAsCopy={saveEditedNoteAsCopy}
         ></EditNote>
       )}
 
