@@ -50,6 +50,7 @@ export function NoteList(props) {
                 defaultFooter={defaultFooter}
                 setDefaultFooter={setDefaultFooter}
                 setErrorMessage={setErrorMessage}
+                gridView={gridView}
               ></Note>
             );
           })}
@@ -82,6 +83,7 @@ export function NoteList(props) {
                 defaultFooter={defaultFooter}
                 setDefaultFooter={setDefaultFooter}
                 setErrorMessage={setErrorMessage}
+                gridView={gridView}
               ></TrashNote>
             );
           })}
@@ -115,6 +117,7 @@ export function NoteList(props) {
                   defaultFooter={defaultFooter}
                   setDefaultFooter={setDefaultFooter}
                   setErrorMessage={setErrorMessage}
+                  gridView={gridView}
                 ></Note>
               );
             })}
@@ -137,6 +140,7 @@ export function NoteList(props) {
               defaultFooter={defaultFooter}
               setDefaultFooter={setDefaultFooter}
               setErrorMessage={setErrorMessage}
+              gridView={gridView}
             ></Note>
           )}
           {Object.values(others).map((other) => {
@@ -154,6 +158,7 @@ export function NoteList(props) {
                 defaultFooter={defaultFooter}
                 setDefaultFooter={setDefaultFooter}
                 setErrorMessage={setErrorMessage}
+                gridView={gridView}
               ></Note>
             );
           })}

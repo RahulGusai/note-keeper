@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { MdOutlineColorLens } from 'react-icons/md';
 import { BsImage } from 'react-icons/bs';
 import { BiArchiveIn } from 'react-icons/bi';
-import { BiUndo } from 'react-icons/bi';
-import { BiRedo } from 'react-icons/bi';
 import { CgMoreVerticalAlt } from 'react-icons/cg';
 import { TbPinned } from 'react-icons/tb';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
@@ -13,7 +11,6 @@ import { MdOutlineUnarchive } from 'react-icons/md';
 import { TbPinnedFilled } from 'react-icons/tb';
 import {
   getHeightClass,
-  scaleHeightToValues,
   archiveNote,
   unArchiveNote,
   updateBackgroundColor,
@@ -32,8 +29,9 @@ export function Note(props) {
     defaultFooter,
     setDefaultFooter,
     setErrorMessage,
+    gridView,
   } = props;
-  const { id, title, content, heightClass, image, metaData } = note;
+  const { id, title, content, image, metaData, heightClass } = note;
 
   const outerContainerRef = useRef(null);
   const noteContainerRef = useRef(null);
@@ -42,13 +40,12 @@ export function Note(props) {
   const imageUploadRef = useRef(null);
   const noteImageRef = useRef(null);
   const pinIconRef = useRef(null);
+  const pinIconOnImageRef = useRef(null);
   const footerRefs = {
     bgColorSelectorRef: useRef(null),
     addImageRef: useRef(null),
     archiveNoteRef: useRef(null),
     moreOptionsRef: useRef(null),
-    undoRef: useRef(null),
-    redoRef: useRef(null),
   };
   const [footerOptions, setFooterOptions] = useState({
     bgColorSelector: false,
@@ -112,14 +109,6 @@ export function Note(props) {
       });
     }
   }, [defaultFooter]);
-
-  useEffect(() => {
-    if (image) {
-      const scaledheight = scaleHeightToValues(image.height);
-      noteImageRef.current.style.height = `${scaledheight}px`;
-      noteImageRef.current.style.width = '250px';
-    }
-  }, [image]);
 
   function handleNoteClick(e) {
     if (isSelected) {
@@ -239,7 +228,11 @@ export function Note(props) {
   };
 
   function updateNotes(img) {
-    const updatedHeightClass = getHeightClass(contentRef, img);
+    // const updatedHeightClass = getHeightClass(contentRef, img);
+    const [heightClassForGridView, heightClassForListView] = getHeightClass(
+      contentRef,
+      img
+    );
 
     let updatedOthers, updatedPinned;
     const { others, pinned } = notes;
@@ -247,18 +240,24 @@ export function Note(props) {
       const updatedNote = {
         ...others[id],
         image: { src: img.src, width: img.width, height: img.height },
-        heightClass: updatedHeightClass,
+        heightClass: {
+          gridView: heightClassForGridView,
+          listView: heightClassForListView,
+        },
       };
       updatedOthers = { ...others, [id]: updatedNote };
-      updatedPinned = { ...updatedPinned };
+      updatedPinned = { ...pinned };
     } else {
       const updatedNote = {
         ...pinned[id],
         image: { src: img.src, width: img.width, height: img.height },
-        heightClass: updatedHeightClass,
+        heightClass: {
+          gridView: heightClassForGridView,
+          listView: heightClassForListView,
+        },
       };
       updatedPinned = { ...pinned, [id]: updatedNote };
-      updatedOthers = { ...updatedOthers };
+      updatedOthers = { ...others };
     }
 
     setNotes((notes) => {
@@ -324,16 +323,6 @@ export function Note(props) {
     updateFooterOptions({ moreOptionsDialog: false });
   }
 
-  function processImage(event) {
-    const img = handleImageUpload(event, setErrorMessage);
-    console.log('DEBUG');
-    console.log(img);
-    if (img) {
-      console.log('Updating note');
-      updateNotes(img);
-    }
-  }
-
   const pinToolTipText = notes.pinned.hasOwnProperty(id)
     ? 'Unpin note'
     : 'Pin note';
@@ -342,7 +331,12 @@ export function Note(props) {
   const isArchived = notes.archives.hasOwnProperty(id) ? true : false;
 
   return (
-    <div ref={outerContainerRef} className={`outerContainer ${heightClass}`}>
+    <div
+      ref={outerContainerRef}
+      className={`outerContainer ${
+        gridView ? heightClass.gridView : heightClass.listView
+      }`}
+    >
       <div
         ref={noteContainerRef}
         className={isSelected ? 'noteContainer  selected' : 'noteContainer'}
@@ -351,6 +345,13 @@ export function Note(props) {
           ref={pinIconRef}
           className="toolTip"
           style={{ top: '40px', right: '0px' }}
+        >
+          {pinToolTipText}
+        </div>
+        <div
+          ref={pinIconOnImageRef}
+          className="toolTip"
+          style={{ top: '30px', right: '0px' }}
         >
           {pinToolTipText}
         </div>
@@ -383,20 +384,6 @@ export function Note(props) {
           More
         </div>
         <div
-          ref={footerRefs.undoRef}
-          className="toolTip"
-          style={{ bottom: '-20px', left: '55%' }}
-        >
-          Undo
-        </div>
-        <div
-          ref={footerRefs.redoRef}
-          className="toolTip"
-          style={{ bottom: '-20px', left: '75%' }}
-        >
-          Redo
-        </div>
-        <div
           className={isSelected ? 'selectIcon show' : 'selectIcon'}
           onClick={handleSelectIconClick}
         >
@@ -410,7 +397,7 @@ export function Note(props) {
           ref={imageUploadRef}
           type="file"
           style={{ display: 'none' }}
-          onChange={processImage}
+          onChange={handleImageUpload}
         />
         <div
           className={
@@ -492,28 +479,44 @@ export function Note(props) {
         </div>
 
         {image && (
-          <img
-            class="image"
-            ref={noteImageRef}
-            src={image.src}
-            alt="noteImage"
-          />
+          <>
+            <img
+              class="image"
+              ref={noteImageRef}
+              src={image.src}
+              alt="noteImage"
+              onClick={handleNoteClick}
+            ></img>
+            <div
+              className={isSelected ? 'pinIconOnImage' : 'pinIconOnImage show'}
+              onClick={handlePinIconClick}
+            >
+              <div className="toolTip">{pinToolTipText}</div>
+              {isPinned ? (
+                <TbPinnedFilled className="icon" />
+              ) : (
+                <TbPinned className="icon" />
+              )}
+            </div>
+          </>
         )}
 
         <div className="title-bar" onClick={handleNoteClick}>
           <div ref={titleRef} className="note-title"></div>
-          <div
-            onMouseOver={() => {
-              pinIconRef.current.style.visibility = 'visible';
-            }}
-            onMouseOut={() => {
-              pinIconRef.current.style.visibility = 'hidden';
-            }}
-            className={isSelected ? 'pinIcon' : 'pinIcon show'}
-            onClick={handlePinIconClick}
-          >
-            {isPinned ? <TbPinnedFilled /> : <TbPinned />}
-          </div>
+          {!image && (
+            <div
+              onMouseOver={() => {
+                pinIconRef.current.style.visibility = 'visible';
+              }}
+              onMouseOut={() => {
+                pinIconRef.current.style.visibility = 'hidden';
+              }}
+              className={isSelected ? 'pinIcon' : 'pinIcon show'}
+              onClick={handlePinIconClick}
+            >
+              {isPinned ? <TbPinnedFilled /> : <TbPinned />}
+            </div>
+          )}
         </div>
         <div
           ref={contentRef}
@@ -589,40 +592,6 @@ export function Note(props) {
             )}
           </div>
 
-          <div
-            onMouseOver={() => {
-              footerRefs.undoRef.current.style.visibility = 'visible';
-            }}
-            onMouseOut={() => {
-              footerRefs.undoRef.current.style.visibility = 'hidden';
-            }}
-            className="undoAction"
-            onClick={() => {
-              updateFooterOptions({
-                bgColorSelector: false,
-                moreOptionsDialog: false,
-              });
-            }}
-          >
-            <BiUndo />
-          </div>
-          <div
-            onMouseOver={() => {
-              footerRefs.redoRef.current.style.visibility = 'visible';
-            }}
-            onMouseOut={() => {
-              footerRefs.redoRef.current.style.visibility = 'hidden';
-            }}
-            className="redoAction"
-            onClick={() => {
-              updateFooterOptions({
-                bgColorSelector: false,
-                moreOptionsDialog: false,
-              });
-            }}
-          >
-            <BiRedo />
-          </div>
           <div
             onMouseOver={() => {
               footerRefs.moreOptionsRef.current.style.visibility = 'visible';

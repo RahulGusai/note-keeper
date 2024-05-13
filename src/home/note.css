@@ -45,15 +45,14 @@
   font-style: normal;
   user-select: none;
   margin-top: 10px;
-  margin-bottom: 20px;
   justify-self: flex-start;
   overflow-wrap: break-word;
   line-height: 20px;
 }
 
 .noteContainer .noteFooter {
+  margin-top: 20px;
   width: 100%;
-  margin-bottom: 0px;
   display: none;
   padding: 15px;
 }
@@ -137,6 +136,42 @@
 
 .span-10 {
   grid-row: span 10;
+}
+
+.span-11 {
+  grid-row: span 11;
+}
+
+.span-12 {
+  grid-row: span 12;
+}
+
+.span-13 {
+  grid-row: span 13;
+}
+
+.span-14 {
+  grid-row: span 14;
+}
+
+.span-15 {
+  grid-row: span 15;
+}
+
+.span-16 {
+  grid-row: span 16;
+}
+.span-17 {
+  grid-row: span 17;
+}
+.span-18 {
+  grid-row: span 18;
+}
+.span-19 {
+  grid-row: span 19;
+}
+.span-20 {
+  grid-row: span 20;
 }
 
 .bgColorSelector {
@@ -252,4 +287,37 @@
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   z-index: -1;
+}
+
+.pinIconOnImage {
+  display: none;
+}
+
+.pinIconOnImage.show {
+  visibility: hidden;
+  display: inline-block;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: black;
+  cursor: pointer;
+}
+
+.pinIconOnImage.show .icon {
+  scale: 1.8;
+}
+
+.noteContainer:hover .pinIconOnImage.show {
+  visibility: visible;
+}
+
+.pinIconOnImage.show:hover .toolTip {
+  visibility: visible;
+  top: 20px;
+  right: -15px;
+}
+
+.image {
+  width: 100%;
+  height: auto;
 }

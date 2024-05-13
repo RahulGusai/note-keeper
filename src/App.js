@@ -51,10 +51,16 @@ export default function App(props) {
 
     if (!isDefaultTextLoaded.title || !isDefaultTextLoaded.content) {
       const newNoteId = Math.floor(Math.random() * 1000) + 1;
+      const [heightClassForGridView, heightClassForListView] =
+        getHeightClass(contentRef);
+
       const updatedOthers = {
         ...notes.others,
         [newNoteId]: {
-          heightClass: getHeightClass(contentRef),
+          heightClass: {
+            gridView: heightClassForGridView,
+            listView: heightClassForListView,
+          },
           id: newNoteId,
           title: isDefaultTextLoaded.title ? '' : titleRef.current.innerHTML,
           content: isDefaultTextLoaded.content
@@ -126,6 +132,11 @@ export default function App(props) {
         ? ''
         : contentElem.current.innerHTML;
 
+      const [heightClassForGridView, heightClassForListView] = getHeightClass(
+        contentElem,
+        editingNote.image
+      );
+
       if (others.hasOwnProperty(id)) {
         updatedOthers = {
           ...others,
@@ -134,7 +145,10 @@ export default function App(props) {
             title: title,
             content: content,
             image: editingNote.image,
-            heightClass: getHeightClass(contentElem, editingNote.image),
+            heightClass: {
+              gridView: heightClassForGridView,
+              listView: heightClassForListView,
+            },
             metaData,
           },
         };
@@ -147,7 +161,10 @@ export default function App(props) {
             title: title,
             content: content,
             image: editingNote.image,
-            heightClass: getHeightClass(contentElem, editingNote.image),
+            heightClass: {
+              gridView: heightClassForGridView,
+              listView: heightClassForListView,
+            },
             metaData,
           },
         };

@@ -1,13 +1,3 @@
-import { VpnLock } from '@mui/icons-material';
-
-const heightCorrectionAsPerScaledHeight = {
-  200: 150,
-  250: 100,
-  300: 100,
-  350: 50,
-  400: 50,
-};
-
 function countLines(htmlString) {
   const divs = htmlString.split('</div>');
 
@@ -80,24 +70,36 @@ function scaleHeightToValues(originalHeight) {
 function getHeightClass(contentRef, image) {
   const numberOfLines = countLines(contentRef.current.innerHTML);
 
-  let totalHeight = 0;
-  if (numberOfLines <= 2) totalHeight += 150;
-  else if (numberOfLines > 2 && numberOfLines <= 5) totalHeight += 200;
-  else if (numberOfLines > 5 && numberOfLines <= 8) totalHeight += 250;
-  else totalHeight += 300;
+  const initialValue = 150;
+  const multiplier = 50;
+  const totalHeight = initialValue + Math.floor(numberOfLines / 3) * multiplier;
+  console.log(totalHeight);
 
   if (image) {
-    const scaledHeight = scaleHeightToValues(image.height);
-    console.log(scaledHeight);
-    console.log(heightCorrectionAsPerScaledHeight[scaledHeight]);
-    totalHeight =
-      totalHeight +
-      scaledHeight -
-      heightCorrectionAsPerScaledHeight[scaledHeight];
+    const aspectRatio = image.width / image.height;
+    console.log(`Aspect Ratio - ${aspectRatio}`);
+
+    const imgHeightForGridView = 250 / aspectRatio;
+    const imgHeightForListView = 600 / aspectRatio;
+
+    const heightForGridView =
+      imgHeightForGridView >= 250
+        ? totalHeight + imgHeightForGridView - 100
+        : totalHeight + imgHeightForGridView;
+    const heightForListView =
+      imgHeightForListView >= 600
+        ? totalHeight + imgHeightForListView - 200
+        : totalHeight + imgHeightForListView - 50;
+
+    const heightClassForGridView = `span-${Math.floor(heightForGridView / 50)}`;
+    const heightClassForListView = `span-${Math.floor(heightForListView / 50)}`;
+
+    return [heightClassForGridView, heightClassForListView];
   }
 
   const heightClass = `span-${Math.floor(totalHeight / 50)}`;
-  return heightClass;
+  console.log(heightClass);
+  return [heightClass, heightClass];
 }
 
 function archiveNote(id, notes, setNotes) {
@@ -195,7 +197,6 @@ export {
   isCharacterKey,
   scaleHeightToValues,
   getHeightClass,
-  heightCorrectionAsPerScaledHeight,
   archiveNote,
   unArchiveNote,
   updateBackgroundColor,
