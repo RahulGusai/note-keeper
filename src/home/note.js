@@ -10,6 +10,7 @@ import { RiCheckboxCircleFill } from 'react-icons/ri';
 import { GiPlainCircle } from 'react-icons/gi';
 import { MdInvertColorsOff } from 'react-icons/md';
 import { MdOutlineUnarchive } from 'react-icons/md';
+import { TbPinnedFilled } from 'react-icons/tb';
 import {
   getHeightClass,
   scaleHeightToValues,
@@ -169,21 +170,27 @@ export function Note(props) {
 
   function handlePinIconClick(e) {
     const { others, pinned } = notes;
+    let updatedOthers, updatedPinned;
     if (others.hasOwnProperty(id)) {
-      const pinnedNote = others[id];
-      const updatedOthers = { ...others };
-      const updatedPinned = { ...pinned };
+      updatedOthers = { ...others };
+      const noteToPin = others[id];
+      updatedPinned = { ...pinned, [id]: noteToPin };
       delete updatedOthers[id];
-      updatedPinned[id] = pinnedNote;
-      setNotes({ others: updatedOthers, pinned: updatedPinned });
     } else {
-      const otherNote = pinned[id];
-      const updatedOthers = { ...others };
-      const updatedPinned = { ...pinned };
+      updatedPinned = { ...pinned };
+      const pinnedNote = updatedPinned[id];
+      updatedOthers = { ...others, [id]: pinnedNote };
       delete updatedPinned[id];
-      updatedOthers[id] = otherNote;
-      setNotes({ others: updatedOthers, pinned: updatedPinned });
     }
+
+    setNotes((notes) => {
+      return {
+        ...notes,
+        others: updatedOthers,
+        pinned: updatedPinned,
+      };
+    });
+
     e.stopPropagation();
   }
 
@@ -331,6 +338,7 @@ export function Note(props) {
     ? 'Unpin note'
     : 'Pin note';
 
+  const isPinned = notes.pinned.hasOwnProperty(id) ? true : false;
   const isArchived = notes.archives.hasOwnProperty(id) ? true : false;
 
   return (
@@ -504,11 +512,7 @@ export function Note(props) {
             className={isSelected ? 'pinIcon' : 'pinIcon show'}
             onClick={handlePinIconClick}
           >
-            <TbPinned
-              style={{
-                color: '#ffffff',
-              }}
-            />
+            {isPinned ? <TbPinnedFilled /> : <TbPinned />}
           </div>
         </div>
         <div
