@@ -17,11 +17,6 @@
   border: 2px solid white;
 }
 
-.noteContainer .title-bar {
-  display: flex;
-  justify-content: space-between;
-}
-
 .note-title {
   padding: 15px;
   width: 100%;

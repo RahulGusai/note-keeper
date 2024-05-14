@@ -57,6 +57,15 @@ export function Note(props) {
   const isSelected = selectedNoteIds.has(note.id);
 
   useEffect(() => {
+    if (image) {
+      if (gridView)
+        noteImageRef.current.style.maxHeight = `${image.maxHeightForGridView}px`;
+      else
+        noteImageRef.current.style.maxHeight = `${image.maxHeightForListView}px`;
+    }
+  }, [gridView, image]);
+
+  useEffect(() => {
     if (isSelected) {
       noteContainerRef.current.style.border = '2px solid white';
     } else {
@@ -243,12 +252,22 @@ export function Note(props) {
       img
     );
 
+    const aspectRatio = img.width / img.height;
+    const maxHeightForGridView = Math.floor(250 / aspectRatio);
+    const maxHeightForListView = Math.floor(600 / aspectRatio);
+
     let updatedOthers, updatedPinned;
     const { others, pinned } = notes;
     if (others.hasOwnProperty(id)) {
       const updatedNote = {
         ...others[id],
-        image: { src: img.src, width: img.width, height: img.height },
+        image: {
+          src: img.src,
+          width: img.width,
+          height: img.height,
+          maxHeightForGridView,
+          maxHeightForListView,
+        },
         heightClass: {
           gridView: heightClassForGridView,
           listView: heightClassForListView,
@@ -259,7 +278,13 @@ export function Note(props) {
     } else {
       const updatedNote = {
         ...pinned[id],
-        image: { src: img.src, width: img.width, height: img.height },
+        image: {
+          src: img.src,
+          width: img.width,
+          height: img.height,
+          maxHeightForGridView,
+          maxHeightForListView,
+        },
         heightClass: {
           gridView: heightClassForGridView,
           listView: heightClassForListView,
@@ -511,7 +536,6 @@ export function Note(props) {
         )}
 
         <div
-          contentEditable="true"
           ref={titleRef}
           className="note-title"
           onClick={handleNoteClick}
@@ -532,7 +556,6 @@ export function Note(props) {
           </div>
         )}
         <div
-          contentEditable="true"
           ref={contentRef}
           className="note-content"
           onClick={handleNoteClick}

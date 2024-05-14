@@ -36,16 +36,16 @@ function FunctionComponent(props, ref) {
     showMoreOptionsDialog: false,
   });
 
-  const editNoteContainerRef = useRef(null);
+  const editNoteOuterContainerRef = useRef(null);
   const imageUploadRef = useRef(null);
 
   useEffect(() => {
     const { metaData } = editingNote;
 
     if (metaData.backgroundColor !== 'transparent') {
-      editNoteContainerRef.current.style.backgroundColor =
+      editNoteOuterContainerRef.current.style.backgroundColor =
         metaData.backgroundColor;
-      editNoteContainerRef.current.style.border = 'none';
+      editNoteOuterContainerRef.current.style.border = 'none';
     }
   }, [editingNote]);
 
@@ -54,18 +54,18 @@ function FunctionComponent(props, ref) {
       const { title, content } = editingNote;
 
       if (content.length > 0) {
-        contentElem.current.innerHTML = content;
+        contentElem.current.innerText = content;
       } else {
-        contentElem.current.innerHTML = 'Note';
+        contentElem.current.innerText = 'Note';
         setEditNoteDefaultText((editNoteDefaultText) => {
           return { ...editNoteDefaultText, content: true };
         });
       }
 
       if (title.length > 0) {
-        titleElem.current.innerHTML = title;
+        titleElem.current.innerText = title;
       } else {
-        titleElem.current.innerHTML = 'Title';
+        titleElem.current.innerText = 'Title';
         setEditNoteDefaultText((editNoteDefaultText) => {
           return { ...editNoteDefaultText, title: true };
         });
@@ -76,9 +76,9 @@ function FunctionComponent(props, ref) {
   function handleKeyPressedTitle(e) {
     if (
       !editNoteDefaultText.title &&
-      titleElem.current.innerHTML.length === 0
+      titleElem.current.innerText.length === 0
     ) {
-      titleElem.current.innerHTML = 'Title';
+      titleElem.current.innerText = 'Title';
       setEditNoteDefaultText((editNoteDefaultText) => {
         return { ...editNoteDefaultText, title: true };
       });
@@ -91,12 +91,12 @@ function FunctionComponent(props, ref) {
         return [...undoStack, currentText];
       });
       const updatedCurrentText =
-        contentElem.current.innerHTML[contentElem.current.innerHTML.length - 1];
+        contentElem.current.innerText[contentElem.current.innerText.length - 1];
       setCurrentText(updatedCurrentText);
     } else {
       const updatedCurrentText =
         currentText +
-        contentElem.current.innerHTML[contentElem.current.innerHTML.length - 1];
+        contentElem.current.innerText[contentElem.current.innerText.length - 1];
       setCurrentText(updatedCurrentText);
     }
 
@@ -104,9 +104,9 @@ function FunctionComponent(props, ref) {
 
     if (
       !editNoteDefaultText.content &&
-      contentElem.current.innerHTML.length === 0
+      contentElem.current.innerText.length === 0
     ) {
-      contentElem.current.innerHTML = 'Note';
+      contentElem.current.innerText = 'Note';
       setEditNoteDefaultText((editNoteDefaultText) => {
         return { ...editNoteDefaultText, content: true };
       });
@@ -115,7 +115,7 @@ function FunctionComponent(props, ref) {
 
   function clearDefaultInputTitle() {
     if (editNoteDefaultText.title) {
-      titleElem.current.innerHTML = '';
+      titleElem.current.innerText = '';
       setEditNoteDefaultText((editNoteDefaultText) => {
         return { ...editNoteDefaultText, title: false };
       });
@@ -124,7 +124,7 @@ function FunctionComponent(props, ref) {
 
   function clearDefaultInputContent() {
     if (editNoteDefaultText.content) {
-      contentElem.current.innerHTML = '';
+      contentElem.current.innerText = '';
       setEditNoteDefaultText((editNoteDefaultText) => {
         return { ...editNoteDefaultText, content: false };
       });
@@ -141,13 +141,13 @@ function FunctionComponent(props, ref) {
     let updatedText;
 
     if (backspaceText.length > 0) {
-      contentElem.current.innerHTML += backspaceText;
+      contentElem.current.innerText += backspaceText;
       setBackspaceText('');
       return;
     }
 
     if (backspaceStack.length > 0) {
-      contentElem.current.innerHTML +=
+      contentElem.current.innerText +=
         backspaceStack[backspaceStack.length - 1];
       setBackspaceStack((backspaceStack) => {
         const updatedBackspaceStack = [...backspaceStack];
@@ -158,7 +158,7 @@ function FunctionComponent(props, ref) {
     }
 
     if (undoStack.length === 0) {
-      contentElem.current.innerHTML = editingNote.content;
+      contentElem.current.innerText = editingNote.content;
       return;
     }
 
@@ -166,7 +166,7 @@ function FunctionComponent(props, ref) {
     for (const text of undoStack) {
       updatedText += text;
     }
-    contentElem.current.innerHTML = updatedText;
+    contentElem.current.innerText = updatedText;
 
     setUndoStack((undoStack) => {
       const updatedUndoStack = [...undoStack];
@@ -186,14 +186,14 @@ function FunctionComponent(props, ref) {
           return [...backspaceStack, backspaceText];
         });
         setBackspaceText(
-          contentElem.current.innerHTML[
-            contentElem.current.innerHTML.length - 1
+          contentElem.current.innerText[
+            contentElem.current.innerText.length - 1
           ]
         );
       } else {
         const updatedBackspaceText =
-          contentElem.current.innerHTML[
-            contentElem.current.innerHTML.length - 1
+          contentElem.current.innerText[
+            contentElem.current.innerText.length - 1
           ] + backspaceText;
         setBackspaceText(updatedBackspaceText);
       }
@@ -383,87 +383,40 @@ function FunctionComponent(props, ref) {
   }
 
   return (
-    <div
-      ref={editNoteContainerRef}
-      className={editingNote ? 'editNoteContainer active' : 'editNoteContainer'}
-    >
-      <div
-        className={
-          footerOptions.showColorSelector
-            ? 'colorSelector active'
-            : 'colorSelector'
-        }
-      >
-        <MdInvertColorsOff></MdInvertColorsOff>
-        <GiPlainCircle
-          onClick={() => handleColorSelectorClick('coral')}
-          style={{ color: 'coral' }}
-        ></GiPlainCircle>
-        <GiPlainCircle
-          onClick={() => handleColorSelectorClick('white')}
-          style={{ color: 'white' }}
-        ></GiPlainCircle>
-        <GiPlainCircle
-          onClick={() => handleColorSelectorClick('red')}
-          style={{ color: 'red' }}
-        ></GiPlainCircle>
-        <GiPlainCircle
-          onClick={() => {
-            handleColorSelectorClick('brown');
-          }}
-          style={{ color: 'brown' }}
-        ></GiPlainCircle>
-        <GiPlainCircle
-          onClick={() => handleColorSelectorClick('teal')}
-          style={{ color: 'teal' }}
-        ></GiPlainCircle>
-        <GiPlainCircle
-          onClick={() => handleColorSelectorClick('purple')}
-          style={{ color: 'purple' }}
-        ></GiPlainCircle>
-        <GiPlainCircle
-          onClick={() => handleColorSelectorClick('pink')}
-          style={{ color: 'pink' }}
-        ></GiPlainCircle>
-        <GiPlainCircle
-          onClick={() => handleColorSelectorClick('blue')}
-          style={{ color: 'blue' }}
-        ></GiPlainCircle>
-        <GiPlainCircle
-          onClick={() => handleColorSelectorClick('skyblue')}
-          style={{ color: 'skyblue' }}
-        ></GiPlainCircle>
-      </div>
-
-      <div
-        className={`${
-          footerOptions.showMoreOptionsDialog
-            ? 'editNoteMoreOptions show'
-            : 'editNoteMoreOptions'
-        }`}
-      >
-        <div onClick={deleteNote}>Delete note</div>
-        <div onClick={createNoteCopy}>Make a copy</div>
-      </div>
-
-      <input
-        ref={imageUploadRef}
-        type="file"
-        style={{ display: 'none' }}
-        onChange={processImage}
-      />
-
-      {editingNote && editingNote.image && (
-        <div className="imageContainer">
-          <MdDelete
-            onClick={deleteImage}
-            className="deleteImageIcon"
-          ></MdDelete>
-          <img className="image" src={editingNote.image.src} alt="noteImage" />
+    <div ref={editNoteOuterContainerRef} className="editNoteOuterContainer">
+      <div className="editNoteContainer">
+        <div
+          className={`${
+            footerOptions.showMoreOptionsDialog
+              ? 'editNoteMoreOptions show'
+              : 'editNoteMoreOptions'
+          }`}
+        >
+          <div onClick={deleteNote}>Delete note</div>
+          <div onClick={createNoteCopy}>Make a copy</div>
         </div>
-      )}
 
-      <div className="title-bar">
+        <input
+          ref={imageUploadRef}
+          type="file"
+          style={{ display: 'none' }}
+          onChange={processImage}
+        />
+
+        {editingNote && editingNote.image && (
+          <div className="imageContainer">
+            <MdDelete
+              onClick={deleteImage}
+              className="deleteImageIcon"
+            ></MdDelete>
+            <img
+              className="image"
+              src={editingNote.image.src}
+              alt="noteImage"
+            />
+          </div>
+        )}
+
         <div
           onClick={disableFooterOptions}
           contentEditable
@@ -472,17 +425,64 @@ function FunctionComponent(props, ref) {
           onKeyUp={handleKeyPressedTitle}
           onBeforeInput={clearDefaultInputTitle}
         ></div>
+        <div
+          onClick={disableFooterOptions}
+          contentEditable
+          ref={contentElem}
+          className="note-content"
+          onKeyUp={handleKeyPressedContent}
+          onBeforeInput={clearDefaultInputContent}
+          onKeyDown={handleKeyDown}
+        ></div>
       </div>
-      <div
-        onClick={disableFooterOptions}
-        contentEditable
-        ref={contentElem}
-        className="note-content"
-        onKeyUp={handleKeyPressedContent}
-        onBeforeInput={clearDefaultInputContent}
-        onKeyDown={handleKeyDown}
-      ></div>
       <div className="note-footer">
+        <div
+          className={
+            footerOptions.showColorSelector
+              ? 'colorSelector active'
+              : 'colorSelector'
+          }
+        >
+          <MdInvertColorsOff></MdInvertColorsOff>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('coral')}
+            style={{ color: 'coral' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('white')}
+            style={{ color: 'white' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('red')}
+            style={{ color: 'red' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => {
+              handleColorSelectorClick('brown');
+            }}
+            style={{ color: 'brown' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('teal')}
+            style={{ color: 'teal' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('purple')}
+            style={{ color: 'purple' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('pink')}
+            style={{ color: 'pink' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('blue')}
+            style={{ color: 'blue' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('skyblue')}
+            style={{ color: 'skyblue' }}
+          ></GiPlainCircle>
+        </div>
         <div className="footerIcons">
           <div>
             <MdOutlineColorLens onClick={toggleColorSelectorMenu} />

@@ -1,44 +1,46 @@
-.editNoteContainer {
+.editNoteOuterContainer {
+  display: flex;
+  flex-direction: column;
   width: 600px;
+  height: auto;
   max-height: 90vh;
-  background-color: #202124;
-  border: 1px solid grey;
-  border-radius: 15px;
   position: absolute;
   top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  font-family: 'Roboto Slab', serif;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  opacity: 1;
+  background-color: #202124;
+  border: 1px solid grey;
+  resize: none;
+  border-radius: 15px;
+}
+
+.editNoteContainer {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  cursor: text;
-  resize: none;
-  transform: translate(-50%, -50%) scale(0);
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-  z-index: 100;
+  gap: 5px;
+  position: relative;
   overflow-y: auto;
-  font-family: 'Roboto Slab', serif;
 }
-
-.editNoteContainer.active {
+/* .editNoteContainer.active {
   transform: translate(-50%, -50%) scale(1);
   opacity: 1;
-}
-
-.editNoteContainer .title-bar {
-  padding: 15px;
-}
+} */
 
 .editNoteContainer .note-title {
+  padding: 15px;
   height: 30px;
   width: 100%;
   color: white;
   font-family: 'Roboto Slab', serif;
   background-color: transparent;
+  line-height: 20px;
 }
 
 .editNoteContainer .note-content {
-  display: flex;
-  flex-direction: column;
   width: 100%;
   color: white;
   text-align: left;
@@ -48,6 +50,7 @@
   background-color: transparent;
   margin-top: 10px;
   padding: 0px 15px 0px 15px;
+  line-height: 20px;
 }
 
 .note-title:focus,
@@ -55,7 +58,7 @@
   outline: none;
 }
 
-.editNoteContainer .note-footer {
+.note-footer {
   width: 100%;
   display: flex;
   align-items: center;
@@ -112,15 +115,14 @@
 .colorSelector {
   display: none;
   position: absolute;
+  top: 40px;
   left: 10px;
-  bottom: -40px;
   width: auto;
   height: 50px;
   background-color: #202124;
   box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.5);
   border-radius: 6px;
   padding: 15px;
-  z-index: 1000;
 }
 
 .colorSelector > * {

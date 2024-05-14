@@ -139,10 +139,10 @@ export default function App(props) {
       let updatedOthers, updatedPinned;
       const title = editNoteDefaultText.title
         ? ''
-        : titleElem.current.innerHTML;
+        : titleElem.current.innerText;
       const content = editNoteDefaultText.content
         ? ''
-        : contentElem.current.innerHTML;
+        : contentElem.current.innerText;
 
       const [heightClassForGridView, heightClassForListView] = getHeightClass(
         contentElem,

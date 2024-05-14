@@ -8,38 +8,6 @@ function getContentToBeDisplayed(string) {
   return truncatedString;
 }
 
-// function countLines(htmlString) {
-//   const divs = htmlString.split('</div>');
-
-//   let totalLines = 0;
-//   for (const divStr of divs) {
-//     if (divStr.length > 0) {
-//       const stringWithNoTags = cleanDivString(divStr);
-//       totalLines += Math.ceil(Math.max(1, stringWithNoTags.length) / 30);
-//     }
-//   }
-//   return Math.min(totalLines, 24);
-// }
-
-// function cleanDivString(divStr) {
-//   let resultStr = '';
-//   let isTagOpen = false;
-//   for (let i = 0; i < divStr.length; i++) {
-//     if (isTagOpen) {
-//       if (divStr[i] === '>') {
-//         isTagOpen = false;
-//       }
-//       continue;
-//     }
-
-//     if (divStr[i] === '<') {
-//       isTagOpen = true;
-//       continue;
-//     }
-//     resultStr += divStr[i];
-//   }
-//   return resultStr;
-// }
 function countLines(string) {
   return Math.min(24, string.split('\n').length);
 }
@@ -66,13 +34,12 @@ function getHeightClass(contentRef, image) {
   let totalHeight = 0;
   const initialValue = 50;
   totalHeight = Math.max(101, initialValue + numberOfLines * 20);
-  console.log(totalHeight);
 
   if (image) {
     const aspectRatio = image.width / image.height;
 
-    const imgHeightForGridView = 250 / aspectRatio;
-    const imgHeightForListView = 600 / aspectRatio;
+    const imgHeightForGridView = Math.floor(250 / aspectRatio);
+    const imgHeightForListView = Math.floor(600 / aspectRatio);
 
     const heightForGridView =
       imgHeightForGridView >= 250
@@ -90,7 +57,6 @@ function getHeightClass(contentRef, image) {
   }
 
   const heightClass = `span-${Math.ceil(totalHeight / 50)}`;
-  console.log(heightClass);
   return [heightClass, heightClass];
 }
 

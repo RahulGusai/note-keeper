@@ -8,16 +8,7 @@
   align-items: center;
   overflow-y: auto;
   position: relative;
-  /* z-index: 10000; */
 }
-
-/* .scrollableContent {
-  position: relative;
-  display: flex;
-  width: 100%;
-  top: 100px;
-  left: 100px;
-} */
 
 .notesContainer {
   position: relative;
