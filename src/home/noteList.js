@@ -10,6 +10,7 @@ export function NoteList(props) {
     setNotes,
     setEditingNote,
     latestNoteId,
+    setLatestNoteId,
     selectedNoteIds,
     setSelectedNoteIds,
     defaultFooter,
@@ -51,6 +52,7 @@ export function NoteList(props) {
                 setDefaultFooter={setDefaultFooter}
                 setErrorMessage={setErrorMessage}
                 gridView={gridView}
+                setLatestNoteId={setLatestNoteId}
               ></Note>
             );
           })}
@@ -118,6 +120,7 @@ export function NoteList(props) {
                   setDefaultFooter={setDefaultFooter}
                   setErrorMessage={setErrorMessage}
                   gridView={gridView}
+                  setLatestNoteId={setLatestNoteId}
                 ></Note>
               );
             })}
@@ -141,6 +144,7 @@ export function NoteList(props) {
               setDefaultFooter={setDefaultFooter}
               setErrorMessage={setErrorMessage}
               gridView={gridView}
+              setLatestNoteId={setLatestNoteId}
             ></Note>
           )}
           {Object.values(others).map((other) => {
@@ -159,6 +163,7 @@ export function NoteList(props) {
                 setDefaultFooter={setDefaultFooter}
                 setErrorMessage={setErrorMessage}
                 gridView={gridView}
+                setLatestNoteId={setLatestNoteId}
               ></Note>
             );
           })}

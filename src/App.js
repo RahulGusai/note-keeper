@@ -62,15 +62,15 @@ export default function App(props) {
       const updatedOthers = {
         ...notes.others,
         [newNoteId]: {
+          id: newNoteId,
           heightClass: {
             gridView: heightClassForGridView,
             listView: heightClassForListView,
           },
-          id: newNoteId,
-          title: isDefaultTextLoaded.title ? '' : titleRef.current.innerHTML,
+          title: isDefaultTextLoaded.title ? '' : titleRef.current.innerText,
           content: isDefaultTextLoaded.content
             ? ''
-            : contentRef.current.innerHTML,
+            : contentRef.current.innerText,
           metaData: {
             backgroundColor: 'transparent',
           },
@@ -305,6 +305,7 @@ export default function App(props) {
           setEditingNote={setEditingNote}
           notes={notes}
           latestNoteId={latestNoteId}
+          setLatestNoteId={setLatestNoteId}
           selectedNoteIds={selectedNoteIds}
           setSelectedNoteIds={setSelectedNoteIds}
           setNotes={setNotes}

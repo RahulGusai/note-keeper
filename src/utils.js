@@ -1,34 +1,47 @@
-function countLines(htmlString) {
-  const divs = htmlString.split('</div>');
-
-  let totalLines = 0;
-  for (const divStr of divs) {
-    if (divStr.length > 0) {
-      const stringWithNoTags = cleanDivString(divStr);
-      totalLines += Math.ceil(Math.max(1, stringWithNoTags.length) / 30);
-    }
+function getContentToBeDisplayed(string) {
+  const lines = string.split('\n');
+  if (lines.length <= 24) {
+    return string;
   }
-  return totalLines;
+
+  const truncatedString = lines.slice(0, 24).join('\n') + '...';
+  return truncatedString;
 }
 
-function cleanDivString(divStr) {
-  let resultStr = '';
-  let isTagOpen = false;
-  for (let i = 0; i < divStr.length; i++) {
-    if (isTagOpen) {
-      if (divStr[i] === '>') {
-        isTagOpen = false;
-      }
-      continue;
-    }
+// function countLines(htmlString) {
+//   const divs = htmlString.split('</div>');
 
-    if (divStr[i] === '<') {
-      isTagOpen = true;
-      continue;
-    }
-    resultStr += divStr[i];
-  }
-  return resultStr;
+//   let totalLines = 0;
+//   for (const divStr of divs) {
+//     if (divStr.length > 0) {
+//       const stringWithNoTags = cleanDivString(divStr);
+//       totalLines += Math.ceil(Math.max(1, stringWithNoTags.length) / 30);
+//     }
+//   }
+//   return Math.min(totalLines, 24);
+// }
+
+// function cleanDivString(divStr) {
+//   let resultStr = '';
+//   let isTagOpen = false;
+//   for (let i = 0; i < divStr.length; i++) {
+//     if (isTagOpen) {
+//       if (divStr[i] === '>') {
+//         isTagOpen = false;
+//       }
+//       continue;
+//     }
+
+//     if (divStr[i] === '<') {
+//       isTagOpen = true;
+//       continue;
+//     }
+//     resultStr += divStr[i];
+//   }
+//   return resultStr;
+// }
+function countLines(string) {
+  return Math.min(24, string.split('\n').length);
 }
 
 function scaleHeightToValues(originalHeight) {
@@ -48,16 +61,15 @@ function scaleHeightToValues(originalHeight) {
 }
 
 function getHeightClass(contentRef, image) {
-  const numberOfLines = countLines(contentRef.current.innerHTML);
+  const numberOfLines = Math.min(24, countLines(contentRef.current.innerText));
 
-  const initialValue = 150;
-  const multiplier = 50;
-  const totalHeight = initialValue + Math.floor(numberOfLines / 3) * multiplier;
+  let totalHeight = 0;
+  const initialValue = 50;
+  totalHeight = Math.max(101, initialValue + numberOfLines * 20);
   console.log(totalHeight);
 
   if (image) {
     const aspectRatio = image.width / image.height;
-    console.log(`Aspect Ratio - ${aspectRatio}`);
 
     const imgHeightForGridView = 250 / aspectRatio;
     const imgHeightForListView = 600 / aspectRatio;
@@ -69,15 +81,15 @@ function getHeightClass(contentRef, image) {
     const heightForListView =
       imgHeightForListView >= 600
         ? totalHeight + imgHeightForListView - 200
-        : totalHeight + imgHeightForListView - 50;
+        : totalHeight + imgHeightForListView - 200;
 
-    const heightClassForGridView = `span-${Math.floor(heightForGridView / 50)}`;
-    const heightClassForListView = `span-${Math.floor(heightForListView / 50)}`;
+    const heightClassForGridView = `span-${Math.ceil(heightForGridView / 50)}`;
+    const heightClassForListView = `span-${Math.ceil(heightForListView / 50)}`;
 
     return [heightClassForGridView, heightClassForListView];
   }
 
-  const heightClass = `span-${Math.floor(totalHeight / 50)}`;
+  const heightClass = `span-${Math.ceil(totalHeight / 50)}`;
   console.log(heightClass);
   return [heightClass, heightClass];
 }
@@ -92,9 +104,6 @@ function archiveNote(id, notes, setNotes) {
     updatedOthers = { ...others };
     delete updatedOthers[id];
     updatedPinned = { ...updatedPinned };
-    console.log('DEBUG');
-    console.log(note);
-    console.log(updatedOthers);
   } else {
     note = pinned[id];
     updatedPinned = { ...pinned };
@@ -179,4 +188,5 @@ export {
   archiveNote,
   unArchiveNote,
   updateBackgroundColor,
+  getContentToBeDisplayed,
 };

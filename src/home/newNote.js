@@ -31,8 +31,8 @@ function ComponentHandler(props, ref) {
       selection.removeAllRanges();
       selection.addRange(range);
     } else {
-      titleRef.current.innerHTML = 'Title';
-      contentRef.current.innerHTML = 'Take a note...';
+      titleRef.current.innerText = 'Title';
+      contentRef.current.innerText = 'Take a note...';
       setisDefaultTextLoaded((isDefaultTextLoaded) => {
         return { ...isDefaultTextLoaded, content: true, title: true };
       });
@@ -46,9 +46,9 @@ function ComponentHandler(props, ref) {
 
     if (
       !isDefaultTextLoaded.content &&
-      contentRef.current.innerHTML.length === 0
+      contentRef.current.innerText.length === 0
     ) {
-      contentRef.current.innerHTML = 'Take a note...';
+      contentRef.current.innerText = 'Take a note...';
       setisDefaultTextLoaded((isDefaultTextLoaded) => {
         return { ...isDefaultTextLoaded, content: true };
       });
@@ -56,8 +56,8 @@ function ComponentHandler(props, ref) {
   };
 
   const handleKeyPressedOnTitle = (e) => {
-    if (!isDefaultTextLoaded.title && titleRef.current.innerHTML.length === 0) {
-      titleRef.current.innerHTML = 'Title';
+    if (!isDefaultTextLoaded.title && titleRef.current.innerText.length === 0) {
+      titleRef.current.innerText = 'Title';
       setisDefaultTextLoaded((isDefaultTextLoaded) => {
         return { ...isDefaultTextLoaded, title: true };
       });
@@ -90,7 +90,7 @@ function ComponentHandler(props, ref) {
 
   function clearDefaultInputTitle() {
     if (isDefaultTextLoaded.title) {
-      titleRef.current.innerHTML = '';
+      titleRef.current.innerText = '';
       setisDefaultTextLoaded((isDefaultTextLoaded) => {
         return { ...isDefaultTextLoaded, title: false };
       });
@@ -99,7 +99,7 @@ function ComponentHandler(props, ref) {
 
   function clearDefaultInputContent() {
     if (isDefaultTextLoaded.content) {
-      contentRef.current.innerHTML = '';
+      contentRef.current.innerText = '';
       setisDefaultTextLoaded((isDefaultTextLoaded) => {
         return { ...isDefaultTextLoaded, content: false };
       });

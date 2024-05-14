@@ -14,6 +14,7 @@ import {
   archiveNote,
   unArchiveNote,
   updateBackgroundColor,
+  getContentToBeDisplayed,
 } from '../utils';
 
 import './note.css';
@@ -30,6 +31,7 @@ export function Note(props) {
     setDefaultFooter,
     setErrorMessage,
     gridView,
+    setLatestNoteId,
   } = props;
   const { id, title, content, image, metaData, heightClass } = note;
 
@@ -71,11 +73,11 @@ export function Note(props) {
   }, [metaData]);
 
   useEffect(() => {
-    titleRef.current.innerHTML = '';
-    contentRef.current.innerHTML = '';
+    titleRef.current.innerText = '';
+    contentRef.current.innerText = '';
 
     if (title.length === 0 && content.length === 0) {
-      titleRef.current.innerHTML = 'Empty Note';
+      titleRef.current.innerText = 'Empty Note';
       titleRef.current.style.color = 'grey';
       titleRef.current.style.fontSize = '20px';
       return;
@@ -85,17 +87,17 @@ export function Note(props) {
     titleRef.current.style.fontSize = '14px';
 
     if (title.length > 0 && content.length > 0) {
-      titleRef.current.innerHTML = title;
-      contentRef.current.innerHTML = content;
+      titleRef.current.innerText = title;
+      contentRef.current.innerText = getContentToBeDisplayed(content);
       return;
     }
 
     if (title.length > 0) {
-      titleRef.current.innerHTML = title;
+      titleRef.current.innerText = title;
       return;
     }
 
-    titleRef.current.innerHTML = content;
+    titleRef.current.innerText = getContentToBeDisplayed(content);
   }, [content, id, title]);
 
   useEffect(() => {
@@ -162,15 +164,23 @@ export function Note(props) {
     let updatedOthers, updatedPinned;
     if (others.hasOwnProperty(id)) {
       updatedOthers = { ...others };
-      const noteToPin = others[id];
+      const noteToPin = updatedOthers[id];
       updatedPinned = { ...pinned, [id]: noteToPin };
       delete updatedOthers[id];
+      setLatestNoteId(null);
     } else {
       updatedPinned = { ...pinned };
       const pinnedNote = updatedPinned[id];
       updatedOthers = { ...others, [id]: pinnedNote };
       delete updatedPinned[id];
+      setLatestNoteId(id);
     }
+
+    console.log({
+      ...notes,
+      others: updatedOthers,
+      pinned: updatedPinned,
+    });
 
     setNotes((notes) => {
       return {
@@ -228,7 +238,6 @@ export function Note(props) {
   };
 
   function updateNotes(img) {
-    // const updatedHeightClass = getHeightClass(contentRef, img);
     const [heightClassForGridView, heightClassForListView] = getHeightClass(
       contentRef,
       img
@@ -501,24 +510,29 @@ export function Note(props) {
           </>
         )}
 
-        <div className="title-bar" onClick={handleNoteClick}>
-          <div ref={titleRef} className="note-title"></div>
-          {!image && (
-            <div
-              onMouseOver={() => {
-                pinIconRef.current.style.visibility = 'visible';
-              }}
-              onMouseOut={() => {
-                pinIconRef.current.style.visibility = 'hidden';
-              }}
-              className={isSelected ? 'pinIcon' : 'pinIcon show'}
-              onClick={handlePinIconClick}
-            >
-              {isPinned ? <TbPinnedFilled /> : <TbPinned />}
-            </div>
-          )}
-        </div>
         <div
+          contentEditable="true"
+          ref={titleRef}
+          className="note-title"
+          onClick={handleNoteClick}
+        ></div>
+
+        {!image && (
+          <div
+            onMouseOver={() => {
+              pinIconRef.current.style.visibility = 'visible';
+            }}
+            onMouseOut={() => {
+              pinIconRef.current.style.visibility = 'hidden';
+            }}
+            className={isSelected ? 'pinIcon' : 'pinIcon show'}
+            onClick={handlePinIconClick}
+          >
+            {isPinned ? <TbPinnedFilled /> : <TbPinned />}
+          </div>
+        )}
+        <div
+          contentEditable="true"
           ref={contentRef}
           className="note-content"
           onClick={handleNoteClick}

@@ -20,18 +20,24 @@
 .noteContainer .title-bar {
   display: flex;
   justify-content: space-between;
-  padding: 15px;
 }
 
-.title-bar .note-title {
+.note-title {
+  padding: 15px;
   width: 100%;
+  height: auto;
   font-family: 'Roboto Slab', serif;
   font-size: 14px;
   font-weight: 600;
   overflow-wrap: break-word;
+  line-height: 20px;
 }
 
-.title-bar .pinIcon {
+.note-title.hide {
+  display: none;
+}
+
+.pinIcon {
   display: none;
 }
 
@@ -44,17 +50,16 @@
   font-weight: 500;
   font-style: normal;
   user-select: none;
-  margin-top: 10px;
   justify-self: flex-start;
   overflow-wrap: break-word;
   line-height: 20px;
 }
 
 .noteContainer .noteFooter {
-  margin-top: 20px;
   width: 100%;
   display: none;
   padding: 15px;
+  line-height: 20px;
 }
 
 .noteContainer:hover .noteFooter.show {
@@ -73,6 +78,9 @@
   scale: 1.5;
   opacity: 0.8;
   cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 15px;
 }
 
 .selectIcon {
