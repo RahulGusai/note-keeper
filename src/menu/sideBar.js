@@ -4,7 +4,8 @@ import { IoArchiveOutline } from 'react-icons/io5';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 export function SideBar(props) {
-  const { isSidebarExpanded, setNotesListOptions } = props;
+  const { isSidebarExpanded, setNotesListOptions, setIsSidebarExpanded } =
+    props;
 
   function showArchives() {
     setNotesListOptions((notesListOptions) => {
@@ -37,7 +38,15 @@ export function SideBar(props) {
   }
 
   return (
-    <div className="sideBarContainer">
+    <div
+      className="sideBarContainer"
+      onMouseOver={() => {
+        setIsSidebarExpanded(true);
+      }}
+      onMouseOut={() => {
+        setIsSidebarExpanded(false);
+      }}
+    >
       <div className="tab" onClick={showNotes}>
         <FaRegNoteSticky className="tabIcon"></FaRegNoteSticky>
         <div className={isSidebarExpanded ? 'tabText active' : 'tabText'}>

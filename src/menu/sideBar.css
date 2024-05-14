@@ -14,12 +14,13 @@
   left: 0px;
   top: 65px;
   position: fixed;
+  z-index: 2;
 }
 
-.sideBarContainer:hover .tabText {
+/* .sideBarContainer:hover .tabText {
   opacity: 1;
   width: auto;
-}
+} */
 
 .tab {
   display: flex;

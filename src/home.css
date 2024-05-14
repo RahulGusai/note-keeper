@@ -8,6 +8,7 @@
   align-items: center;
   overflow-y: auto;
   position: relative;
+  z-index: 1;
 }
 
 .notesContainer {
@@ -22,6 +23,11 @@
   padding-left: 100px;
   padding-right: 50px;
   padding-bottom: 100px;
+  transition: padding 0.3s ease-in-out;
+}
+
+.notesContainer.sidebarExpanded {
+  padding-left: 200px;
 }
 
 .overlayContainer {
@@ -34,6 +40,7 @@
   transition: background-color 0.3s ease-in-out;
   pointer-events: none;
   overflow-y: auto;
+  z-index: 10000;
 }
 
 .overlayContainer.active {

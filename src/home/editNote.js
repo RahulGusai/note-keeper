@@ -385,17 +385,6 @@ function FunctionComponent(props, ref) {
   return (
     <div ref={editNoteOuterContainerRef} className="editNoteOuterContainer">
       <div className="editNoteContainer">
-        <div
-          className={`${
-            footerOptions.showMoreOptionsDialog
-              ? 'editNoteMoreOptions show'
-              : 'editNoteMoreOptions'
-          }`}
-        >
-          <div onClick={deleteNote}>Delete note</div>
-          <div onClick={createNoteCopy}>Make a copy</div>
-        </div>
-
         <input
           ref={imageUploadRef}
           type="file"
@@ -482,6 +471,16 @@ function FunctionComponent(props, ref) {
             onClick={() => handleColorSelectorClick('skyblue')}
             style={{ color: 'skyblue' }}
           ></GiPlainCircle>
+        </div>
+        <div
+          className={`${
+            footerOptions.showMoreOptionsDialog
+              ? 'editNoteMoreOptions show'
+              : 'editNoteMoreOptions'
+          }`}
+        >
+          <div onClick={deleteNote}>Delete note</div>
+          <div onClick={createNoteCopy}>Make a copy</div>
         </div>
         <div className="footerIcons">
           <div>

@@ -15,6 +15,7 @@
   border: 1px solid grey;
   resize: none;
   border-radius: 15px;
+  z-index: 10001;
 }
 
 .editNoteContainer {
@@ -25,10 +26,6 @@
   position: relative;
   overflow-y: auto;
 }
-/* .editNoteContainer.active {
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 1;
-} */
 
 .editNoteContainer .note-title {
   padding: 15px;
@@ -141,7 +138,7 @@
   height: auto;
   background-color: #202124;
   position: absolute;
-  bottom: -80px;
+  top: 40px;
   left: 170px;
   display: none;
   border-radius: 5px;

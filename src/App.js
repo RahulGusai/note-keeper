@@ -201,29 +201,33 @@ export default function App(props) {
   }
 
   function saveEditedNoteAsCopy() {
-    const { id, metaData } = editingNote;
+    const { metaData } = editingNote;
     const { titleElem, contentElem } = editNoteRefs;
     const { others } = notes;
+    const [heightClassForGridView, heightClassForListView] = getHeightClass(
+      contentElem,
+      editingNote.image
+    );
+    const title = editNoteDefaultText.title ? '' : titleElem.current.innerHTML;
+    const content = editNoteDefaultText.content
+      ? ''
+      : contentElem.current.innerHTML;
+
+    const newNoteId = Math.floor(Math.random() * 1000) + 1;
+    const newNote = {
+      id: newNoteId,
+      title,
+      content,
+      image: editingNote.image,
+      heightClass: {
+        gridView: heightClassForGridView,
+        listView: heightClassForListView,
+      },
+      metaData,
+    };
+    const updatedOthers = { ...others, [newNoteId]: newNote };
 
     setNotes((notes) => {
-      const title = editNoteDefaultText.title
-        ? ''
-        : titleElem.current.innerHTML;
-      const content = editNoteDefaultText.content
-        ? ''
-        : contentElem.current.innerHTML;
-
-      const newNoteId = null;
-      const newNote = {
-        id,
-        title,
-        content,
-        image: editingNote.image,
-        heightClass: getHeightClass(contentElem, editingNote.image),
-        metaData,
-      };
-      const updatedOthers = { ...others, [newNoteId]: newNote };
-
       return {
         ...notes,
         others: updatedOthers,
@@ -293,7 +297,13 @@ export default function App(props) {
         setNotesListOptions={setNotesListOptions}
       ></SideBar>
 
-      <div className="notesContainer">
+      <div
+        className={
+          isSidebarExpanded
+            ? 'notesContainer sidebarExpanded'
+            : 'notesContainer'
+        }
+      >
         <NewNote
           ref={newNoterefs}
           isExpanded={isExpanded}

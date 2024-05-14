@@ -24,6 +24,7 @@ export function NoteList(props) {
   const notesClass = gridView ? 'notes gridView' : 'notes listView';
   const pinnedClass = gridView ? 'pinned' : 'pinned listView';
   const othersClass = gridView ? 'others' : 'others listView';
+  console.log(notes);
 
   if (notesListOptions.showArchives) {
     if (Object.keys(archives).length === 0) {
