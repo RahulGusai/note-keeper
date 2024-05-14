@@ -11,6 +11,9 @@
   padding-left: 30px;
   gap: 30px;
   font-family: 'Roboto Slab', serif;
+  left: 0px;
+  top: 65px;
+  position: fixed;
 }
 
 .sideBarContainer:hover .tabText {

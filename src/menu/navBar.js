@@ -6,7 +6,6 @@ import { RiSettings2Line } from 'react-icons/ri';
 import { CgProfile } from 'react-icons/cg';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { IoMdClose } from 'react-icons/io';
-import { useState } from 'react';
 import { IoLogOutOutline } from 'react-icons/io5';
 import { MdEdit } from 'react-icons/md';
 import { CiGrid41 } from 'react-icons/ci';
@@ -22,12 +21,9 @@ export function NavBar(props) {
     gridView,
     setGridView,
     setDefaultFooter,
+    navBarOptions,
+    setNavBarOptions,
   } = props;
-
-  const [navBarOptions, setNavBarOptions] = useState({
-    showUserProfileDialog: false,
-    showSettingsDialog: false,
-  });
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 
@@ -170,7 +166,7 @@ export function NavBar(props) {
           <RiSettings2Line
             onClick={toggleSettingsDialog}
             style={{
-              color: '#ffffff',
+              color: 'grey',
             }}
           />
         </div>

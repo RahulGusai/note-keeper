@@ -46,6 +46,11 @@ export default function App(props) {
   });
   const [gridView, setGridView] = useState(true);
 
+  const [navBarOptions, setNavBarOptions] = useState({
+    showUserProfileDialog: false,
+    showSettingsDialog: false,
+  });
+
   function createNote() {
     const { titleRef, contentRef } = newNoterefs;
 
@@ -103,6 +108,13 @@ export default function App(props) {
     if (bodyClasses.includes(e.target.className)) {
       setIsSearchBarActive(false);
       setDefaultFooter(true);
+      setNavBarOptions((navBarOptions) => {
+        return {
+          ...navBarOptions,
+          showSettingsDialog: false,
+          showUserProfileDialog: false,
+        };
+      });
     }
 
     const noteListContainerClasses = [
@@ -271,36 +283,37 @@ export default function App(props) {
         gridView={gridView}
         setGridView={setGridView}
         setDefaultFooter={setDefaultFooter}
+        navBarOptions={navBarOptions}
+        setNavBarOptions={setNavBarOptions}
       ></NavBar>
 
-      <div className="scrollableContent">
-        <SideBar
-          isSidebarExpanded={isSidebarExpanded}
-          setIsSidebarExpanded={setIsSidebarExpanded}
-          setNotesListOptions={setNotesListOptions}
-        ></SideBar>
-        <div className="notesContainer">
-          <NewNote
-            ref={newNoterefs}
-            isExpanded={isExpanded}
-            setIsExpanded={setIsExpanded}
-            isDefaultTextLoaded={isDefaultTextLoaded}
-            setisDefaultTextLoaded={setisDefaultTextLoaded}
-          ></NewNote>
-          <NoteList
-            setEditingNote={setEditingNote}
-            notes={notes}
-            latestNoteId={latestNoteId}
-            selectedNoteIds={selectedNoteIds}
-            setSelectedNoteIds={setSelectedNoteIds}
-            setNotes={setNotes}
-            defaultFooter={defaultFooter}
-            setDefaultFooter={setDefaultFooter}
-            setErrorMessage={setErrorMessage}
-            notesListOptions={notesListOptions}
-            gridView={gridView}
-          ></NoteList>
-        </div>
+      <SideBar
+        isSidebarExpanded={isSidebarExpanded}
+        setIsSidebarExpanded={setIsSidebarExpanded}
+        setNotesListOptions={setNotesListOptions}
+      ></SideBar>
+
+      <div className="notesContainer">
+        <NewNote
+          ref={newNoterefs}
+          isExpanded={isExpanded}
+          setIsExpanded={setIsExpanded}
+          isDefaultTextLoaded={isDefaultTextLoaded}
+          setisDefaultTextLoaded={setisDefaultTextLoaded}
+        ></NewNote>
+        <NoteList
+          setEditingNote={setEditingNote}
+          notes={notes}
+          latestNoteId={latestNoteId}
+          selectedNoteIds={selectedNoteIds}
+          setSelectedNoteIds={setSelectedNoteIds}
+          setNotes={setNotes}
+          defaultFooter={defaultFooter}
+          setDefaultFooter={setDefaultFooter}
+          setErrorMessage={setErrorMessage}
+          notesListOptions={notesListOptions}
+          gridView={gridView}
+        ></NoteList>
       </div>
 
       <div
