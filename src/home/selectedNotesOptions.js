@@ -9,9 +9,20 @@ import { useEffect, useState } from 'react';
 import { GiPlainCircle } from 'react-icons/gi';
 import { MdInvertColorsOff } from 'react-icons/md';
 import { MdOutlineUnarchive } from 'react-icons/md';
+import { MdDeleteForever } from 'react-icons/md';
+import { MdOutlineRestoreFromTrash } from 'react-icons/md';
 
 export function SelectedNotesOptions(props) {
-  const { notes, setNotes, selectedNoteIds, setSelectedNoteIds } = props;
+  const {
+    notes,
+    setNotes,
+    selectedNoteIds,
+    setSelectedNoteIds,
+    notesListOptions,
+    latestNoteId,
+    setLatestNoteId,
+  } = props;
+  const { showArchives, showTrash } = notesListOptions;
   const [allNotesPinned, setAllNotesPinned] = useState(false);
   const [noteOptions, setNoteOptions] = useState({
     showColorPicker: false,
@@ -64,6 +75,7 @@ export function SelectedNotesOptions(props) {
           [noteId]: updatedOthers[noteId],
         };
         delete updatedOthers[noteId];
+        if (latestNoteId) setLatestNoteId(null);
       } else {
         updatedArchives = {
           ...updatedArchives,
@@ -116,6 +128,7 @@ export function SelectedNotesOptions(props) {
           [noteId]: updatedOthers[noteId],
         };
         delete updatedOthers[noteId];
+        if (latestNoteId) setLatestNoteId(null);
       }
     }
 
@@ -207,18 +220,23 @@ export function SelectedNotesOptions(props) {
   }
 
   function deleteNotes() {
-    const { others, pinned, trash } = notes;
+    const { others, pinned, archives, trash } = notes;
     let updatedOthers = { ...others };
     let updatedPinned = { ...pinned };
+    let updatedArchives = { ...archives };
     let updatedTrash = { ...trash };
 
     for (const noteId of selectedNoteIds) {
       if (others.hasOwnProperty(noteId)) {
         updatedTrash = { ...updatedTrash, [noteId]: others[noteId] };
         delete updatedOthers[noteId];
-      } else {
+        if (latestNoteId) setLatestNoteId(null);
+      } else if (pinned.hasOwnProperty(noteId)) {
         updatedTrash = { ...updatedTrash, [noteId]: pinned[noteId] };
         delete updatedPinned[noteId];
+      } else {
+        updatedTrash = { ...updatedTrash, [noteId]: archives[noteId] };
+        delete updatedArchives[noteId];
       }
     }
 
@@ -227,6 +245,7 @@ export function SelectedNotesOptions(props) {
         ...notes,
         others: updatedOthers,
         pinned: updatedPinned,
+        archives: updatedArchives,
         trash: updatedTrash,
       };
     });
@@ -260,12 +279,44 @@ export function SelectedNotesOptions(props) {
     setSelectedNoteIds(new Set());
   }
 
-  let isArchived = false;
-  for (const noteId of selectedNoteIds) {
-    if (notes.archives.hasOwnProperty(noteId)) {
-      isArchived = true;
-      break;
+  function deleteNotesForever() {
+    const { trash } = notes;
+    const updatedTrash = { ...trash };
+
+    for (const noteId of selectedNoteIds) {
+      delete updatedTrash[noteId];
     }
+
+    setNotes((notes) => {
+      return {
+        ...notes,
+        trash: updatedTrash,
+      };
+    });
+
+    setSelectedNoteIds(new Set());
+  }
+
+  function restoreNotes() {
+    const { others, trash } = notes;
+
+    const updatedTrash = { ...trash };
+    let updatedOthers = { ...others };
+
+    for (const noteId of selectedNoteIds) {
+      updatedOthers = { ...updatedOthers, [noteId]: updatedTrash[noteId] };
+      delete updatedTrash[noteId];
+    }
+
+    setNotes((notes) => {
+      return {
+        ...notes,
+        others: updatedOthers,
+        trash: updatedTrash,
+      };
+    });
+
+    setSelectedNoteIds(new Set());
   }
 
   return (
@@ -341,18 +392,31 @@ export function SelectedNotesOptions(props) {
       ></IoCloseSharp>
       <div className="info">{`${selectedNoteIds.size} selected`}</div>
       <div className="noteOptions">
-        {allNotesPinned ? (
-          <TbPinnedFilled onClick={unPinNotes}></TbPinnedFilled>
+        {!showTrash ? (
+          <>
+            {allNotesPinned ? (
+              <TbPinnedFilled onClick={unPinNotes}></TbPinnedFilled>
+            ) : (
+              <TbPinned onClick={pinNotes}></TbPinned>
+            )}
+            <MdOutlineColorLens
+              onClick={toggleColorPicker}
+            ></MdOutlineColorLens>
+            {showArchives ? (
+              <MdOutlineUnarchive onClick={unArchiveNotes}></MdOutlineUnarchive>
+            ) : (
+              <BiArchiveIn onClick={archiveNotes} />
+            )}
+            <CgMoreVerticalAlt onClick={toggleMoreOptions}></CgMoreVerticalAlt>
+          </>
         ) : (
-          <TbPinned onClick={pinNotes}></TbPinned>
+          <>
+            <MdDeleteForever onClick={deleteNotesForever}></MdDeleteForever>
+            <MdOutlineRestoreFromTrash
+              onClick={restoreNotes}
+            ></MdOutlineRestoreFromTrash>
+          </>
         )}
-        <MdOutlineColorLens onClick={toggleColorPicker}></MdOutlineColorLens>
-        {isArchived ? (
-          <MdOutlineUnarchive onClick={unArchiveNotes}></MdOutlineUnarchive>
-        ) : (
-          <BiArchiveIn onClick={archiveNotes} />
-        )}
-        <CgMoreVerticalAlt onClick={toggleMoreOptions}></CgMoreVerticalAlt>
       </div>
     </div>
   );

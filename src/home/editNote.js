@@ -38,28 +38,32 @@ function FunctionComponent(props, ref) {
     showMoreOptionsDialog: false,
   });
 
-  const editNoteOuterContainerRef = useRef(null);
+  const editNoteContainerRef = useRef(null);
   const imageUploadRef = useRef(null);
   const editingNoteImageRef = useRef(null);
+  const { image, metaData } = editingNote;
 
   useEffect(() => {
-    if (editingNote.image) {
+    if (image) {
       if (gridView)
-        editingNoteImageRef.current.style.maxHeight = `${editingNote.image.maxHeightForGridView}px`;
+        editingNoteImageRef.current.style.maxHeight = `${image.maxHeightForGridView}px`;
       else
-        editingNoteImageRef.current.style.maxHeight = `${editingNote.image.maxHeightForListView}px`;
+        editingNoteImageRef.current.style.maxHeight = `${image.maxHeightForListView}px`;
     }
-  }, [gridView, editingNote.image]);
+  }, [gridView, image]);
 
   useEffect(() => {
-    const { metaData } = editingNote;
-
     if (metaData.backgroundColor !== 'transparent') {
-      editNoteOuterContainerRef.current.style.backgroundColor =
-        metaData.backgroundColor;
-      editNoteOuterContainerRef.current.style.border = 'none';
+      editNoteContainerRef.current.style.border = 'none';
+    } else {
+      editNoteContainerRef.current.style.border = '1px solid grey';
     }
-  }, [editingNote]);
+  }, [metaData]);
+
+  useEffect(() => {
+    editNoteContainerRef.current.style.backgroundColor =
+      metaData.backgroundColor;
+  }, [metaData]);
 
   useEffect(() => {
     if (editingNote) {
@@ -311,12 +315,6 @@ function FunctionComponent(props, ref) {
         },
       };
     });
-    setFooterOptions((footerOptions) => {
-      return {
-        ...footerOptions,
-        showColorSelector: false,
-      };
-    });
   }
 
   function toggleColorSelectorMenu() {
@@ -390,7 +388,7 @@ function FunctionComponent(props, ref) {
     });
   }
 
-  function disableFooterOptions() {
+  function hideFooterOptions() {
     setFooterOptions(() => {
       return {
         ...footerOptions,
@@ -400,8 +398,14 @@ function FunctionComponent(props, ref) {
     });
   }
 
+  function handleEditNoteContainerClick() {}
+
   return (
-    <div ref={editNoteOuterContainerRef} className="editNoteOuterContainer">
+    <div
+      onClick={handleEditNoteContainerClick}
+      ref={editNoteContainerRef}
+      className="editNoteOuterContainer"
+    >
       <div className="editNoteContainer">
         <input
           ref={imageUploadRef}
@@ -426,7 +430,7 @@ function FunctionComponent(props, ref) {
         )}
 
         <div
-          onClick={disableFooterOptions}
+          onClick={hideFooterOptions}
           contentEditable
           ref={titleElem}
           className="note-title"
@@ -434,7 +438,7 @@ function FunctionComponent(props, ref) {
           onBeforeInput={clearDefaultInputTitle}
         ></div>
         <div
-          onClick={disableFooterOptions}
+          onClick={hideFooterOptions}
           contentEditable
           ref={contentElem}
           className="note-content"
@@ -451,44 +455,46 @@ function FunctionComponent(props, ref) {
               : 'colorSelector'
           }
         >
-          <MdInvertColorsOff></MdInvertColorsOff>
+          <MdInvertColorsOff
+            onClick={() => handleColorSelectorClick('transparent')}
+          ></MdInvertColorsOff>
           <GiPlainCircle
-            onClick={() => handleColorSelectorClick('coral')}
-            style={{ color: 'coral' }}
+            onClick={() => handleColorSelectorClick('#77172e')}
+            style={{ color: '#77172e' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorSelectorClick('white')}
-            style={{ color: 'white' }}
+            onClick={() => handleColorSelectorClick('#692b17')}
+            style={{ color: '#692b17' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorSelectorClick('red')}
-            style={{ color: 'red' }}
+            onClick={() => handleColorSelectorClick('#7c4a03')}
+            style={{ color: '#7c4a03' }}
           ></GiPlainCircle>
           <GiPlainCircle
             onClick={() => {
-              handleColorSelectorClick('brown');
+              handleColorSelectorClick('#7c4a03');
             }}
-            style={{ color: 'brown' }}
+            style={{ color: '#7c4a03' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorSelectorClick('teal')}
-            style={{ color: 'teal' }}
+            onClick={() => handleColorSelectorClick('#0c625d')}
+            style={{ color: '#0c625d' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorSelectorClick('purple')}
-            style={{ color: 'purple' }}
+            onClick={() => handleColorSelectorClick('#256377')}
+            style={{ color: '#256377' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorSelectorClick('pink')}
-            style={{ color: 'pink' }}
+            onClick={() => handleColorSelectorClick('#284255')}
+            style={{ color: '#284255' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorSelectorClick('blue')}
-            style={{ color: 'blue' }}
+            onClick={() => handleColorSelectorClick('#472e5b')}
+            style={{ color: '#472e5b' }}
           ></GiPlainCircle>
           <GiPlainCircle
-            onClick={() => handleColorSelectorClick('skyblue')}
-            style={{ color: 'skyblue' }}
+            onClick={() => handleColorSelectorClick('#6c394f')}
+            style={{ color: '#6c394f' }}
           ></GiPlainCircle>
         </div>
         <div

@@ -286,6 +286,9 @@ export default function App(props) {
         setNotes={setNotes}
         selectedNoteIds={selectedNoteIds}
         setSelectedNoteIds={setSelectedNoteIds}
+        notesListOptions={notesListOptions}
+        latestNoteId={latestNoteId}
+        setLatestNoteId={setLatestNoteId}
       ></SelectedNotesOptions>
       <NavBar
         sidebarState={isSidebarExpanded}
