@@ -79,6 +79,7 @@ export function NoteList(props) {
             return (
               <TrashNote
                 note={trash}
+                setEditingNote={setEditingNote}
                 selectedNoteIds={selectedNoteIds}
                 setSelectedNoteIds={setSelectedNoteIds}
                 notes={notes}

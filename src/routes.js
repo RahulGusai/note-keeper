@@ -21,6 +21,10 @@ const AppRoutes = () => {
     }
   }, []);
 
+  function fetchNotes() {
+    return JSON.parse(localStorage.getItem('notes'));
+  }
+
   return (
     <Router>
       {isLoggedIn && <Navigate to="/home" />}
@@ -29,7 +33,7 @@ const AppRoutes = () => {
           path="/home"
           element={
             isLoggedIn ? (
-              <App setIsLoggedIn={setIsLoggedIn} />
+              <App setIsLoggedIn={setIsLoggedIn} userNotes={fetchNotes} />
             ) : (
               <Navigate to="/" />
             )

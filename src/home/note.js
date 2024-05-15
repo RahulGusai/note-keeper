@@ -15,6 +15,7 @@ import {
   unArchiveNote,
   updateBackgroundColor,
   getContentToBeDisplayed,
+  handleNoteClick,
 } from '../utils';
 
 import './note.css';
@@ -35,7 +36,6 @@ export function Note(props) {
   } = props;
   const { id, title, content, image, metaData, heightClass } = note;
 
-  const outerContainerRef = useRef(null);
   const noteContainerRef = useRef(null);
   const titleRef = useRef(null);
   const contentRef = useRef(null);
@@ -121,39 +121,14 @@ export function Note(props) {
     }
   }, [defaultFooter]);
 
-  function handleNoteClick(e) {
-    if (isSelected) {
-      setSelectedNoteIds((selectedNoteIds) => {
-        const updatedSelectedNoteIds = new Set(selectedNoteIds);
-        updatedSelectedNoteIds.delete(note.id);
-        return updatedSelectedNoteIds;
-      });
-      return;
-    }
-
-    if (selectedNoteIds.size > 0) {
-      setSelectedNoteIds((selectedNoteIds) => {
-        const updatedSelectedNoteIds = new Set(selectedNoteIds);
-        updatedSelectedNoteIds.add(note.id);
-        return updatedSelectedNoteIds;
-      });
-      return;
-    }
-
-    setEditingNote((editingNote) => {
-      return {
-        ...editingNote,
-        id,
-        title,
-        content,
-        image: image,
-        metaData,
-        defaultText: {
-          title: false,
-          content: false,
-        },
-      };
-    });
+  function processNoteClick() {
+    handleNoteClick(
+      isSelected,
+      selectedNoteIds,
+      setSelectedNoteIds,
+      setEditingNote,
+      note
+    );
   }
 
   function handleSelectIconClick() {
@@ -185,12 +160,6 @@ export function Note(props) {
       setLatestNoteId(id);
     }
 
-    console.log({
-      ...notes,
-      others: updatedOthers,
-      pinned: updatedPinned,
-    });
-
     setNotes((notes) => {
       return {
         ...notes,
@@ -200,6 +169,25 @@ export function Note(props) {
     });
 
     e.stopPropagation();
+  }
+
+  function handleArchiveIconClick(e) {
+    updateFooterOptions({
+      bgColorSelector: false,
+      moreOptionsDialog: false,
+    });
+    archiveNote(id, notes, setNotes);
+    if (notes.others.hasOwnProperty(id)) {
+      setLatestNoteId(null);
+    }
+  }
+
+  function handleUnarchiveIconClick() {
+    updateFooterOptions({
+      bgColorSelector: false,
+      moreOptionsDialog: false,
+    });
+    unArchiveNote(id, notes, setNotes);
   }
 
   const openImageUploadDialog = () => {
@@ -321,6 +309,7 @@ export function Note(props) {
 
     if (others.hasOwnProperty(id)) {
       delete updatedOthers[id];
+      setLatestNoteId(null);
     } else if (pinned.hasOwnProperty(id)) {
       delete updatedPinned[id];
     } else {
@@ -360,13 +349,15 @@ export function Note(props) {
   const pinToolTipText = notes.pinned.hasOwnProperty(id)
     ? 'Unpin note'
     : 'Pin note';
+  const archiveToolTipText = notes.archives.hasOwnProperty(id)
+    ? 'Unarchive'
+    : 'Archive';
 
   const isPinned = notes.pinned.hasOwnProperty(id) ? true : false;
   const isArchived = notes.archives.hasOwnProperty(id) ? true : false;
 
   return (
     <div
-      ref={outerContainerRef}
       className={`outerContainer ${
         gridView ? heightClass.gridView : heightClass.listView
       }`}
@@ -392,7 +383,7 @@ export function Note(props) {
         <div
           ref={footerRefs.addImageRef}
           className="toolTip"
-          style={{ bottom: '-20px', left: '15%' }}
+          style={{ bottom: '-20px', left: '20%' }}
         >
           Add Image
         </div>
@@ -406,9 +397,9 @@ export function Note(props) {
         <div
           ref={footerRefs.archiveNoteRef}
           className="toolTip"
-          style={{ bottom: '-20px', left: '35%' }}
+          style={{ bottom: '-20px', left: '50%' }}
         >
-          Archive
+          {archiveToolTipText}
         </div>
         <div
           ref={footerRefs.moreOptionsRef}
@@ -519,7 +510,7 @@ export function Note(props) {
               ref={noteImageRef}
               src={image.src}
               alt="noteImage"
-              onClick={handleNoteClick}
+              onClick={processNoteClick}
             ></img>
             <div
               className={isSelected ? 'pinIconOnImage' : 'pinIconOnImage show'}
@@ -538,7 +529,7 @@ export function Note(props) {
         <div
           ref={titleRef}
           className="note-title"
-          onClick={handleNoteClick}
+          onClick={processNoteClick}
         ></div>
 
         {!image && (
@@ -558,7 +549,7 @@ export function Note(props) {
         <div
           ref={contentRef}
           className="note-content"
-          onClick={handleNoteClick}
+          onClick={processNoteClick}
         ></div>
         <div className={isSelected ? 'noteFooter' : 'noteFooter show'}>
           <div
@@ -608,24 +599,10 @@ export function Note(props) {
           >
             {isArchived ? (
               <MdOutlineUnarchive
-                onClick={() => {
-                  updateFooterOptions({
-                    bgColorSelector: false,
-                    moreOptionsDialog: false,
-                  });
-                  unArchiveNote(id, notes, setNotes);
-                }}
+                onClick={handleUnarchiveIconClick}
               ></MdOutlineUnarchive>
             ) : (
-              <BiArchiveIn
-                onClick={() => {
-                  updateFooterOptions({
-                    bgColorSelector: false,
-                    moreOptionsDialog: false,
-                  });
-                  archiveNote(id, notes, setNotes);
-                }}
-              />
+              <BiArchiveIn onClick={handleArchiveIconClick} />
             )}
           </div>
 

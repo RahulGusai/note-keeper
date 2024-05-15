@@ -3,14 +3,13 @@
   display: flex;
   flex-direction: column;
   gap: 50px;
-  /* z-index: -1; */
 }
+
 .notes {
   display: grid;
   grid-auto-rows: 55px;
   grid-gap: 20px;
   width: 100%;
-  /* z-index: -1; */
 }
 
 .notes.gridView {
@@ -28,7 +27,6 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  /* z-index: -1; */
 }
 
 .others.listView,

@@ -57,8 +57,13 @@ export function NavBar(props) {
     });
   }
 
-  function signOutUser() {
+  function removeUserinfoAndNotes() {
     localStorage.removeItem('userInfo');
+    localStorage.removeItem('notes');
+  }
+  function signOutUser() {
+    // For guest login
+    removeUserinfoAndNotes();
     setIsLoggedIn(false);
   }
 

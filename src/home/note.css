@@ -93,22 +93,6 @@
   display: block;
 }
 
-.short {
-  grid-row: span 3;
-}
-
-.tall {
-  grid-row: span 4;
-}
-
-.taller {
-  grid-row: span 5;
-}
-
-.tallest {
-  grid-row: span 6;
-}
-
 .span-3 {
   grid-row: span 3;
 }

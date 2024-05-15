@@ -16,6 +16,18 @@ export function GuestLogin(props) {
     navigate('/');
   }
 
+  function setUserinfoAndNotes() {
+    localStorage.setItem(
+      'userInfo',
+      JSON.stringify({ isGuest: true, name: nameInputRef.current.value.trim() })
+    );
+
+    localStorage.setItem(
+      'notes',
+      JSON.stringify({ others: {}, pinned: {}, archives: {}, trash: {} })
+    );
+  }
+
   function handleLoginBtnClick() {
     if (nameInputRef.current.value.trim() === '') {
       setErrorMessages((errorMessages) => {
@@ -28,10 +40,7 @@ export function GuestLogin(props) {
       return;
     }
 
-    localStorage.setItem(
-      'userInfo',
-      JSON.stringify({ isGuest: true, name: nameInputRef.current.value.trim() })
-    );
+    setUserinfoAndNotes();
     setIsLoggedIn(true);
   }
 

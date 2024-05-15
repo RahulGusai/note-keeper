@@ -12,7 +12,7 @@ import { getHeightClass } from './utils';
 import { SelectedNotesOptions } from './home/selectedNotesOptions';
 
 export default function App(props) {
-  const { setIsLoggedIn } = props;
+  const { setIsLoggedIn, userNotes } = props;
   const newNoterefs = {
     titleRef: useRef(null),
     contentRef: useRef(null),
@@ -25,7 +25,7 @@ export default function App(props) {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [editingNote, setEditingNote] = useState(false);
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState(userNotes);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [isDefaultTextLoaded, setisDefaultTextLoaded] = useState({
     content: true,
@@ -208,10 +208,10 @@ export default function App(props) {
       contentElem,
       editingNote.image
     );
-    const title = editNoteDefaultText.title ? '' : titleElem.current.innerHTML;
+    const title = editNoteDefaultText.title ? '' : titleElem.current.innerText;
     const content = editNoteDefaultText.content
       ? ''
-      : contentElem.current.innerHTML;
+      : contentElem.current.innerText;
 
     const newNoteId = Math.floor(Math.random() * 1000) + 1;
     const newNote = {
@@ -249,9 +249,8 @@ export default function App(props) {
   };
 
   useEffect(() => {
-    //TODO fetch the contents from the API here
-    setNotes(notes_list);
-  }, []);
+    localStorage.setItem('notes', JSON.stringify(notes));
+  }, [notes]);
 
   return (
     <div
@@ -344,6 +343,7 @@ export default function App(props) {
           setNotes={setNotes}
           setErrorMessage={setErrorMessage}
           saveEditedNoteAsCopy={saveEditedNoteAsCopy}
+          setLatestNoteId={setLatestNoteId}
         ></EditNote>
       )}
 

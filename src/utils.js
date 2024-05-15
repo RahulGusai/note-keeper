@@ -12,22 +12,6 @@ function countLines(string) {
   return Math.min(24, string.split('\n').length);
 }
 
-function scaleHeightToValues(originalHeight) {
-  const values = [200, 250, 300, 350, 400];
-
-  if (originalHeight <= 250) {
-    return values[0];
-  } else if (originalHeight > 250 && originalHeight <= 2000) {
-    return values[1];
-  } else if (originalHeight > 2000 && originalHeight <= 4000) {
-    return values[2];
-  } else if (originalHeight > 4000 && originalHeight <= 6000) {
-    return values[3];
-  } else {
-    return values[4];
-  }
-}
-
 function getHeightClass(contentRef, image) {
   const numberOfLines = Math.min(24, countLines(contentRef.current.innerText));
 
@@ -69,12 +53,12 @@ function archiveNote(id, notes, setNotes) {
     note = others[id];
     updatedOthers = { ...others };
     delete updatedOthers[id];
-    updatedPinned = { ...updatedPinned };
+    updatedPinned = { ...pinned };
   } else {
     note = pinned[id];
     updatedPinned = { ...pinned };
     delete updatedPinned[id];
-    updatedOthers = { ...updatedOthers };
+    updatedOthers = { ...others };
   }
   const updatedArchives = { ...archives, [id]: note };
 
@@ -148,11 +132,54 @@ function updateBackgroundColor(noteId, color, notes, setNotes) {
   });
 }
 
+function handleNoteClick(
+  isSelected,
+  selectedNoteIds,
+  setSelectedNoteIds,
+  setEditingNote,
+  note
+) {
+  const { id, title, content, image, metaData } = note;
+
+  if (isSelected) {
+    setSelectedNoteIds((selectedNoteIds) => {
+      const updatedSelectedNoteIds = new Set(selectedNoteIds);
+      updatedSelectedNoteIds.delete(id);
+      return updatedSelectedNoteIds;
+    });
+    return;
+  }
+
+  if (selectedNoteIds.size > 0) {
+    setSelectedNoteIds((selectedNoteIds) => {
+      const updatedSelectedNoteIds = new Set(selectedNoteIds);
+      updatedSelectedNoteIds.add(note.id);
+      return updatedSelectedNoteIds;
+    });
+    return;
+  }
+
+  setEditingNote((editingNote) => {
+    return {
+      ...editingNote,
+      id,
+      title,
+      content,
+      image: image,
+      metaData,
+      defaultText: {
+        title: false,
+        content: false,
+      },
+    };
+  });
+}
+
 export {
-  scaleHeightToValues,
   getHeightClass,
   archiveNote,
   unArchiveNote,
   updateBackgroundColor,
   getContentToBeDisplayed,
+  handleNoteClick,
 };

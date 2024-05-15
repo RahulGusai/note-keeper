@@ -22,6 +22,7 @@ function FunctionComponent(props, ref) {
     notes,
     setNotes,
     setErrorMessage,
+    setLatestNoteId,
   } = props;
 
   const { titleElem, contentElem } = ref;
@@ -275,6 +276,9 @@ function FunctionComponent(props, ref) {
   function handleArchiveButtonClick() {
     const { id } = editingNote;
     archiveNote(id, notes, setNotes);
+    if (notes.others.hasOwnProperty(id)) {
+      setLatestNoteId(null);
+    }
     setEditingNote(null);
     setFooterOptions((footerOptions) => {
       return {
@@ -308,6 +312,7 @@ function FunctionComponent(props, ref) {
     setFooterOptions((footerOptions) => {
       return {
         ...footerOptions,
+        showMoreOptionsDialog: false,
         showColorSelector: !footerOptions.showColorSelector,
       };
     });
@@ -335,6 +340,7 @@ function FunctionComponent(props, ref) {
     if (others.hasOwnProperty(id)) {
       note = others[id];
       delete updatedOthers[id];
+      setLatestNoteId(null);
     } else if (pinned.hasOwnProperty(id)) {
       note = pinned[id];
       delete updatedPinned[id];
@@ -367,6 +373,7 @@ function FunctionComponent(props, ref) {
     setFooterOptions(() => {
       return {
         ...footerOptions,
+        showColorSelector: false,
         showMoreOptionsDialog: !footerOptions.showMoreOptionsDialog,
       };
     });

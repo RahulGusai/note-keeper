@@ -1,13 +1,21 @@
-import { useEffect, useRef, useState } from 'react';
-import { scaleHeightToValues } from '../utils';
+import { useEffect, useRef } from 'react';
 import { MdDeleteForever } from 'react-icons/md';
 import { MdOutlineRestoreFromTrash } from 'react-icons/md';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
+import { handleNoteClick } from '../utils';
 
 import './trashNote.css';
 
 export function TrashNote(props) {
-  const { note, selectedNoteIds, setSelectedNoteIds, notes, setNotes } = props;
+  const {
+    note,
+    selectedNoteIds,
+    setSelectedNoteIds,
+    setEditingNote,
+    notes,
+    setNotes,
+    gridView,
+  } = props;
   const { id, title, content, heightClass, image } = note;
 
   const noteImageRef = useRef(null);
@@ -22,18 +30,19 @@ export function TrashNote(props) {
 
   useEffect(() => {
     if (image) {
-      const scaledheight = scaleHeightToValues(image.height);
-      noteImageRef.current.style.height = `${scaledheight}px`;
-      noteImageRef.current.style.width = '250px';
+      if (gridView)
+        noteImageRef.current.style.maxHeight = `${image.maxHeightForGridView}px`;
+      else
+        noteImageRef.current.style.maxHeight = `${image.maxHeightForListView}px`;
     }
-  }, [image]);
+  }, [gridView, image]);
 
   useEffect(() => {
-    titleRef.current.innerHTML = '';
-    contentRef.current.innerHTML = '';
+    titleRef.current.innerText = '';
+    contentRef.current.innerText = '';
 
     if (title.length === 0 && content.length === 0) {
-      titleRef.current.innerHTML = 'Empty Note';
+      titleRef.current.innerText = 'Empty Note';
       titleRef.current.style.color = 'grey';
       titleRef.current.style.fontSize = '20px';
       return;
@@ -43,20 +52,28 @@ export function TrashNote(props) {
     titleRef.current.style.fontSize = '14px';
 
     if (title.length > 0 && content.length > 0) {
-      titleRef.current.innerHTML = title;
-      contentRef.current.innerHTML = content;
+      titleRef.current.innerText = title;
+      contentRef.current.innerText = content;
       return;
     }
 
     if (title.length > 0) {
-      titleRef.current.innerHTML = title;
+      titleRef.current.innerText = title;
       return;
     }
 
-    titleRef.current.innerHTML = content;
+    titleRef.current.innerText = content;
   }, [content, id, title]);
 
-  function handleNoteClick(e) {}
+  function processNoteClick() {
+    handleNoteClick(
+      isSelected,
+      selectedNoteIds,
+      setSelectedNoteIds,
+      setEditingNote,
+      note
+    );
+  }
 
   function restoreNote() {
     const { others, trash } = notes;
@@ -102,9 +119,12 @@ export function TrashNote(props) {
   }
 
   return (
-    <div className={`outerContainer ${heightClass}`}>
+    <div
+      className={`outerContainer ${
+        gridView ? heightClass.gridView : heightClass.listView
+      }`}
+    >
       <div
-        onClick={handleNoteClick}
         className={
           isSelected ? 'trashNoteContainer  selected' : 'trashNoteContainer'
         }
@@ -141,10 +161,16 @@ export function TrashNote(props) {
             alt="noteImage"
           />
         )}
-        <div className="trashNoteTitleBar">
-          <div ref={titleRef} className="trashNoteTitle"></div>
-        </div>
-        <div ref={contentRef} className="trashNoteContent"></div>
+        <div
+          onClick={processNoteClick}
+          ref={titleRef}
+          className="trashNoteTitle"
+        ></div>
+        <div
+          onClick={processNoteClick}
+          ref={contentRef}
+          className="trashNoteContent"
+        ></div>
         <div
           className={isSelected ? 'trashNoteFooter' : 'trashNoteFooter show'}
         >
