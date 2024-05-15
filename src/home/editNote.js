@@ -23,6 +23,7 @@ function FunctionComponent(props, ref) {
     setNotes,
     setErrorMessage,
     setLatestNoteId,
+    gridView,
   } = props;
 
   const { titleElem, contentElem } = ref;
@@ -39,6 +40,16 @@ function FunctionComponent(props, ref) {
 
   const editNoteOuterContainerRef = useRef(null);
   const imageUploadRef = useRef(null);
+  const editingNoteImageRef = useRef(null);
+
+  useEffect(() => {
+    if (editingNote.image) {
+      if (gridView)
+        editingNoteImageRef.current.style.maxHeight = `${editingNote.image.maxHeightForGridView}px`;
+      else
+        editingNoteImageRef.current.style.maxHeight = `${editingNote.image.maxHeightForListView}px`;
+    }
+  }, [gridView, editingNote.image]);
 
   useEffect(() => {
     const { metaData } = editingNote;
@@ -406,6 +417,7 @@ function FunctionComponent(props, ref) {
               className="deleteImageIcon"
             ></MdDelete>
             <img
+              ref={editingNoteImageRef}
               className="image"
               src={editingNote.image.src}
               alt="noteImage"

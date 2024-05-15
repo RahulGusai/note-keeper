@@ -7,6 +7,7 @@ import { notes_list } from './data/notes';
 import { NavBar } from './menu/navBar';
 import { SideBar } from './menu/sideBar';
 import { EditNote } from './home/editNote';
+import { TrashEditingNote } from './home/trashEditNote';
 import { ErrorDialog } from './home/errorDialog';
 import { getHeightClass } from './utils';
 import { SelectedNotesOptions } from './home/selectedNotesOptions';
@@ -24,7 +25,8 @@ export default function App(props) {
   };
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const [editingNote, setEditingNote] = useState(false);
+  const [editingNote, setEditingNote] = useState(null);
+  const [trashEditingNote, setTrashEditingNote] = useState(null);
   const [notes, setNotes] = useState(userNotes);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [isDefaultTextLoaded, setisDefaultTextLoaded] = useState({
@@ -248,6 +250,14 @@ export default function App(props) {
     }
   };
 
+  function handleOverlayContainerClick() {
+    if (editingNote) {
+      saveEditedNote();
+    } else {
+      setTrashEditingNote(null);
+    }
+  }
+
   useEffect(() => {
     localStorage.setItem('notes', JSON.stringify(notes));
   }, [notes]);
@@ -312,6 +322,7 @@ export default function App(props) {
         ></NewNote>
         <NoteList
           setEditingNote={setEditingNote}
+          setTrashEditingNote={setTrashEditingNote}
           notes={notes}
           latestNoteId={latestNoteId}
           setLatestNoteId={setLatestNoteId}
@@ -327,8 +338,12 @@ export default function App(props) {
       </div>
 
       <div
-        className={editingNote ? 'overlayContainer active' : 'overlayContainer'}
-        onClick={saveEditedNote}
+        className={
+          editingNote || trashEditingNote
+            ? 'overlayContainer active'
+            : 'overlayContainer'
+        }
+        onClick={handleOverlayContainerClick}
       ></div>
 
       {editingNote && (
@@ -345,6 +360,17 @@ export default function App(props) {
           saveEditedNoteAsCopy={saveEditedNoteAsCopy}
           setLatestNoteId={setLatestNoteId}
         ></EditNote>
+      )}
+
+      {trashEditingNote && (
+        <TrashEditingNote
+          ref={editNoteRefs}
+          trashEditingNote={trashEditingNote}
+          setTrashEditingNote={setTrashEditingNote}
+          setErrorMessage={setErrorMessage}
+          notes={notes}
+          setNotes={setNotes}
+        ></TrashEditingNote>
       )}
 
       {errorMessage && (

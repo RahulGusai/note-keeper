@@ -9,6 +9,7 @@ export function NoteList(props) {
     notes,
     setNotes,
     setEditingNote,
+    setTrashEditingNote,
     latestNoteId,
     setLatestNoteId,
     selectedNoteIds,
@@ -24,7 +25,6 @@ export function NoteList(props) {
   const notesClass = gridView ? 'notes gridView' : 'notes listView';
   const pinnedClass = gridView ? 'pinned' : 'pinned listView';
   const othersClass = gridView ? 'others' : 'others listView';
-  console.log(notes);
 
   if (notesListOptions.showArchives) {
     if (Object.keys(archives).length === 0) {
@@ -44,6 +44,7 @@ export function NoteList(props) {
             return (
               <Note
                 setEditingNote={setEditingNote}
+                setTrashEditingNote={setTrashEditingNote}
                 note={archive}
                 selectedNoteIds={selectedNoteIds}
                 setSelectedNoteIds={setSelectedNoteIds}
@@ -80,6 +81,7 @@ export function NoteList(props) {
               <TrashNote
                 note={trash}
                 setEditingNote={setEditingNote}
+                setTrashEditingNote={setTrashEditingNote}
                 selectedNoteIds={selectedNoteIds}
                 setSelectedNoteIds={setSelectedNoteIds}
                 notes={notes}
@@ -113,6 +115,7 @@ export function NoteList(props) {
               return (
                 <Note
                   setEditingNote={setEditingNote}
+                  setTrashEditingNote={setTrashEditingNote}
                   note={pinned}
                   selectedNoteIds={selectedNoteIds}
                   setSelectedNoteIds={setSelectedNoteIds}
@@ -137,6 +140,7 @@ export function NoteList(props) {
           {latestNoteId && (
             <Note
               setEditingNote={setEditingNote}
+              setTrashEditingNote={setTrashEditingNote}
               note={others[latestNoteId]}
               selectedNoteIds={selectedNoteIds}
               setSelectedNoteIds={setSelectedNoteIds}
@@ -156,6 +160,7 @@ export function NoteList(props) {
             return (
               <Note
                 setEditingNote={setEditingNote}
+                setTrashEditingNote={setTrashEditingNote}
                 note={other}
                 selectedNoteIds={selectedNoteIds}
                 setSelectedNoteIds={setSelectedNoteIds}

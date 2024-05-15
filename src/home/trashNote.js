@@ -12,13 +12,15 @@ export function TrashNote(props) {
     selectedNoteIds,
     setSelectedNoteIds,
     setEditingNote,
+    setTrashEditingNote,
     notes,
     setNotes,
     gridView,
   } = props;
-  const { id, title, content, heightClass, image } = note;
+  const { id, title, content, heightClass, image, metaData } = note;
 
-  const noteImageRef = useRef(null);
+  const trashNoteContainerRef = useRef(null);
+  const trashNoteImageRef = useRef(null);
   const titleRef = useRef(null);
   const contentRef = useRef(null);
   const footerRefs = {
@@ -31,11 +33,28 @@ export function TrashNote(props) {
   useEffect(() => {
     if (image) {
       if (gridView)
-        noteImageRef.current.style.maxHeight = `${image.maxHeightForGridView}px`;
+        trashNoteImageRef.current.style.maxHeight = `${image.maxHeightForGridView}px`;
       else
-        noteImageRef.current.style.maxHeight = `${image.maxHeightForListView}px`;
+        trashNoteImageRef.current.style.maxHeight = `${image.maxHeightForListView}px`;
     }
   }, [gridView, image]);
+
+  useEffect(() => {
+    if (isSelected) {
+      trashNoteContainerRef.current.style.border = '2px solid white';
+    } else {
+      if (metaData.backgroundColor !== 'transparent') {
+        trashNoteContainerRef.current.style.border = 'none';
+      } else {
+        trashNoteContainerRef.current.style.border = '1px solid grey';
+      }
+    }
+  }, [isSelected, metaData]);
+
+  useEffect(() => {
+    trashNoteContainerRef.current.style.backgroundColor =
+      metaData.backgroundColor;
+  }, [metaData]);
 
   useEffect(() => {
     titleRef.current.innerText = '';
@@ -71,7 +90,9 @@ export function TrashNote(props) {
       selectedNoteIds,
       setSelectedNoteIds,
       setEditingNote,
-      note
+      setTrashEditingNote,
+      note,
+      true
     );
   }
 
@@ -120,11 +141,12 @@ export function TrashNote(props) {
 
   return (
     <div
-      className={`outerContainer ${
+      className={`trashNoteOuterContainer ${
         gridView ? heightClass.gridView : heightClass.listView
       }`}
     >
       <div
+        ref={trashNoteContainerRef}
         className={
           isSelected ? 'trashNoteContainer  selected' : 'trashNoteContainer'
         }
@@ -156,7 +178,7 @@ export function TrashNote(props) {
         {image && (
           <img
             class="trashNoteImage"
-            ref={noteImageRef}
+            ref={trashNoteImageRef}
             src={image.src}
             alt="noteImage"
           />

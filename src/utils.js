@@ -137,7 +137,9 @@ function handleNoteClick(
   selectedNoteIds,
   setSelectedNoteIds,
   setEditingNote,
-  note
+  setTrashEditingNote,
+  note,
+  isTrash = false
 ) {
   const { id, title, content, image, metaData } = note;
 
@@ -159,18 +161,67 @@ function handleNoteClick(
     return;
   }
 
-  setEditingNote((editingNote) => {
+  if (isTrash) {
+    setTrashEditingNote((trashEditingNote) => {
+      return {
+        ...trashEditingNote,
+        id,
+        title,
+        content,
+        image: image,
+        metaData,
+        defaultText: {
+          title: false,
+          content: false,
+        },
+      };
+    });
+  } else {
+    setEditingNote((editingNote) => {
+      return {
+        ...editingNote,
+        id,
+        title,
+        content,
+        image: image,
+        metaData,
+        defaultText: {
+          title: false,
+          content: false,
+        },
+      };
+    });
+  }
+}
+
+function restoreNoteFromTrash(id, notes, setNotes) {
+  const { others, trash } = notes;
+
+  const updatedTrash = { ...trash };
+  const note = updatedTrash[id];
+  delete updatedTrash[id];
+
+  const updatedOthers = { ...others, [id]: note };
+
+  setNotes((notes) => {
     return {
-      ...editingNote,
-      id,
-      title,
-      content,
-      image: image,
-      metaData,
-      defaultText: {
-        title: false,
-        content: false,
-      },
+      ...notes,
+      others: updatedOthers,
+      trash: updatedTrash,
+    };
+  });
+}
+
+function deleteNoteFromTrash(id, notes, setNotes) {
+  const { trash } = notes;
+
+  const updatedTrash = { ...trash };
+  delete updatedTrash[id];
+
+  setNotes((notes) => {
+    return {
+      ...notes,
+      trash: updatedTrash,
     };
   });
 }
@@ -182,4 +233,6 @@ export {
   updateBackgroundColor,
   getContentToBeDisplayed,
   handleNoteClick,
+  deleteNoteFromTrash,
+  restoreNoteFromTrash,
 };

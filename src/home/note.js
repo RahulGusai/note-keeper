@@ -24,6 +24,7 @@ export function Note(props) {
   const {
     note,
     setEditingNote,
+    setTrashEditingNote,
     selectedNoteIds,
     setSelectedNoteIds,
     notes,
@@ -127,6 +128,7 @@ export function Note(props) {
       selectedNoteIds,
       setSelectedNoteIds,
       setEditingNote,
+      setTrashEditingNote,
       note
     );
   }
@@ -358,7 +360,7 @@ export function Note(props) {
 
   return (
     <div
-      className={`outerContainer ${
+      className={`noteOuterContainer ${
         gridView ? heightClass.gridView : heightClass.listView
       }`}
     >
