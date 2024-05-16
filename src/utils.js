@@ -185,6 +185,7 @@ function handleNoteClick(
         content,
         image: image,
         metaData,
+        initialLoad: true,
         defaultText: {
           title: false,
           content: false,

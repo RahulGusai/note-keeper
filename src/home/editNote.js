@@ -65,7 +65,7 @@ function FunctionComponent(props, ref) {
   }, [metaData]);
 
   useEffect(() => {
-    if (editingNote) {
+    if (editingNote && editingNote.initialLoad) {
       if (content.length > 0) {
         contentElem.current.innerText = content;
       } else {
@@ -83,12 +83,20 @@ function FunctionComponent(props, ref) {
           return { ...editNoteDefaultText, title: true };
         });
       }
+
+      setEditingNote((editingNote) => {
+        return {
+          ...editingNote,
+          initialLoad: false,
+        };
+      });
     }
   }, [
     content,
     contentElem,
     editingNote,
     setEditNoteDefaultText,
+    setEditingNote,
     title,
     titleElem,
   ]);
