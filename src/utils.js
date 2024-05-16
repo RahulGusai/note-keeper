@@ -50,13 +50,13 @@ function archiveNote(id, notes, setNotes) {
   const { others, pinned, archives } = notes;
   let note;
   if (others.hasOwnProperty(id)) {
-    note = others[id];
     updatedOthers = { ...others };
+    note = updatedOthers[id];
     delete updatedOthers[id];
     updatedPinned = { ...pinned };
   } else {
-    note = pinned[id];
     updatedPinned = { ...pinned };
+    note = updatedPinned[id];
     delete updatedPinned[id];
     updatedOthers = { ...others };
   }
@@ -75,7 +75,7 @@ function archiveNote(id, notes, setNotes) {
 function unArchiveNote(id, notes, setNotes) {
   const { others, archives } = notes;
   const updatedArchives = { ...archives };
-  const updatedOthers = { ...others, [id]: archives[id] };
+  const updatedOthers = { ...others, [id]: updatedArchives[id] };
   delete updatedArchives[id];
 
   setNotes((notes) => {

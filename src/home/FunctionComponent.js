@@ -1,5 +1,4 @@
-import './editNote.css';
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MdOutlineColorLens } from 'react-icons/md';
 import { BsImage } from 'react-icons/bs';
 import { BiArchiveIn } from 'react-icons/bi';
@@ -13,7 +12,7 @@ import { GiPlainCircle } from 'react-icons/gi';
 import { MdInvertColorsOff } from 'react-icons/md';
 import { unArchiveNote } from '../utils';
 
-function FunctionComponent(props, ref) {
+export function FunctionComponent(props, ref) {
   const {
     editingNote,
     setEditingNote,
@@ -35,6 +34,7 @@ function FunctionComponent(props, ref) {
     showColorSelector: false,
     showMoreOptionsDialog: false,
   });
+
   const editNoteContainerRef = useRef(null);
   const imageUploadRef = useRef(null);
   const editingNoteImageRef = useRef(null);
@@ -93,6 +93,24 @@ function FunctionComponent(props, ref) {
     titleElem,
   ]);
 
+  useEffect(() => {
+    const titleRange = document.createRange();
+    const titleSelection = window.getSelection();
+    titleRange.selectNodeContents(titleElem.current);
+    titleRange.collapse(false);
+    titleSelection.removeAllRanges();
+    titleSelection.addRange(titleRange);
+  }, [title]);
+
+  useEffect(() => {
+    const contentRange = document.createRange();
+    const contentSelection = window.getSelection();
+    contentRange.selectNodeContents(contentElem.current);
+    contentRange.collapse(false);
+    contentSelection.removeAllRanges();
+    contentSelection.addRange(contentRange);
+  }, [contentElem]);
+
   function handleKeyPressedTitle(e) {
     if (
       !editNoteDefaultText.title &&
@@ -103,6 +121,12 @@ function FunctionComponent(props, ref) {
         return { ...editNoteDefaultText, title: true };
       });
     }
+    setEditingNote((editingNote) => {
+      return {
+        ...editingNote,
+        title: titleElem.current.innerText,
+      };
+    });
   }
 
   function handleKeyPressedContent(e) {
@@ -115,6 +139,13 @@ function FunctionComponent(props, ref) {
         return { ...editNoteDefaultText, content: true };
       });
     }
+
+    setEditingNote((editingNote) => {
+      return {
+        ...editingNote,
+        content: contentElem.current.innerText,
+      };
+    });
   }
 
   function clearDefaultInputTitle() {
@@ -479,6 +510,3 @@ function FunctionComponent(props, ref) {
     </div>
   );
 }
-
-const EditNote = forwardRef(FunctionComponent);
-export { EditNote };

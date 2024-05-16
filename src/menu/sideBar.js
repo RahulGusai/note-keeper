@@ -4,8 +4,12 @@ import { IoArchiveOutline } from 'react-icons/io5';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 export function SideBar(props) {
-  const { isSidebarExpanded, setNotesListOptions, setIsSidebarExpanded } =
-    props;
+  const {
+    isSidebarExpanded,
+    setNotesListOptions,
+    setIsSidebarExpanded,
+    setSelectedNoteIds,
+  } = props;
 
   function showArchives() {
     setNotesListOptions((notesListOptions) => {
@@ -15,6 +19,7 @@ export function SideBar(props) {
         showTrash: false,
       };
     });
+    setSelectedNoteIds(new Set());
   }
 
   function showNotes() {
@@ -25,6 +30,7 @@ export function SideBar(props) {
         showTrash: false,
       };
     });
+    setSelectedNoteIds(new Set());
   }
 
   function showTrash() {
@@ -35,6 +41,7 @@ export function SideBar(props) {
         showArchives: false,
       };
     });
+    setSelectedNoteIds(new Set());
   }
 
   return (

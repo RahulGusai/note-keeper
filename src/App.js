@@ -121,6 +121,7 @@ export default function App(props) {
 
     const noteListContainerClasses = [
       'homeContainer',
+      'sideBarContainer',
       'notesContainer',
       'noteListContainer',
       'notes gridView',
@@ -307,6 +308,7 @@ export default function App(props) {
         isSidebarExpanded={isSidebarExpanded}
         setIsSidebarExpanded={setIsSidebarExpanded}
         setNotesListOptions={setNotesListOptions}
+        setSelectedNoteIds={setSelectedNoteIds}
       ></SideBar>
 
       <div
@@ -362,6 +364,7 @@ export default function App(props) {
           setErrorMessage={setErrorMessage}
           saveEditedNoteAsCopy={saveEditedNoteAsCopy}
           setLatestNoteId={setLatestNoteId}
+          notesListOptions={notesListOptions}
         ></EditNote>
       )}
 
