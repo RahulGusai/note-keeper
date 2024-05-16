@@ -225,6 +225,8 @@ function deleteNoteFromTrash(id, notes, setNotes) {
       trash: updatedTrash,
     };
   });
+
+  localStorage.removeItem(id);
 }
 
 export {

@@ -19,6 +19,7 @@ import {
 } from '../utils';
 
 import './note.css';
+import { useCallback } from 'react';
 
 export function Note(props) {
   const {
@@ -54,8 +55,79 @@ export function Note(props) {
     bgColorSelector: false,
     moreOptionsDialog: false,
   });
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const isSelected = selectedNoteIds.has(note.id);
+
+  const updateNotes = useCallback(
+    (img) => {
+      const [heightClassForGridView, heightClassForListView] = getHeightClass(
+        contentRef,
+        img
+      );
+
+      const aspectRatio = img.width / img.height;
+      const maxHeightForGridView = Math.floor(250 / aspectRatio);
+      const maxHeightForListView = Math.floor(600 / aspectRatio);
+
+      let updatedOthers, updatedPinned;
+      const { others, pinned } = notes;
+      if (others.hasOwnProperty(id)) {
+        const updatedNote = {
+          ...others[id],
+          image: {
+            src: img.src,
+            width: img.width,
+            height: img.height,
+            maxHeightForGridView,
+            maxHeightForListView,
+          },
+          heightClass: {
+            gridView: heightClassForGridView,
+            listView: heightClassForListView,
+          },
+        };
+        updatedOthers = { ...others, [id]: updatedNote };
+        updatedPinned = { ...pinned };
+      } else {
+        const updatedNote = {
+          ...pinned[id],
+          image: {
+            src: img.src,
+            width: img.width,
+            height: img.height,
+            maxHeightForGridView,
+            maxHeightForListView,
+          },
+          heightClass: {
+            gridView: heightClassForGridView,
+            listView: heightClassForListView,
+          },
+        };
+        updatedPinned = { ...pinned, [id]: updatedNote };
+        updatedOthers = { ...others };
+      }
+
+      setNotes((notes) => {
+        return { ...notes, others: updatedOthers, pinned: updatedPinned };
+      });
+    },
+    [id, notes, setNotes]
+  );
+
+  useEffect(() => {
+    if (!isImageLoaded) {
+      const storedImage = localStorage.getItem(id);
+      if (storedImage) {
+        const img = new Image();
+        img.src = storedImage;
+        img.onload = function () {
+          updateNotes(img);
+        };
+      }
+      setIsImageLoaded(true);
+    }
+  }, [id, isImageLoaded, updateNotes]);
 
   useEffect(() => {
     if (image) {
@@ -232,62 +304,15 @@ export function Note(props) {
         return;
       }
 
-      updateNotes(img);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function () {
+        const base64data = reader.result;
+        localStorage.setItem(id, base64data);
+        updateNotes(img);
+      };
     };
   };
-
-  function updateNotes(img) {
-    const [heightClassForGridView, heightClassForListView] = getHeightClass(
-      contentRef,
-      img
-    );
-
-    const aspectRatio = img.width / img.height;
-    const maxHeightForGridView = Math.floor(250 / aspectRatio);
-    const maxHeightForListView = Math.floor(600 / aspectRatio);
-
-    let updatedOthers, updatedPinned;
-    const { others, pinned } = notes;
-    if (others.hasOwnProperty(id)) {
-      const updatedNote = {
-        ...others[id],
-        image: {
-          src: img.src,
-          width: img.width,
-          height: img.height,
-          maxHeightForGridView,
-          maxHeightForListView,
-        },
-        heightClass: {
-          gridView: heightClassForGridView,
-          listView: heightClassForListView,
-        },
-      };
-      updatedOthers = { ...others, [id]: updatedNote };
-      updatedPinned = { ...pinned };
-    } else {
-      const updatedNote = {
-        ...pinned[id],
-        image: {
-          src: img.src,
-          width: img.width,
-          height: img.height,
-          maxHeightForGridView,
-          maxHeightForListView,
-        },
-        heightClass: {
-          gridView: heightClassForGridView,
-          listView: heightClassForListView,
-        },
-      };
-      updatedPinned = { ...pinned, [id]: updatedNote };
-      updatedOthers = { ...others };
-    }
-
-    setNotes((notes) => {
-      return { ...notes, others: updatedOthers, pinned: updatedPinned };
-    });
-  }
 
   function updateFooterOptions(updatedOptions) {
     setFooterOptions((footerOptions) => {

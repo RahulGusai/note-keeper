@@ -2,7 +2,11 @@ import { useEffect, useRef } from 'react';
 import { MdDeleteForever } from 'react-icons/md';
 import { MdOutlineRestoreFromTrash } from 'react-icons/md';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
-import { handleNoteClick } from '../utils';
+import {
+  handleNoteClick,
+  deleteNoteFromTrash,
+  restoreNoteFromTrash,
+} from '../utils';
 
 import './trashNote.css';
 
@@ -97,34 +101,11 @@ export function TrashNote(props) {
   }
 
   function restoreNote() {
-    const { others, trash } = notes;
-
-    const updatedTrash = { ...trash };
-    delete updatedTrash[id];
-
-    const updatedOthers = { ...others, [id]: note };
-
-    setNotes((notes) => {
-      return {
-        ...notes,
-        others: updatedOthers,
-        trash: updatedTrash,
-      };
-    });
+    restoreNoteFromTrash(id, notes, setNotes);
   }
 
   function deleteNote() {
-    const { trash } = notes;
-
-    const updatedTrash = { ...trash };
-    delete updatedTrash[id];
-
-    setNotes((notes) => {
-      return {
-        ...notes,
-        trash: updatedTrash,
-      };
-    });
+    deleteNoteFromTrash(id, notes, setNotes);
   }
 
   function handleSelectIconClick() {
