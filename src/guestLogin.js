@@ -47,10 +47,10 @@ export function GuestLogin(props) {
   return (
     <div className="guestLoginPage">
       <div className="loginForm">
-        <IoArrowBack
+        {/* <IoArrowBack
           onClick={handleBackIconClick}
           className="backIcon"
-        ></IoArrowBack>
+        ></IoArrowBack> */}
         <div className="nameLogin">
           <h3>Enter your name to continue</h3>
           <div className="nameInput">
