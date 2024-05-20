@@ -323,7 +323,7 @@ function FunctionComponent(props, ref) {
   }
 
   function toggleMoreOptionsDialog() {
-    setFooterOptions(() => {
+    setFooterOptions((footerOptions) => {
       return {
         ...footerOptions,
         showColorSelector: false,

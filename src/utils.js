@@ -93,29 +93,29 @@ function updateBackgroundColor(noteId, color, notes, setNotes) {
   let updatedPinned = { ...pinned };
   let updatedArchives = { ...archives };
 
-  if (others.hasOwnProperty(noteId)) {
+  if (updatedOthers.hasOwnProperty(noteId)) {
     const updatedNote = {
-      ...others[noteId],
+      ...updatedOthers[noteId],
       metaData: {
-        ...others[noteId].metaData,
+        ...updatedOthers[noteId].metaData,
         backgroundColor: color,
       },
     };
     updatedOthers = { ...updatedOthers, [noteId]: updatedNote };
-  } else if (pinned.hasOwnProperty(noteId)) {
+  } else if (updatedPinned.hasOwnProperty(noteId)) {
     const updatedNote = {
-      ...pinned[noteId],
+      ...updatedPinned[noteId],
       metaData: {
-        ...pinned[noteId].metaData,
+        ...updatedPinned[noteId].metaData,
         backgroundColor: color,
       },
     };
     updatedPinned = { ...updatedPinned, [noteId]: updatedNote };
   } else {
     const updatedNote = {
-      ...archives[noteId],
+      ...updatedArchives[noteId],
       metaData: {
-        ...archives[noteId].metaData,
+        ...updatedArchives[noteId].metaData,
         backgroundColor: color,
       },
     };

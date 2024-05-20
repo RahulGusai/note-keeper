@@ -17,11 +17,6 @@
   z-index: 2;
 }
 
-/* .sideBarContainer:hover .tabText {
-  opacity: 1;
-  width: auto;
-} */
-
 .tab {
   display: flex;
   gap: 30px;

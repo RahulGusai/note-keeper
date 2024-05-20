@@ -228,14 +228,14 @@ export function SelectedNotesOptions(props) {
 
     for (const noteId of selectedNoteIds) {
       if (others.hasOwnProperty(noteId)) {
-        updatedTrash = { ...updatedTrash, [noteId]: others[noteId] };
+        updatedTrash = { ...updatedTrash, [noteId]: updatedOthers[noteId] };
         delete updatedOthers[noteId];
         if (latestNoteId) setLatestNoteId(null);
       } else if (pinned.hasOwnProperty(noteId)) {
-        updatedTrash = { ...updatedTrash, [noteId]: pinned[noteId] };
+        updatedTrash = { ...updatedTrash, [noteId]: updatedPinned[noteId] };
         delete updatedPinned[noteId];
       } else {
-        updatedTrash = { ...updatedTrash, [noteId]: archives[noteId] };
+        updatedTrash = { ...updatedTrash, [noteId]: updatedArchives[noteId] };
         delete updatedArchives[noteId];
       }
     }

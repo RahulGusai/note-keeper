@@ -53,6 +53,11 @@ export default function App(props) {
     showSettingsDialog: false,
   });
 
+  const [newNoteData, setNewNoteData] = useState({
+    backgroundColor: null,
+    image: null,
+  });
+
   function createNote() {
     const { titleRef, contentRef } = newNoterefs;
 
@@ -324,6 +329,9 @@ export default function App(props) {
           setIsExpanded={setIsExpanded}
           isDefaultTextLoaded={isDefaultTextLoaded}
           setisDefaultTextLoaded={setisDefaultTextLoaded}
+          setErrorMessage={setErrorMessage}
+          newNoteData={newNoteData}
+          setNewNoteData={setNewNoteData}
         ></NewNote>
         <NoteList
           setEditingNote={setEditingNote}
