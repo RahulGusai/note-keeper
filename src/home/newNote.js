@@ -8,9 +8,7 @@ import { BiRedo } from 'react-icons/bi';
 import { GiPlainCircle } from 'react-icons/gi';
 import { MdInvertColorsOff } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
-import { useState } from 'react';
 import { useRef } from 'react';
-import { calculateNewValue } from '@testing-library/user-event/dist/utils';
 
 function ComponentHandler(props, ref) {
   const { titleRef, contentRef } = ref;
@@ -23,16 +21,15 @@ function ComponentHandler(props, ref) {
     setErrorMessage,
     newNoteData,
     setNewNoteData,
+    newNoteFooterOptions,
+    setNewNoteFooterOptions,
+    createNote,
   } = props;
 
   const newNoteContainerRef = useRef();
   const imageUploadRef = useRef();
-  const [newNoteFooterOptions, setNewNoteFooterOptions] = useState({
-    showColorSelector: false,
-    showMoreOptionsDialog: false,
-  });
+
   const { backgroundColor, image } = newNoteData;
-  console.log(newNoteData);
 
   useEffect(() => {
     newNoteContainerRef.current.style.backgroundColor = backgroundColor;
@@ -128,9 +125,9 @@ function ComponentHandler(props, ref) {
     }
   }
   function toggleColorSelectorMenu() {
-    setNewNoteFooterOptions((newNoteFooterIcons) => {
+    setNewNoteFooterOptions((newNoteFooterOptions) => {
       return {
-        ...newNoteFooterIcons,
+        ...newNoteFooterOptions,
         showColorSelector: !newNoteFooterOptions.showColorSelector,
         showMoreOptionsDialog: false,
       };
@@ -146,10 +143,11 @@ function ComponentHandler(props, ref) {
     });
   }
 
-  function handleArchiveIconClick() {}
+  function handleArchiveIconClick() {
+    createNote(true);
+  }
 
   function processImage(event) {
-    console.log('CALLED');
     const file = event.target.files[0];
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
     const fileExtension = file.name
@@ -177,19 +175,25 @@ function ComponentHandler(props, ref) {
     const img = new Image();
     img.src = URL.createObjectURL(file);
     img.onload = function () {
-      console.log('Loaded');
       const resolution = img.width * img.height;
       if (resolution > maxResolutionPixels) {
         setErrorMessage(
           'Can’t upload this file. We accept GIF, JPEG, JPG, PNG files less than 10MB and 25 megapixels.'
         );
       }
-      setNewNoteData((newNoteData) => {
-        return {
-          ...newNoteData,
-          image: img,
-        };
-      });
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function () {
+        const base64data = reader.result;
+        setNewNoteData((newNoteData) => {
+          return {
+            ...newNoteData,
+            image: img,
+            imgBase64: base64data,
+          };
+        });
+      };
     };
   }
 
@@ -298,7 +302,10 @@ function ComponentHandler(props, ref) {
             />
           </div>
           <div>
-            <BiArchiveIn onClick={handleArchiveIconClick} />
+            <BiArchiveIn
+              onClick={handleArchiveIconClick}
+              // TODO create a new note and put it in archive
+            />
           </div>
           <div>
             <BiUndo />

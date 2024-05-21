@@ -130,7 +130,7 @@ export function NavBar(props) {
         <AiOutlineSearch
           className={isSearchBarActive ? 'searchIcon active' : 'searchIcon'}
         />
-        <input className="searchInput" placeholder="Search"></input>
+        <input disabled className="searchInput" placeholder="Search"></input>
         <IoMdClose
           className={isSearchBarActive ? 'closeIcon active' : 'closeIcon'}
           onClick={() => setIsSearchBarActive(!isSearchBarActive)}

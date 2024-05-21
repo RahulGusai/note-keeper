@@ -61,6 +61,7 @@ export function Note(props) {
 
   const updateNotes = useCallback(
     (img) => {
+      console.log('updating image');
       const [heightClassForGridView, heightClassForListView] = getHeightClass(
         contentRef,
         img
@@ -70,11 +71,12 @@ export function Note(props) {
       const maxHeightForGridView = Math.floor(250 / aspectRatio);
       const maxHeightForListView = Math.floor(600 / aspectRatio);
 
-      let updatedOthers, updatedPinned;
       const { others, pinned } = notes;
+      let updatedOthers = { ...others };
+      let updatedPinned = { ...pinned };
       if (others.hasOwnProperty(id)) {
         const updatedNote = {
-          ...others[id],
+          ...updatedOthers[id],
           image: {
             src: img.src,
             width: img.width,
@@ -87,11 +89,10 @@ export function Note(props) {
             listView: heightClassForListView,
           },
         };
-        updatedOthers = { ...others, [id]: updatedNote };
-        updatedPinned = { ...pinned };
+        updatedOthers = { ...updatedOthers, [id]: updatedNote };
       } else {
         const updatedNote = {
-          ...pinned[id],
+          ...updatedPinned[id],
           image: {
             src: img.src,
             width: img.width,
@@ -104,8 +105,7 @@ export function Note(props) {
             listView: heightClassForListView,
           },
         };
-        updatedPinned = { ...pinned, [id]: updatedNote };
-        updatedOthers = { ...others };
+        updatedPinned = { ...updatedPinned, [id]: updatedNote };
       }
 
       setNotes((notes) => {
@@ -116,7 +116,7 @@ export function Note(props) {
   );
 
   useEffect(() => {
-    if (!isImageLoaded) {
+    if (!isImageLoaded && !image) {
       const storedImage = localStorage.getItem(id);
       if (storedImage) {
         const img = new Image();
@@ -127,7 +127,7 @@ export function Note(props) {
       }
       setIsImageLoaded(true);
     }
-  }, [id, isImageLoaded, updateNotes]);
+  }, [id, image, isImageLoaded, updateNotes]);
 
   useEffect(() => {
     if (image) {

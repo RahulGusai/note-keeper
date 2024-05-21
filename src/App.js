@@ -54,45 +54,96 @@ export default function App(props) {
   });
 
   const [newNoteData, setNewNoteData] = useState({
-    backgroundColor: null,
+    backgroundColor: 'transparent',
     image: null,
+    imgBase64: null,
+  });
+  const [newNoteFooterOptions, setNewNoteFooterOptions] = useState({
+    showColorSelector: false,
   });
 
-  function createNote() {
+  function createNote(isArchived = false) {
     const { titleRef, contentRef } = newNoterefs;
+    const { image, imgBase64, backgroundColor } = newNoteData;
 
-    if (!isDefaultTextLoaded.title || !isDefaultTextLoaded.content) {
+    if (!isDefaultTextLoaded.title || !isDefaultTextLoaded.content || image) {
       const newNoteId = Math.floor(Math.random() * 1000) + 1;
-      const [heightClassForGridView, heightClassForListView] =
-        getHeightClass(contentRef);
+      const [heightClassForGridView, heightClassForListView] = getHeightClass(
+        contentRef,
+        image
+      );
 
-      const updatedOthers = {
-        ...notes.others,
-        [newNoteId]: {
-          id: newNoteId,
-          heightClass: {
-            gridView: heightClassForGridView,
-            listView: heightClassForListView,
+      if (isArchived) {
+        console.log('true');
+        const updatedArchives = {
+          ...notes.archives,
+          [newNoteId]: {
+            id: newNoteId,
+            heightClass: {
+              gridView: heightClassForGridView,
+              listView: heightClassForListView,
+            },
+            title: isDefaultTextLoaded.title ? '' : titleRef.current.innerText,
+            content: isDefaultTextLoaded.content
+              ? ''
+              : contentRef.current.innerText,
+            metaData: {
+              backgroundColor: backgroundColor,
+            },
+            image: image,
           },
-          title: isDefaultTextLoaded.title ? '' : titleRef.current.innerText,
-          content: isDefaultTextLoaded.content
-            ? ''
-            : contentRef.current.innerText,
-          metaData: {
-            backgroundColor: 'transparent',
-          },
-        },
-      };
-      setNotes((notes) => {
-        return {
-          ...notes,
-          others: updatedOthers,
         };
-      });
-      setLatestNoteId(newNoteId);
+        setNotes((notes) => {
+          return {
+            ...notes,
+            archives: updatedArchives,
+          };
+        });
+      } else {
+        const updatedOthers = {
+          ...notes.others,
+          [newNoteId]: {
+            id: newNoteId,
+            heightClass: {
+              gridView: heightClassForGridView,
+              listView: heightClassForListView,
+            },
+            title: isDefaultTextLoaded.title ? '' : titleRef.current.innerText,
+            content: isDefaultTextLoaded.content
+              ? ''
+              : contentRef.current.innerText,
+            metaData: {
+              backgroundColor: backgroundColor,
+            },
+            image: image,
+          },
+        };
+        setNotes((notes) => {
+          return {
+            ...notes,
+            others: updatedOthers,
+          };
+        });
+        setLatestNoteId(newNoteId);
+      }
+      if (imgBase64) localStorage.setItem(newNoteId, imgBase64);
     }
 
     setIsExpanded(false);
+    setNewNoteFooterOptions((newNoteFooterIcons) => {
+      return {
+        ...newNoteFooterIcons,
+        showColorSelector: false,
+      };
+    });
+    setNewNoteData((newNoteData) => {
+      return {
+        ...newNoteData,
+        backgroundColor: 'transparent',
+        image: null,
+        imgBase64: null,
+      };
+    });
   }
 
   function handleHomeContainerClick(e) {
@@ -139,7 +190,7 @@ export default function App(props) {
   }
 
   function saveEditedNote() {
-    const { id, metaData } = editingNote;
+    const { id, metaData, image } = editingNote;
     const { titleElem, contentElem } = editNoteRefs;
     const { others, pinned } = notes;
 
@@ -332,6 +383,9 @@ export default function App(props) {
           setErrorMessage={setErrorMessage}
           newNoteData={newNoteData}
           setNewNoteData={setNewNoteData}
+          newNoteFooterOptions={newNoteFooterOptions}
+          setNewNoteFooterOptions={setNewNoteFooterOptions}
+          createNote={createNote}
         ></NewNote>
         <NoteList
           setEditingNote={setEditingNote}

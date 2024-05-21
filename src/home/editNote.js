@@ -39,17 +39,17 @@ function FunctionComponent(props, ref) {
   const imageUploadRef = useRef(null);
   const editingNoteImageRef = useRef(null);
 
-  const { title, content, image, metaData } = editingNote;
+  const { id, title, content, metaData } = editingNote;
   const { showArchives } = notesListOptions;
 
-  useEffect(() => {
-    if (image) {
-      if (gridView)
-        editingNoteImageRef.current.style.maxHeight = `${image.maxHeightForGridView}px`;
-      else
-        editingNoteImageRef.current.style.maxHeight = `${image.maxHeightForListView}px`;
-    }
-  }, [gridView, image]);
+  // useEffect(() => {
+  //   if (image) {
+  //     if (gridView)
+  //       editingNoteImageRef.current.style.maxHeight = `${image.maxHeightForGridView}px`;
+  //     else
+  //       editingNoteImageRef.current.style.maxHeight = `${image.maxHeightForListView}px`;
+  //   }
+  // }, [gridView, image]);
 
   useEffect(() => {
     if (metaData.backgroundColor !== 'transparent') {
@@ -144,6 +144,7 @@ function FunctionComponent(props, ref) {
   }
 
   function deleteImage() {
+    localStorage.removeItem(id);
     setEditingNote((editingNote) => {
       return { ...editingNote, image: null };
     });
@@ -185,13 +186,18 @@ function FunctionComponent(props, ref) {
         return;
       }
 
-      updateNotes(img);
-      setEditingNote((editingNote) => {
-        return {
-          ...editingNote,
-          image: img,
-        };
-      });
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = function () {
+        const base64data = reader.result;
+        localStorage.setItem(id, base64data);
+        setEditingNote((editingNote) => {
+          return {
+            ...editingNote,
+            image: img,
+          };
+        });
+      };
     };
   }
 

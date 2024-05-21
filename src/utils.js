@@ -45,22 +45,20 @@ function getHeightClass(contentRef, image) {
 }
 
 function archiveNote(id, notes, setNotes) {
-  let updatedOthers, updatedPinned;
-
   const { others, pinned, archives } = notes;
-  let note;
-  if (others.hasOwnProperty(id)) {
-    updatedOthers = { ...others };
-    note = updatedOthers[id];
+  let updatedOthers = { ...others };
+  let updatedPinned = { ...pinned };
+  let updatedArchives = { ...archives };
+
+  if (updatedOthers.hasOwnProperty(id)) {
+    const note = updatedOthers[id];
     delete updatedOthers[id];
-    updatedPinned = { ...pinned };
+    updatedArchives = { ...archives, [id]: note };
   } else {
-    updatedPinned = { ...pinned };
-    note = updatedPinned[id];
+    const note = updatedPinned[id];
     delete updatedPinned[id];
-    updatedOthers = { ...others };
+    updatedArchives = { ...archives, [id]: note };
   }
-  const updatedArchives = { ...archives, [id]: note };
 
   setNotes((notes) => {
     return {
