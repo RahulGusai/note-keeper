@@ -26,7 +26,6 @@ function FunctionComponent(props, ref) {
     setErrorMessage,
     setLatestNoteId,
     notesListOptions,
-    gridView,
   } = props;
 
   const { titleElem, contentElem } = ref;
@@ -41,15 +40,6 @@ function FunctionComponent(props, ref) {
 
   const { id, title, content, metaData } = editingNote;
   const { showArchives } = notesListOptions;
-
-  // useEffect(() => {
-  //   if (image) {
-  //     if (gridView)
-  //       editingNoteImageRef.current.style.maxHeight = `${image.maxHeightForGridView}px`;
-  //     else
-  //       editingNoteImageRef.current.style.maxHeight = `${image.maxHeightForListView}px`;
-  //   }
-  // }, [gridView, image]);
 
   useEffect(() => {
     if (metaData.backgroundColor !== 'transparent') {
@@ -485,7 +475,7 @@ function FunctionComponent(props, ref) {
           onClick={() => {
             saveEditedNote();
           }}
-          className="closeButton"
+          className="editNoteCloseButton"
         >
           Close
         </div>

@@ -71,9 +71,11 @@ export function Note(props) {
       const maxHeightForGridView = Math.floor(250 / aspectRatio);
       const maxHeightForListView = Math.floor(600 / aspectRatio);
 
-      const { others, pinned } = notes;
+      const { others, pinned, archives, trash } = notes;
       let updatedOthers = { ...others };
       let updatedPinned = { ...pinned };
+      let updatedArchives = { ...archives };
+      let updatedTrash = { ...trash };
       if (others.hasOwnProperty(id)) {
         const updatedNote = {
           ...updatedOthers[id],
@@ -90,7 +92,7 @@ export function Note(props) {
           },
         };
         updatedOthers = { ...updatedOthers, [id]: updatedNote };
-      } else {
+      } else if (pinned.hasOwnProperty(id)) {
         const updatedNote = {
           ...updatedPinned[id],
           image: {
@@ -106,6 +108,38 @@ export function Note(props) {
           },
         };
         updatedPinned = { ...updatedPinned, [id]: updatedNote };
+      } else if (archives.hasOwnProperty(id)) {
+        const updatedNote = {
+          ...updatedArchives[id],
+          image: {
+            src: img.src,
+            width: img.width,
+            height: img.height,
+            maxHeightForGridView,
+            maxHeightForListView,
+          },
+          heightClass: {
+            gridView: heightClassForGridView,
+            listView: heightClassForListView,
+          },
+        };
+        updatedArchives = { ...updatedArchives, [id]: updatedNote };
+      } else {
+        const updatedNote = {
+          ...updatedTrash[id],
+          image: {
+            src: img.src,
+            width: img.width,
+            height: img.height,
+            maxHeightForGridView,
+            maxHeightForListView,
+          },
+          heightClass: {
+            gridView: heightClassForGridView,
+            listView: heightClassForListView,
+          },
+        };
+        updatedTrash = { ...updatedTrash, [id]: updatedNote };
       }
 
       setNotes((notes) => {
@@ -116,7 +150,7 @@ export function Note(props) {
   );
 
   useEffect(() => {
-    if (!isImageLoaded && !image) {
+    if (!isImageLoaded) {
       const storedImage = localStorage.getItem(id);
       if (storedImage) {
         const img = new Image();

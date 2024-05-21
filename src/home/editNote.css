@@ -103,10 +103,12 @@
   opacity: 1;
 }
 
-.closeButton {
+.editNoteCloseButton {
   font-size: 15px;
   margin-right: 20px;
   font-weight: bold;
+  color: white;
+  cursor: pointer;
 }
 
 .colorSelector {
@@ -182,13 +184,13 @@
   z-index: -1;
 }
 
-.closeButton:hover::after {
+.editNoteCloseButton:hover::after {
   content: '';
   position: absolute;
   bottom: 0;
-  right: 0;
+  right: 10px;
   transform: translate(-10%, -15%);
-  width: 80px;
+  width: 70px;
   height: 35px;
   background-color: rgba(255, 255, 255, 0.1);
   z-index: -1;
