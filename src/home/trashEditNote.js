@@ -64,7 +64,10 @@ function FunctionComponent(props, ref) {
       ref={editNoteOuterContainerRef}
       className="trashEditNoteOuterContainer"
     >
-      <div className="trashEditNoteContainer">
+      <div
+        onClick={processTrashEditNoteContainerClick}
+        className="trashEditNoteContainer"
+      >
         {trashEditingNote && trashEditingNote.image && (
           <img
             ref={trashEditNoteImageRef}
@@ -73,25 +76,17 @@ function FunctionComponent(props, ref) {
             alt="noteImage"
           />
         )}
-        <div
-          onClick={processTrashEditNoteContainerClick}
-          ref={titleElem}
-          className="noteTitle"
-        ></div>
-        <div
-          onClick={processTrashEditNoteContainerClick}
-          ref={contentElem}
-          className="noteContent"
-        ></div>
-        <div className="noteFooter">
-          <div>
-            <MdDeleteForever onClick={processDeleteIconClick}></MdDeleteForever>
-          </div>
-          <div>
-            <MdOutlineRestoreFromTrash
-              onClick={processRestoreIconClick}
-            ></MdOutlineRestoreFromTrash>
-          </div>
+        <div ref={titleElem} className="noteTitle"></div>
+        <div ref={contentElem} className="noteContent"></div>
+      </div>
+      <div className="trashEditNoteFooter">
+        <div>
+          <MdDeleteForever onClick={processDeleteIconClick}></MdDeleteForever>
+        </div>
+        <div>
+          <MdOutlineRestoreFromTrash
+            onClick={processRestoreIconClick}
+          ></MdOutlineRestoreFromTrash>
         </div>
       </div>
     </div>

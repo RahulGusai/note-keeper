@@ -158,6 +158,7 @@ export function TrashNote(props) {
         </div>
         {image && (
           <img
+            onClick={processNoteClick}
             class="trashNoteImage"
             ref={trashNoteImageRef}
             src={image.src}
