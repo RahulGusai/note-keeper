@@ -13,7 +13,6 @@
   cursor: text;
   font-size: 15px;
   z-index: -1x;
-  overflow-y: auto;
   position: relative;
   resize: none;
 }

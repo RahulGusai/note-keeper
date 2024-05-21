@@ -191,31 +191,6 @@ function FunctionComponent(props, ref) {
     };
   }
 
-  function updateNotes(img) {
-    const { id } = editingNote;
-    let updatedOthers, updatedPinned;
-    const { others, pinned } = notes;
-    if (others.hasOwnProperty(id)) {
-      const updatedNote = {
-        ...others[id],
-        image: { src: img.src, width: img.width, height: img.height },
-      };
-      updatedOthers = { ...others, [id]: updatedNote };
-      updatedPinned = { ...updatedPinned };
-    } else {
-      const updatedNote = {
-        ...pinned[id],
-        image: { src: img.src, width: img.width, height: img.height },
-      };
-      updatedPinned = { ...pinned, [id]: updatedNote };
-      updatedOthers = { ...updatedOthers };
-    }
-
-    setNotes((notes) => {
-      return { ...notes, others: updatedOthers, pinned: updatedPinned };
-    });
-  }
-
   function handleArchiveIconClick() {
     const { id } = editingNote;
     archiveNote(id, notes, setNotes);

@@ -201,6 +201,15 @@ function ComponentHandler(props, ref) {
     createNote();
   }
 
+  function hideFooterOptions() {
+    setNewNoteFooterOptions((newNoteFooterOptions) => {
+      return {
+        ...newNoteFooterOptions,
+        showColorSelector: false,
+      };
+    });
+  }
+
   const contentClassesName = `newNoteContent ${
     isExpanded ? 'expanded' : 'default'
   }`;
@@ -213,7 +222,7 @@ function ComponentHandler(props, ref) {
       className="newNoteOuterContainer"
       onClick={handleNewNoteClick}
     >
-      <div className="newNoteContainer">
+      <div onClick={hideFooterOptions} className="newNoteContainer">
         <input
           ref={imageUploadRef}
           type="file"
@@ -244,81 +253,86 @@ function ComponentHandler(props, ref) {
           onClick={handleContentClick}
           onBeforeInput={clearDefaultInputContent}
         ></div>
-
-        <div className={footerClassesName}>
-          <div
-            className={
-              newNoteFooterOptions.showColorSelector
-                ? 'newNoteColorSelector active'
-                : 'newNoteColorSelector'
-            }
-          >
-            <MdInvertColorsOff
-              onClick={() => handleColorSelectorClick('transparent')}
-            ></MdInvertColorsOff>
-            <GiPlainCircle
-              onClick={() => handleColorSelectorClick('#77172e')}
-              style={{ color: '#77172e' }}
-            ></GiPlainCircle>
-            <GiPlainCircle
-              onClick={() => handleColorSelectorClick('#692b17')}
-              style={{ color: '#692b17' }}
-            ></GiPlainCircle>
-            <GiPlainCircle
-              onClick={() => handleColorSelectorClick('#7c4a03')}
-              style={{ color: '#7c4a03' }}
-            ></GiPlainCircle>
-            <GiPlainCircle
+      </div>
+      <div className={footerClassesName}>
+        <div
+          className={
+            newNoteFooterOptions.showColorSelector
+              ? 'newNoteColorSelector active'
+              : 'newNoteColorSelector'
+          }
+        >
+          <MdInvertColorsOff
+            onClick={() => handleColorSelectorClick('transparent')}
+          ></MdInvertColorsOff>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('#77172e')}
+            style={{ color: '#77172e' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('#692b17')}
+            style={{ color: '#692b17' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('#7c4a03')}
+            style={{ color: '#7c4a03' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => {
+              handleColorSelectorClick('#7c4a03');
+            }}
+            style={{ color: '#7c4a03' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('#0c625d')}
+            style={{ color: '#0c625d' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('#256377')}
+            style={{ color: '#256377' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('#284255')}
+            style={{ color: '#284255' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('#472e5b')}
+            style={{ color: '#472e5b' }}
+          ></GiPlainCircle>
+          <GiPlainCircle
+            onClick={() => handleColorSelectorClick('#6c394f')}
+            style={{ color: '#6c394f' }}
+          ></GiPlainCircle>
+        </div>
+        <div className="newNoteFooterIcons">
+          <div>
+            <MdOutlineColorLens onClick={toggleColorSelectorMenu} />
+          </div>
+          <div>
+            <BsImage
               onClick={() => {
-                handleColorSelectorClick('#7c4a03');
+                setNewNoteFooterOptions((newNoteFooterOptions) => {
+                  return {
+                    ...newNoteFooterOptions,
+                    showColorSelector: false,
+                  };
+                });
+                imageUploadRef.current.click();
               }}
-              style={{ color: '#7c4a03' }}
-            ></GiPlainCircle>
-            <GiPlainCircle
-              onClick={() => handleColorSelectorClick('#0c625d')}
-              style={{ color: '#0c625d' }}
-            ></GiPlainCircle>
-            <GiPlainCircle
-              onClick={() => handleColorSelectorClick('#256377')}
-              style={{ color: '#256377' }}
-            ></GiPlainCircle>
-            <GiPlainCircle
-              onClick={() => handleColorSelectorClick('#284255')}
-              style={{ color: '#284255' }}
-            ></GiPlainCircle>
-            <GiPlainCircle
-              onClick={() => handleColorSelectorClick('#472e5b')}
-              style={{ color: '#472e5b' }}
-            ></GiPlainCircle>
-            <GiPlainCircle
-              onClick={() => handleColorSelectorClick('#6c394f')}
-              style={{ color: '#6c394f' }}
-            ></GiPlainCircle>
+            />
           </div>
-          <div className="newNoteFooterIcons">
-            <div>
-              <MdOutlineColorLens onClick={toggleColorSelectorMenu} />
-            </div>
-            <div>
-              <BsImage
-                onClick={() => {
-                  imageUploadRef.current.click();
-                }}
-              />
-            </div>
-            <div>
-              <BiArchiveIn onClick={handleArchiveIconClick} />
-            </div>
-            <div>
-              <BiUndo />
-            </div>
-            <div>
-              <BiRedo />
-            </div>
+          <div>
+            <BiArchiveIn onClick={handleArchiveIconClick} />
           </div>
-          <div onClick={handleCloseBtnClick} className="noteCloseButton">
-            Close
+          <div>
+            <BiUndo />
           </div>
+          <div>
+            <BiRedo />
+          </div>
+        </div>
+        <div onClick={handleCloseBtnClick} className="noteCloseButton">
+          Close
         </div>
       </div>
     </div>
