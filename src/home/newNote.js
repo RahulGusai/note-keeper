@@ -1,5 +1,5 @@
 import './newNote.css';
-import { forwardRef, useEffect } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { MdOutlineColorLens } from 'react-icons/md';
 import { BsImage } from 'react-icons/bs';
 import { BiArchiveIn } from 'react-icons/bi';
@@ -9,6 +9,7 @@ import { GiPlainCircle } from 'react-icons/gi';
 import { MdInvertColorsOff } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 import { useRef } from 'react';
+import { handleUndoBtnClick, handleRedoBtnClick } from '../utils';
 
 function ComponentHandler(props, ref) {
   const { titleRef, contentRef } = ref;
@@ -28,6 +29,10 @@ function ComponentHandler(props, ref) {
 
   const newNoteContainerRef = useRef();
   const imageUploadRef = useRef();
+
+  const [undoStack, setUndoStack] = useState([]);
+  const [redoStack, setRedoStack] = useState([]);
+  const [lastKeyStrokeTimestamp, setLastKeyStrokeTimestamp] = useState(null);
 
   const { backgroundColor, image } = newNoteData;
 
@@ -116,7 +121,20 @@ function ComponentHandler(props, ref) {
     }
   }
 
-  function clearDefaultInputContent() {
+  function processContentInput() {
+    if (lastKeyStrokeTimestamp) {
+      if (Date.now() - lastKeyStrokeTimestamp > 500) {
+        setUndoStack((undoStack) => {
+          return [...undoStack, contentRef.current.innerText];
+        });
+      }
+    } else {
+      setUndoStack((undoStack) => {
+        return [...undoStack, contentRef.current.innerText];
+      });
+    }
+
+    setLastKeyStrokeTimestamp(Date.now());
     if (isDefaultTextLoaded.content) {
       contentRef.current.innerText = '';
       setisDefaultTextLoaded((isDefaultTextLoaded) => {
@@ -124,6 +142,7 @@ function ComponentHandler(props, ref) {
       });
     }
   }
+
   function toggleColorSelectorMenu() {
     setNewNoteFooterOptions((newNoteFooterOptions) => {
       return {
@@ -251,7 +270,7 @@ function ComponentHandler(props, ref) {
           className={contentClassesName}
           onKeyUp={handleKeyPressedOnContent}
           onClick={handleContentClick}
-          onBeforeInput={clearDefaultInputContent}
+          onBeforeInput={processContentInput}
         ></div>
       </div>
       <div className={footerClassesName}>
@@ -324,11 +343,29 @@ function ComponentHandler(props, ref) {
           <div>
             <BiArchiveIn onClick={handleArchiveIconClick} />
           </div>
-          <div>
-            <BiUndo />
+          <div
+            onClick={() => {
+              handleUndoBtnClick(
+                contentRef,
+                undoStack,
+                setUndoStack,
+                setRedoStack
+              );
+            }}
+          >
+            <BiUndo className={undoStack.length === 0 ? 'iconDisabled' : ''} />
           </div>
-          <div>
-            <BiRedo />
+          <div
+            onClick={() => {
+              handleRedoBtnClick(
+                contentRef,
+                setUndoStack,
+                redoStack,
+                setRedoStack
+              );
+            }}
+          >
+            <BiRedo className={redoStack.length === 0 ? 'iconDisabled' : ''} />
           </div>
         </div>
         <div onClick={handleCloseBtnClick} className="noteCloseButton">

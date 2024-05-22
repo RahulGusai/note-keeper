@@ -61,7 +61,6 @@ export function Note(props) {
 
   const updateNotes = useCallback(
     (img) => {
-      console.log('updating image');
       const [heightClassForGridView, heightClassForListView] = getHeightClass(
         contentRef,
         img

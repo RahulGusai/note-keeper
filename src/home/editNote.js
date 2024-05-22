@@ -12,6 +12,7 @@ import { archiveNote, updateBackgroundColor } from '../utils';
 import { GiPlainCircle } from 'react-icons/gi';
 import { MdInvertColorsOff } from 'react-icons/md';
 import { unArchiveNote } from '../utils';
+import { handleUndoBtnClick, handleRedoBtnClick } from '../utils';
 
 function FunctionComponent(props, ref) {
   const {
@@ -34,6 +35,11 @@ function FunctionComponent(props, ref) {
     showColorSelector: false,
     showMoreOptionsDialog: false,
   });
+
+  const [undoStack, setUndoStack] = useState([]);
+  const [redoStack, setRedoStack] = useState([]);
+  const [lastKeyStrokeTimestamp, setLastKeyStrokeTimestamp] = useState(null);
+
   const editNoteContainerRef = useRef(null);
   const imageUploadRef = useRef(null);
   const editingNoteImageRef = useRef(null);
@@ -124,7 +130,20 @@ function FunctionComponent(props, ref) {
     }
   }
 
-  function clearDefaultInputContent() {
+  function processContentInput() {
+    if (lastKeyStrokeTimestamp) {
+      if (Date.now() - lastKeyStrokeTimestamp > 500) {
+        setUndoStack((undoStack) => {
+          return [...undoStack, contentElem.current.innerText];
+        });
+      }
+    } else {
+      setUndoStack((undoStack) => {
+        return [...undoStack, contentElem.current.innerText];
+      });
+    }
+    setLastKeyStrokeTimestamp(Date.now());
+
     if (editNoteDefaultText.content) {
       contentElem.current.innerText = '';
       setEditNoteDefaultText((editNoteDefaultText) => {
@@ -352,7 +371,7 @@ function FunctionComponent(props, ref) {
           ref={contentElem}
           className="note-content"
           onKeyUp={handleKeyPressedContent}
-          onBeforeInput={clearDefaultInputContent}
+          onBeforeInput={processContentInput}
         ></div>
       </div>
       <div className="note-footer">
@@ -439,11 +458,29 @@ function FunctionComponent(props, ref) {
           <div>
             <CgMoreVerticalAlt onClick={toggleMoreOptionsDialog} />
           </div>
-          <div>
-            <BiUndo />
+          <div
+            onClick={() => {
+              handleUndoBtnClick(
+                contentElem,
+                undoStack,
+                setUndoStack,
+                setRedoStack
+              );
+            }}
+          >
+            <BiUndo className={undoStack.length === 0 ? 'iconDisabled' : ''} />
           </div>
-          <div>
-            <BiRedo />
+          <div
+            onClick={() => {
+              handleRedoBtnClick(
+                contentElem,
+                setUndoStack,
+                redoStack,
+                setRedoStack
+              );
+            }}
+          >
+            <BiRedo className={redoStack.length === 0 ? 'iconDisabled' : ''} />
           </div>
         </div>
         <div

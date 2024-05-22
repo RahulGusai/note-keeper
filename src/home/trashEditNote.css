@@ -65,9 +65,9 @@
   position: relative;
 }
 
-.trashEditNoteFooter > * {
+.trashEditNoteFooter > div > * {
   cursor: pointer;
-  scale: 1;
+  scale: 1.4;
   color: white;
   opacity: 0.8;
 }

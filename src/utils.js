@@ -227,6 +227,42 @@ function deleteNoteFromTrash(id, notes, setNotes) {
   localStorage.removeItem(id);
 }
 
+function handleUndoBtnClick(
+  contentElem,
+  undoStack,
+  setUndoStack,
+  setRedoStack
+) {
+  if (undoStack.length === 0) return;
+
+  const textToPushToRedo = contentElem.current.innerText;
+  contentElem.current.innerText = undoStack[undoStack.length - 1];
+  const updatedUndoStack = [...undoStack];
+  updatedUndoStack.pop();
+  setUndoStack(updatedUndoStack);
+  setRedoStack((redoStack) => {
+    return [...redoStack, textToPushToRedo];
+  });
+}
+
+function handleRedoBtnClick(
+  contentElem,
+  setUndoStack,
+  redoStack,
+  setRedoStack
+) {
+  if (redoStack.length === 0) return;
+
+  const textToPushToUndo = contentElem.current.innerText;
+  contentElem.current.innerText = redoStack[redoStack.length - 1];
+  const updatedRedoStack = [...redoStack];
+  updatedRedoStack.pop();
+  setRedoStack(updatedRedoStack);
+  setUndoStack((undoStack) => {
+    return [...undoStack, textToPushToUndo];
+  });
+}
+
 export {
   getHeightClass,
   archiveNote,
@@ -236,4 +272,6 @@ export {
   handleNoteClick,
   deleteNoteFromTrash,
   restoreNoteFromTrash,
+  handleUndoBtnClick,
+  handleRedoBtnClick,
 };
