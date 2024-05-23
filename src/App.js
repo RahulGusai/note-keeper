@@ -42,9 +42,11 @@ export default function App(props) {
   const [isSearchBarActive, setIsSearchBarActive] = useState(false);
   const [defaultFooter, setDefaultFooter] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [filteredNotes, setFilteredNotes] = useState({});
   const [notesListOptions, setNotesListOptions] = useState({
     showArchives: false,
     showTrash: false,
+    showFiltered: false,
   });
   const [gridView, setGridView] = useState(true);
 
@@ -74,7 +76,6 @@ export default function App(props) {
       );
 
       if (isArchived) {
-        console.log('true');
         const updatedArchives = {
           ...notes.archives,
           [newNoteId]: {
@@ -348,6 +349,7 @@ export default function App(props) {
         setLatestNoteId={setLatestNoteId}
       ></SelectedNotesOptions>
       <NavBar
+        notes={notes}
         sidebarState={isSidebarExpanded}
         changeSidebarState={setIsSidebarExpanded}
         isSearchBarActive={isSearchBarActive}
@@ -358,12 +360,12 @@ export default function App(props) {
         setDefaultFooter={setDefaultFooter}
         navBarOptions={navBarOptions}
         setNavBarOptions={setNavBarOptions}
+        setFilteredNotes={setFilteredNotes}
+        setNotesListOptions={setNotesListOptions}
       ></NavBar>
-
       <SideBar
         isSidebarExpanded={isSidebarExpanded}
         setIsSidebarExpanded={setIsSidebarExpanded}
-        setNotesListOptions={setNotesListOptions}
         setSelectedNoteIds={setSelectedNoteIds}
       ></SideBar>
 
@@ -401,6 +403,7 @@ export default function App(props) {
           setErrorMessage={setErrorMessage}
           notesListOptions={notesListOptions}
           gridView={gridView}
+          filteredNotes={filteredNotes}
         ></NoteList>
       </div>
 

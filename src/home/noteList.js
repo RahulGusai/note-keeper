@@ -19,12 +19,41 @@ export function NoteList(props) {
     setErrorMessage,
     notesListOptions,
     gridView,
+    filteredNotes,
   } = props;
 
   const { pinned, others, archives, trash } = notes;
   const notesClass = gridView ? 'notes gridView' : 'notes listView';
   const pinnedClass = gridView ? 'pinned' : 'pinned listView';
   const othersClass = gridView ? 'others' : 'others listView';
+
+  console.log(filteredNotes);
+  if (Object.keys(filteredNotes).length > 0) {
+    return (
+      <div className="noteListContainer">
+        <div className={notesClass}>
+          {Object.values(filteredNotes).map((filteredNote) => {
+            return (
+              <Note
+                setEditingNote={setEditingNote}
+                setTrashEditingNote={setTrashEditingNote}
+                note={filteredNote}
+                selectedNoteIds={selectedNoteIds}
+                setSelectedNoteIds={setSelectedNoteIds}
+                notes={notes}
+                setNotes={setNotes}
+                defaultFooter={defaultFooter}
+                setDefaultFooter={setDefaultFooter}
+                setErrorMessage={setErrorMessage}
+                gridView={gridView}
+                setLatestNoteId={setLatestNoteId}
+              ></Note>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   if (notesListOptions.showArchives) {
     if (Object.keys(archives).length === 0) {

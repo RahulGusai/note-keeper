@@ -9,11 +9,17 @@ import { IoMdClose } from 'react-icons/io';
 import { IoLogOutOutline } from 'react-icons/io5';
 import { MdEdit } from 'react-icons/md';
 import { CiGrid41 } from 'react-icons/ci';
+import { useRef, useState } from 'react';
+import useDebounce from '../home/useDebounce';
 
 export function NavBar(props) {
   const { setIsLoggedIn } = props;
 
+  const searchInputRef = useRef();
+  const [searchInput, setSearchInput] = useState('');
+
   const {
+    notes,
     sidebarState,
     changeSidebarState,
     isSearchBarActive,
@@ -23,9 +29,14 @@ export function NavBar(props) {
     setDefaultFooter,
     navBarOptions,
     setNavBarOptions,
+    setFilteredNotes,
+    setNotesListOptions,
   } = props;
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+
+  const delay = 500;
+  useDebounce(searchInput, delay, notes, setFilteredNotes);
 
   function handleNavBarContainerClick() {
     setDefaultFooter(true);
@@ -69,6 +80,23 @@ export function NavBar(props) {
 
   function switchView() {
     setGridView(!gridView);
+  }
+
+  function handleSearchBarChange(e) {
+    setSearchInput(e.target.value);
+  }
+
+  function handleSearchBarCloseIconClick() {
+    setIsSearchBarActive(!isSearchBarActive);
+    searchInputRef.current.value = '';
+    setSearchInput('');
+    setFilteredNotes({});
+    setNotesListOptions((notesListOptions) => {
+      return {
+        ...notesListOptions,
+        showFiltered: false,
+      };
+    });
   }
 
   return (
@@ -130,10 +158,15 @@ export function NavBar(props) {
         <AiOutlineSearch
           className={isSearchBarActive ? 'searchIcon active' : 'searchIcon'}
         />
-        <input disabled className="searchInput" placeholder="Search"></input>
+        <input
+          ref={searchInputRef}
+          onChange={handleSearchBarChange}
+          className="searchInput"
+          placeholder="Search"
+        ></input>
         <IoMdClose
           className={isSearchBarActive ? 'closeIcon active' : 'closeIcon'}
-          onClick={() => setIsSearchBarActive(!isSearchBarActive)}
+          onClick={handleSearchBarCloseIconClick}
         ></IoMdClose>
       </div>
 
