@@ -1,10 +1,12 @@
 import { useEffect, useCallback } from 'react';
+import { SelectedNotesOptions } from './selectedNotesOptions';
 
 export default function useDebounce(
   searchInput,
   delay,
   notes,
-  setFilteredNotes
+  setFilteredNotes,
+  setNotesListOptions
 ) {
   const filterNotesCallback = useCallback(() => {
     if (searchInput.length > 0) {
@@ -26,10 +28,22 @@ export default function useDebounce(
       });
 
       setFilteredNotes(filteredNotes);
+      setNotesListOptions((notesListOptions) => {
+        return {
+          ...notesListOptions,
+          showFiltered: true,
+        };
+      });
     } else {
       setFilteredNotes({});
+      setNotesListOptions((notesListOptions) => {
+        return {
+          ...notesListOptions,
+          showFiltered: false,
+        };
+      });
     }
-  }, [searchInput, notes, setFilteredNotes]);
+  }, [searchInput, notes, setFilteredNotes, setNotesListOptions]);
 
   useEffect(() => {
     const timeout = setTimeout(filterNotesCallback, delay);

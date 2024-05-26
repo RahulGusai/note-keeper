@@ -361,10 +361,12 @@ export default function App(props) {
         navBarOptions={navBarOptions}
         setNavBarOptions={setNavBarOptions}
         setFilteredNotes={setFilteredNotes}
+        notesListOptions={notesListOptions}
         setNotesListOptions={setNotesListOptions}
       ></NavBar>
       <SideBar
         isSidebarExpanded={isSidebarExpanded}
+        setNotesListOptions={setNotesListOptions}
         setIsSidebarExpanded={setIsSidebarExpanded}
         setSelectedNoteIds={setSelectedNoteIds}
       ></SideBar>

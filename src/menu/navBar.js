@@ -30,13 +30,14 @@ export function NavBar(props) {
     navBarOptions,
     setNavBarOptions,
     setFilteredNotes,
+    notesListOptions,
     setNotesListOptions,
   } = props;
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 
   const delay = 500;
-  useDebounce(searchInput, delay, notes, setFilteredNotes);
+  useDebounce(searchInput, delay, notes, setFilteredNotes, setNotesListOptions);
 
   function handleNavBarContainerClick() {
     setDefaultFooter(true);
@@ -98,6 +99,10 @@ export function NavBar(props) {
       };
     });
   }
+
+  const closeIconClassName = notesListOptions.showFiltered
+    ? `closeIcon active ${isSearchBarActive ? 'dark' : 'light'}`
+    : 'closeIcon';
 
   return (
     <div onClick={handleNavBarContainerClick} className="navBarContainer">
@@ -161,11 +166,11 @@ export function NavBar(props) {
         <input
           ref={searchInputRef}
           onChange={handleSearchBarChange}
-          className="searchInput"
+          className={isSearchBarActive ? 'searchInput active' : 'searchInput'}
           placeholder="Search"
         ></input>
         <IoMdClose
-          className={isSearchBarActive ? 'closeIcon active' : 'closeIcon'}
+          className={closeIconClassName}
           onClick={handleSearchBarCloseIconClick}
         ></IoMdClose>
       </div>

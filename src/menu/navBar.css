@@ -69,10 +69,6 @@
   background-color: white;
 }
 
-.searchBar:active {
-  background-color: white;
-}
-
 .searchIcon {
   scale: 1.7;
   color: white;
@@ -89,6 +85,11 @@
   border: none;
   outline: none;
   font-size: 16px;
+  color: white;
+}
+
+.searchBar .searchInput.active {
+  color: black;
 }
 
 .searchInput::placeholder {
@@ -104,7 +105,14 @@
 .closeIcon.active {
   display: inline;
   cursor: pointer;
+}
+
+.closeIcon.dark {
   color: #202124;
+}
+
+.closeIcon.light {
+  color: white;
 }
 
 .userProfileDialog {

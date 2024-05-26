@@ -27,8 +27,7 @@ export function NoteList(props) {
   const pinnedClass = gridView ? 'pinned' : 'pinned listView';
   const othersClass = gridView ? 'others' : 'others listView';
 
-  console.log(filteredNotes);
-  if (Object.keys(filteredNotes).length > 0) {
+  if (notesListOptions.showFiltered) {
     return (
       <div className="noteListContainer">
         <div className={notesClass}>
