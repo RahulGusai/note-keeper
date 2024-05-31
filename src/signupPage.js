@@ -10,7 +10,7 @@ import { Circles } from 'react-loader-spinner';
 export function SignupPage(props) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const formNavigation = useState({
+  const [formNavigation, setFormNavigation] = useState({
     viewOne: true,
     viewTwo: false,
   });
@@ -18,19 +18,45 @@ export function SignupPage(props) {
     emailInput: null,
   });
 
-  const emailInputRef = useRef();
+  const formInputs = {
+    emailInputRef: useRef(),
+    fullNameInputRef: useRef(),
+    pwdInputRef: useRef(),
+  };
 
-  async function handleSignupBtnClick(e) {
+  async function handleContinueBtnClick(e) {
     e.preventDefault();
+
+    if (formNavigation.viewOne) {
+      // TODO Validate the email here
+      setFormNavigation((formNavigation) => {
+        return {
+          ...formNavigation,
+          viewOne: false,
+          viewTwo: true,
+        };
+      });
+      return;
+    }
+
+    if (formNavigation.viewTwo) {
+      await createNewUser();
+      // TODO Do required state changes here
+    }
+  }
+
+  async function createNewUser() {
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: emailInputRef.current.value,
-        password: 'rahul321',
+        email: formInputs.emailInputRef.current.value,
+        password: formInputs.pwdInputRef.current.value,
       });
 
       if (error) {
         throw error;
       }
+
+      return data;
     } catch (error) {
       console.log(error.name);
       console.log(error.status);
@@ -60,18 +86,36 @@ export function SignupPage(props) {
         ></IoArrowBack>
         <div className="emailSignup">
           <h3>Create your free account</h3>
-          <div className="viewOneContainer">
-            <input
-              ref={emailInputRef}
-              className="emailInput"
-              type="textbox"
-              placeholder="Enter your email"
-            ></input>
-            {errorMessages.emailInput && (
-              <span>{errorMessages.emailInput}</span>
-            )}
-          </div>
-          <div onClick={handleSignupBtnClick} className="signupButton">
+          {formNavigation.viewOne && (
+            <div className="viewOneContainer">
+              <input
+                ref={formInputs.emailInputRef}
+                className="emailInput"
+                type="textbox"
+                placeholder="Enter your email"
+              ></input>
+              {errorMessages.emailInput && (
+                <span>{errorMessages.emailInput}</span>
+              )}
+            </div>
+          )}
+          {formNavigation.viewTwo && (
+            <div className="viewTwoContainer">
+              <input
+                ref={formInputs.fullNameInputRef}
+                className="fullNameInput"
+                type="textbox"
+                placeholder="First and Last Name"
+              ></input>
+              <input
+                ref={formInputs.pwdInputRef}
+                className="pwdInput"
+                type="textbox"
+                placeholder="Enter your password"
+              ></input>
+            </div>
+          )}
+          <div onClick={handleContinueBtnClick} className="continueButton">
             Continue
             <Circles
               height="30"
