@@ -1,17 +1,48 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import './loginPage.css';
 import googleLogo from './logos/google.png';
 import { PiDotOutlineFill } from 'react-icons/pi';
 import { useNavigate } from 'react-router-dom';
 import backgroundImage from './images/guestLoginBackground.jpg';
+import { supabase } from './supabase/supabaseClient';
+import { Circles } from 'react-loader-spinner';
 
-const loginBtnText = 'Continue';
 export function LoginPage(props) {
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const formInputs = {
+    emailInputRef: useRef(),
+    pwdInputRef: useRef(),
+  };
 
-  function handleLoginBtnClick() {
-    setShowPassword(!showPassword);
+  async function handleContinueBtnClick() {
+    if (!showPassword) {
+      setShowPassword(!showPassword);
+      return;
+    }
+
+    setIsLoading(true);
+    const user = await signInUser();
+    console.log(user);
+    setIsLoading(false);
+  }
+
+  async function signInUser() {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formInputs.emailInputRef.current.value,
+        password: formInputs.pwdInputRef.current.value,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function handleCreateAccountClick() {
@@ -32,17 +63,28 @@ export function LoginPage(props) {
         <div className="emailLogin">
           <h3>Login to continue</h3>
           <input
+            ref={formInputs.emailInputRef}
             className="emailInput"
             type="textbox"
             placeholder="Enter your email"
           ></input>
           <input
+            ref={formInputs.pwdInputRef}
             className={showPassword ? 'passwordInput show' : 'passwordInput'}
-            type="textbox"
+            type="password"
             placeholder="Password"
           ></input>
-          <div onClick={handleLoginBtnClick} className="loginButton">
-            {loginBtnText}
+          <div onClick={handleContinueBtnClick} className="continueButton">
+            {!isLoading && <span>Continue</span>}
+            <Circles
+              height="30"
+              width="80"
+              color="#ad8260"
+              ariaLabel="circles-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={isLoading}
+            />
           </div>
         </div>
 

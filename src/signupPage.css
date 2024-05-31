@@ -47,6 +47,12 @@
   gap: 2px;
 }
 
+.viewOneContainer span {
+  font-size: 11px;
+  color: #fdf0e7;
+  font-weight: 500;
+}
+
 .viewTwoContainer {
   width: 100%;
   display: flex;

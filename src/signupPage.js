@@ -8,6 +8,7 @@ import { useRef, useState } from 'react';
 import { Circles } from 'react-loader-spinner';
 
 export function SignupPage(props) {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [formNavigation, setFormNavigation] = useState({
@@ -17,6 +18,7 @@ export function SignupPage(props) {
   const [errorMessages, setErrorMessages] = useState({
     emailInput: null,
   });
+  const [validEmailAddr, setValidEmailAddr] = useState(null);
 
   const formInputs = {
     emailInputRef: useRef(),
@@ -28,7 +30,15 @@ export function SignupPage(props) {
     e.preventDefault();
 
     if (formNavigation.viewOne) {
-      // TODO Validate the email here
+      if (!emailRegex.test(formInputs.emailInputRef.current.value)) {
+        setErrorMessages((errorMessages) => {
+          return {
+            ...errorMessages,
+            emailInput: 'Please enter a valid email address',
+          };
+        });
+        return;
+      }
       setFormNavigation((formNavigation) => {
         return {
           ...formNavigation,
@@ -36,11 +46,16 @@ export function SignupPage(props) {
           viewTwo: true,
         };
       });
+      setValidEmailAddr(formInputs.emailInputRef.current.value);
+
       return;
     }
 
     if (formNavigation.viewTwo) {
-      await createNewUser();
+      setIsLoading(true);
+      const user = await createNewUser();
+      console.log(user);
+      setIsLoading(false);
       // TODO Do required state changes here
     }
   }
@@ -48,7 +63,7 @@ export function SignupPage(props) {
   async function createNewUser() {
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: formInputs.emailInputRef.current.value,
+        email: validEmailAddr,
         password: formInputs.pwdInputRef.current.value,
       });
 
@@ -58,15 +73,27 @@ export function SignupPage(props) {
 
       return data;
     } catch (error) {
-      console.log(error.name);
-      console.log(error.status);
-      console.log(error.message);
       console.log(error);
     }
   }
 
   function handleBackIconClick() {
-    navigate('/');
+    if (formNavigation.viewOne) navigate('/');
+    if (formNavigation.viewTwo) {
+      setErrorMessages((errorMessages) => {
+        return {
+          ...errorMessages,
+          emailInput: null,
+        };
+      });
+      setFormNavigation((formNavigation) => {
+        return {
+          ...formNavigation,
+          viewOne: true,
+          viewTwo: false,
+        };
+      });
+    }
   }
 
   const loginPageStyle = {
@@ -110,13 +137,13 @@ export function SignupPage(props) {
               <input
                 ref={formInputs.pwdInputRef}
                 className="pwdInput"
-                type="textbox"
+                type="password"
                 placeholder="Enter your password"
               ></input>
             </div>
           )}
           <div onClick={handleContinueBtnClick} className="continueButton">
-            Continue
+            {!isLoading && <span>Continue</span>}
             <Circles
               height="30"
               width="80"
