@@ -40,13 +40,13 @@ const AppRoutes = () => {
           }
         />
         <Route path="/signup" element={<SignupPage></SignupPage>} />
-        {/* <Route
+        <Route
           path="/guest"
           element={<GuestLogin setIsLoggedIn={setIsLoggedIn}></GuestLogin>}
-        /> */}
+        />
         <Route
           path="/"
-          element={<GuestLogin setIsLoggedIn={setIsLoggedIn}></GuestLogin>}
+          element={<LoginPage setIsLoggedIn={setIsLoggedIn}></LoginPage>}
         />
       </Routes>
     </Router>

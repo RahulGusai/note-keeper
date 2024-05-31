@@ -3,6 +3,7 @@ import './loginPage.css';
 import googleLogo from './logos/google.png';
 import { PiDotOutlineFill } from 'react-icons/pi';
 import { useNavigate } from 'react-router-dom';
+import backgroundImage from './images/guestLoginBackground.jpg';
 
 const loginBtnText = 'Continue';
 export function LoginPage(props) {
@@ -13,12 +14,28 @@ export function LoginPage(props) {
     setShowPassword(!showPassword);
   }
 
+  function handleCreateAccountClick() {
+    navigate('./signup');
+  }
+
+  const loginPageStyle = {
+    backgroundImage: `url(${backgroundImage})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    width: '100%',
+    height: '100vh',
+  };
+
   return (
-    <div className="loginPage">
+    <div style={loginPageStyle} className="loginPage">
       <div className="loginForm">
         <div className="emailLogin">
           <h3>Login to continue</h3>
-          <input type="textbox" placeholder="Enter your email"></input>
+          <input
+            className="emailInput"
+            type="textbox"
+            placeholder="Enter your email"
+          ></input>
           <input
             className={showPassword ? 'passwordInput show' : 'passwordInput'}
             type="textbox"
@@ -29,7 +46,7 @@ export function LoginPage(props) {
           </div>
         </div>
 
-        <div>Or continue with:</div>
+        <div className="separatorText">Or continue with:</div>
 
         <div className="socialSignup">
           <div className="googleLogin">
@@ -40,7 +57,7 @@ export function LoginPage(props) {
         <div className="options">
           <span>Can’t login ?</span>
           <PiDotOutlineFill></PiDotOutlineFill>
-          <span>Create a account </span>
+          <span onClick={handleCreateAccountClick}>Create a account </span>
         </div>
         <span
           onClick={() => {

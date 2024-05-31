@@ -1,24 +1,22 @@
 .guestLoginPage {
-  width: 100%;
-  height: 100vh;
-  background-color: teal;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: 'Roboto Slab', serif;
 }
 
-.loginForm {
+.guestLoginForm {
   position: relative;
   margin-bottom: 10%;
   padding: 30px;
   height: auto;
   width: 400px;
-  background-color: white;
+  background-color: #ad8260;
   display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: center;
+  border-radius: 5px;
 }
 
 .guestLoginPage .backIcon {
@@ -27,6 +25,7 @@
   top: 10px;
   scale: 1.3;
   cursor: pointer;
+  color: #fdf0e7;
 }
 
 .backIcon:hover {
@@ -41,6 +40,11 @@
   gap: 15px;
 }
 
+.nameLogin h3 {
+  color: #fdf0e7;
+  font-size: 19px;
+}
+
 .nameLogin .nameInput {
   width: 100%;
   display: flex;
@@ -51,9 +55,10 @@
 .nameInput input {
   width: 100%;
   height: 40px;
+  border: none;
   border: 2px solid grey;
-  border-radius: 4px;
   cursor: text;
+  border-radius: 4px;
 }
 
 .nameInput span {
@@ -65,11 +70,13 @@
 .nameLogin .loginButton {
   width: 100%;
   height: 40px;
-  background-color: blue;
+  background-color: #fdf0e7;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #ad8260;
+  font-size: 14px;
+  font-weight: 600;
   border-radius: 4px;
   cursor: pointer;
 }
