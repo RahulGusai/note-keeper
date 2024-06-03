@@ -25,6 +25,18 @@
   gap: 15px;
   align-items: center;
 }
+.emailLogin .inputWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputWrapper > span {
+  color: black;
+  font-size: 11px;
+  font-weight: bold;
+  padding-left: 5px;
+}
 
 .emailLogin h3 {
   color: #fdf0e7;
@@ -62,6 +74,11 @@
   font-weight: 600;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.emailLogin > span {
+  color: black;
+  font-weight: bold;
 }
 
 .separatorText {

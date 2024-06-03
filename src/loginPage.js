@@ -8,8 +8,15 @@ import { supabase } from './supabase/supabaseClient';
 import { Circles } from 'react-loader-spinner';
 
 export function LoginPage(props) {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  const { setUserDetails, setNotes } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessages, setErrorMessages] = useState({
+    emailInput: null,
+    login: null,
+  });
   const navigate = useNavigate();
   const formInputs = {
     emailInputRef: useRef(),
@@ -22,9 +29,25 @@ export function LoginPage(props) {
       return;
     }
 
+    if (!emailRegex.test(formInputs.emailInputRef.current.value)) {
+      setErrorMessages((errorMessages) => {
+        return {
+          ...errorMessages,
+          emailInput: 'Please enter a valid email address',
+          login: null,
+        };
+      });
+      return;
+    }
+
     setIsLoading(true);
     const user = await signInUser();
-    console.log(user);
+    if (user) {
+      setUserDetails({ fullName: user.user_metadata.full_name });
+      // TODO Set notes state here after fetching from the backend if login state was set(currently setting to empty). Otherwise, skip this step
+      setNotes({ others: {}, pinned: {}, archives: {}, trash: {} });
+      setErrorMessages({ emailInput: null, login: null });
+    }
     setIsLoading(false);
   }
 
@@ -38,10 +61,16 @@ export function LoginPage(props) {
       if (error) {
         throw error;
       }
-
-      return data;
+      const { user } = data;
+      return user;
     } catch (error) {
-      console.log(error);
+      setErrorMessages((errorMessage) => {
+        return {
+          ...errorMessage,
+          login: error.message,
+          emailInput: null,
+        };
+      });
     }
   }
 
@@ -62,12 +91,17 @@ export function LoginPage(props) {
       <div className="loginForm">
         <div className="emailLogin">
           <h3>Login to continue</h3>
-          <input
-            ref={formInputs.emailInputRef}
-            className="emailInput"
-            type="textbox"
-            placeholder="Enter your email"
-          ></input>
+          <div className="inputWrapper">
+            <input
+              ref={formInputs.emailInputRef}
+              className="emailInput"
+              type="textbox"
+              placeholder="Enter your email"
+            ></input>
+            {errorMessages.emailInput && (
+              <span>{errorMessages.emailInput}</span>
+            )}
+          </div>
           <input
             ref={formInputs.pwdInputRef}
             className={showPassword ? 'passwordInput show' : 'passwordInput'}
@@ -86,6 +120,7 @@ export function LoginPage(props) {
               visible={isLoading}
             />
           </div>
+          {errorMessages.login && <span>{errorMessages.login}</span>}
         </div>
 
         <div className="separatorText">Or continue with:</div>

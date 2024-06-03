@@ -23,11 +23,6 @@
     "semantic-ui-react": "^2.1.5",
     "web-vitals": "^2.1.4"
   },
-  "overrides": {
-    "@supabase/supabase-js": {
-      "@supabase/auth-js": "2.61.0"
-    }
-  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

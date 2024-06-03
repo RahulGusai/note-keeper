@@ -63,8 +63,8 @@
 
 .nameInput span {
   font-size: 11px;
-  color: red;
-  font-weight: 500;
+  color: black;
+  font-weight: bold;
 }
 
 .nameLogin .loginButton {

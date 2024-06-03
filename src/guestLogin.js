@@ -3,32 +3,42 @@ import { useNavigate } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import backgroundImage from './images/guestLoginBackground.jpg';
 import { IoArrowBack } from 'react-icons/io5';
+import { supabase } from './supabase/supabaseClient';
 
 export function GuestLogin(props) {
-  const { setIsLoggedIn } = props;
+  const { setUserDetails, setNotes } = props;
   const navigate = useNavigate();
   const nameInputRef = useRef(null);
   const [errorMessages, setErrorMessages] = useState({
     nameInput: null,
+    login: null,
   });
 
   function handleBackIconClick() {
     navigate('/');
   }
 
-  function setUserinfoAndNotes() {
-    localStorage.setItem(
-      'userInfo',
-      JSON.stringify({ isGuest: true, name: nameInputRef.current.value.trim() })
-    );
+  async function createAnonymousUser() {
+    try {
+      const { data, error } = await supabase.auth.signInAnonymously({
+        options: {
+          data: {
+            full_name: nameInputRef.current.value,
+          },
+        },
+      });
 
-    localStorage.setItem(
-      'notes',
-      JSON.stringify({ others: {}, pinned: {}, archives: {}, trash: {} })
-    );
+      if (error) {
+        throw error;
+      }
+      const { user } = data;
+      return user;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  function handleLoginBtnClick() {
+  async function handleLoginBtnClick() {
     if (nameInputRef.current.value.trim() === '') {
       setErrorMessages((errorMessages) => {
         return {
@@ -36,12 +46,14 @@ export function GuestLogin(props) {
           nameInput: 'Enter the name to continue',
         };
       });
-      nameInputRef.current.style.border = '2px solid red';
+      nameInputRef.current.style.border = '2px solid black';
       return;
     }
 
-    setUserinfoAndNotes();
-    setIsLoggedIn(true);
+    const user = await createAnonymousUser();
+    setUserDetails({ fullName: user.user_metadata.full_name });
+    setNotes({ others: {}, pinned: {}, archives: {}, trash: {} });
+    setErrorMessages({ emailInput: null, login: null });
   }
 
   const loginPageStyle = {

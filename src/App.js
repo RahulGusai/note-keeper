@@ -13,7 +13,7 @@ import { getHeightClass } from './utils';
 import { SelectedNotesOptions } from './home/selectedNotesOptions';
 
 export default function App(props) {
-  const { setIsLoggedIn, userNotes } = props;
+  const { notes, setNotes, userDetails, setUserDetails } = props;
   const newNoterefs = {
     titleRef: useRef(null),
     contentRef: useRef(null),
@@ -27,7 +27,7 @@ export default function App(props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
   const [trashEditingNote, setTrashEditingNote] = useState(null);
-  const [notes, setNotes] = useState(userNotes);
+  // const [notes, setNotes] = useState(userNotes);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [isDefaultTextLoaded, setisDefaultTextLoaded] = useState({
     content: true,
@@ -316,9 +316,9 @@ export default function App(props) {
     }
   }
 
-  useEffect(() => {
-    localStorage.setItem('notes', JSON.stringify(notes));
-  }, [notes]);
+  // useEffect(() => {
+  //   localStorage.setItem('notes', JSON.stringify(notes));
+  // }, [notes]);
 
   return (
     <div
@@ -354,7 +354,8 @@ export default function App(props) {
         changeSidebarState={setIsSidebarExpanded}
         isSearchBarActive={isSearchBarActive}
         setIsSearchBarActive={setIsSearchBarActive}
-        setIsLoggedIn={setIsLoggedIn}
+        userDetails={userDetails}
+        setUserDetails={setUserDetails}
         gridView={gridView}
         setGridView={setGridView}
         setDefaultFooter={setDefaultFooter}

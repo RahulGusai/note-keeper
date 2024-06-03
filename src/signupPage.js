@@ -8,6 +8,7 @@ import { useRef, useState } from 'react';
 import { Circles } from 'react-loader-spinner';
 
 export function SignupPage(props) {
+  const { setUserDetails, setNotes } = props;
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +18,7 @@ export function SignupPage(props) {
   });
   const [errorMessages, setErrorMessages] = useState({
     emailInput: null,
+    signUp: null,
   });
   const [validEmailAddr, setValidEmailAddr] = useState(null);
 
@@ -53,10 +55,16 @@ export function SignupPage(props) {
 
     if (formNavigation.viewTwo) {
       setIsLoading(true);
+
       const user = await createNewUser();
-      console.log(user);
+      if (user) {
+        const notes = { others: {}, pinned: {}, archives: {}, trash: {} };
+        await supabase.from('notes').insert({ user_id: user.id, notes });
+        setUserDetails({ fullName: user.user_metadata.full_name });
+        setNotes(notes);
+        setErrorMessages({ emailInput: null, login: null });
+      }
       setIsLoading(false);
-      // TODO Do required state changes here
     }
   }
 
@@ -65,15 +73,27 @@ export function SignupPage(props) {
       const { data, error } = await supabase.auth.signUp({
         email: validEmailAddr,
         password: formInputs.pwdInputRef.current.value,
+        options: {
+          data: {
+            full_name: formInputs.fullNameInputRef.current.value,
+          },
+        },
       });
 
       if (error) {
         throw error;
       }
-
-      return data;
+      const { user } = data;
+      return user;
     } catch (error) {
-      console.log(error);
+      setErrorMessages((errorMessages) => {
+        return {
+          ...errorMessages,
+          signUp: error.message,
+          emailInput: false,
+        };
+      });
+      return null;
     }
   }
 
@@ -154,6 +174,7 @@ export function SignupPage(props) {
               visible={isLoading}
             />
           </div>
+          {errorMessages.signUp && <span>{errorMessages.signUp}</span>}
         </div>
 
         <div className="separatorText">Or continue with:</div>

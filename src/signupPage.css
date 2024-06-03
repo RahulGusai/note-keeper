@@ -40,6 +40,13 @@
   color: #fdf0e7;
 }
 
+.emailSignup > span {
+  color: black;
+  font-size: 11px;
+  font-weight: bold;
+  padding-left: 5px;
+}
+
 .emailSignup .viewOneContainer {
   width: 100%;
   display: flex;
@@ -48,9 +55,10 @@
 }
 
 .viewOneContainer span {
+  color: black;
   font-size: 11px;
-  color: #fdf0e7;
-  font-weight: 500;
+  font-weight: bold;
+  padding-left: 5px;
 }
 
 .viewTwoContainer {
