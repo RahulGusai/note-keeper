@@ -1,3 +1,5 @@
+import { supabase } from './supabase/supabaseClient';
+
 function getContentToBeDisplayed(string) {
   const lines = string.split('\n');
   if (lines.length <= 24) {
@@ -263,6 +265,42 @@ function handleRedoBtnClick(
   });
 }
 
+async function fetchUserNotes(user) {
+  try {
+    const { data, error } = await supabase
+      .from('notes')
+      .select('notes')
+      .eq('user_id', user.id)
+      .limit(1)
+      .single(1);
+    if (error) {
+      throw error;
+    }
+    return data.notes;
+  } catch (error) {
+    console.log(error.message);
+    return null;
+  }
+}
+
+async function updateNotesForUser(userId, updatedNotes) {
+  try {
+    const { data, error } = await supabase
+      .from('notes')
+      .update({ notes: updatedNotes })
+      .eq('user_id', userId);
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error updating notes:', error);
+    return null;
+  }
+}
+
 export {
   getHeightClass,
   archiveNote,
@@ -274,4 +312,6 @@ export {
   restoreNoteFromTrash,
   handleUndoBtnClick,
   handleRedoBtnClick,
+  fetchUserNotes,
+  updateNotesForUser,
 };

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import backgroundImage from './images/guestLoginBackground.jpg';
 import { supabase } from './supabase/supabaseClient';
 import { Circles } from 'react-loader-spinner';
+import { fetchUserNotes } from './utils';
 
 export function LoginPage(props) {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -42,10 +43,10 @@ export function LoginPage(props) {
 
     setIsLoading(true);
     const user = await signInUser();
-    if (user) {
-      setUserDetails({ fullName: user.user_metadata.full_name });
-      // TODO Set notes state here after fetching from the backend if login state was set(currently setting to empty). Otherwise, skip this step
-      setNotes({ others: {}, pinned: {}, archives: {}, trash: {} });
+    const notes = await fetchUserNotes(user);
+    if (user && notes) {
+      setUserDetails({ id: user.id, fullName: user.user_metadata.full_name });
+      setNotes(notes);
       setErrorMessages({ emailInput: null, login: null });
     }
     setIsLoading(false);

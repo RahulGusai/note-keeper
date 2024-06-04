@@ -20,6 +20,7 @@ import {
 
 import './note.css';
 import { useCallback } from 'react';
+import { supabase } from '../supabase/supabaseClient';
 
 export function Note(props) {
   const {
@@ -60,13 +61,13 @@ export function Note(props) {
   const isSelected = selectedNoteIds.has(note.id);
 
   const updateNotes = useCallback(
-    (img) => {
+    (imageData) => {
       const [heightClassForGridView, heightClassForListView] = getHeightClass(
         contentRef,
-        img
+        imageData
       );
 
-      const aspectRatio = img.width / img.height;
+      const aspectRatio = imageData.width / imageData.height;
       const maxHeightForGridView = Math.floor(250 / aspectRatio);
       const maxHeightForListView = Math.floor(600 / aspectRatio);
 
@@ -79,9 +80,9 @@ export function Note(props) {
         const updatedNote = {
           ...updatedOthers[id],
           image: {
-            src: img.src,
-            width: img.width,
-            height: img.height,
+            src: imageData.src,
+            width: imageData.width,
+            height: imageData.height,
             maxHeightForGridView,
             maxHeightForListView,
           },
@@ -95,9 +96,9 @@ export function Note(props) {
         const updatedNote = {
           ...updatedPinned[id],
           image: {
-            src: img.src,
-            width: img.width,
-            height: img.height,
+            src: imageData.src,
+            width: imageData.width,
+            height: imageData.height,
             maxHeightForGridView,
             maxHeightForListView,
           },
@@ -111,9 +112,9 @@ export function Note(props) {
         const updatedNote = {
           ...updatedArchives[id],
           image: {
-            src: img.src,
-            width: img.width,
-            height: img.height,
+            src: imageData.src,
+            width: imageData.width,
+            height: imageData.height,
             maxHeightForGridView,
             maxHeightForListView,
           },
@@ -127,9 +128,9 @@ export function Note(props) {
         const updatedNote = {
           ...updatedTrash[id],
           image: {
-            src: img.src,
-            width: img.width,
-            height: img.height,
+            src: imageData.src,
+            width: imageData.width,
+            height: imageData.height,
             maxHeightForGridView,
             maxHeightForListView,
           },
@@ -147,20 +148,6 @@ export function Note(props) {
     },
     [id, notes, setNotes]
   );
-
-  useEffect(() => {
-    if (!isImageLoaded) {
-      const storedImage = localStorage.getItem(id);
-      if (storedImage) {
-        const img = new Image();
-        img.src = storedImage;
-        img.onload = function () {
-          updateNotes(img);
-        };
-      }
-      setIsImageLoaded(true);
-    }
-  }, [id, image, isImageLoaded, updateNotes]);
 
   useEffect(() => {
     if (image) {
@@ -301,7 +288,7 @@ export function Note(props) {
     imageUploadRef.current.click();
   };
 
-  const handleImageUpload = (event) => {
+  async function handleImageUpload(event) {
     const file = event.target.files[0];
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
     const fileExtension = file.name
@@ -336,16 +323,30 @@ export function Note(props) {
         );
         return;
       }
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = function () {
-        const base64data = reader.result;
-        localStorage.setItem(id, base64data);
-        updateNotes(img);
-      };
+      updateNotes(img);
     };
-  };
+
+    const fileName = `${id}${fileExtension}`;
+    try {
+      const { error } = await supabase.storage
+        .from('note-images')
+        .upload(fileName, file, {
+          upsert: true,
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      const { publicUrl } = supabase.storage
+        .from('note-images')
+        .getPublicUrl(fileName).data;
+      img.src = publicUrl;
+      updateNotes(img);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   function updateFooterOptions(updatedOptions) {
     setFooterOptions((footerOptions) => {

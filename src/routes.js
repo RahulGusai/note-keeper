@@ -11,32 +11,25 @@ import { LoginPage } from './loginPage';
 import { GuestLogin } from './guestLogin';
 import App from './App';
 import { supabase } from './supabase/supabaseClient';
+import { fetchUserNotes } from './utils';
 
 const AppRoutes = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [notes, setNotes] = useState(null);
 
   async function checkIfUserIsLoggedIn() {
-    const authData = JSON.parse(
-      localStorage.getItem('sb-xspfwwjrlszbhzewlxrr-auth-token')
-    );
-    if (!authData) return;
-
-    const { access_token: accessToken } = authData;
-    if (!accessToken) return;
-
     try {
-      const { data, error } = await supabase.auth.getUser(accessToken);
+      const { data, error } = await supabase.auth.getUser();
 
       if (error) {
         throw error;
       }
 
-      if (data) {
-        const { user } = data;
-        setUserDetails({ fullName: user.user_metadata.full_name });
-        // TODO fetch the notes from the backend fo this user if non anonymous. Setting it to the default for now.
-        setNotes({ others: {}, pinned: {}, archives: {}, trash: {} });
+      const { user } = data;
+      const notes = await fetchUserNotes(user);
+      if (user && notes) {
+        setUserDetails({ id: user.id, fullName: user.user_metadata.full_name });
+        setNotes(notes);
       }
     } catch (error) {
       console.log(error.message);

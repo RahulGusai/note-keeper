@@ -51,7 +51,7 @@ export function GuestLogin(props) {
     }
 
     const user = await createAnonymousUser();
-    setUserDetails({ fullName: user.user_metadata.full_name });
+    setUserDetails({ id: user.id, fullName: user.user_metadata.full_name });
     setNotes({ others: {}, pinned: {}, archives: {}, trash: {} });
     setErrorMessages({ emailInput: null, login: null });
   }

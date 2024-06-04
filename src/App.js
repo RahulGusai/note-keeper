@@ -3,7 +3,6 @@ import { NewNote } from './home/newNote';
 import './home.css';
 import { useEffect, useRef, useState } from 'react';
 import { NoteList } from './home/noteList';
-import { notes_list } from './data/notes';
 import { NavBar } from './menu/navBar';
 import { SideBar } from './menu/sideBar';
 import { EditNote } from './home/editNote';
@@ -11,6 +10,7 @@ import { TrashEditingNote } from './home/trashEditNote';
 import { ErrorDialog } from './home/errorDialog';
 import { getHeightClass } from './utils';
 import { SelectedNotesOptions } from './home/selectedNotesOptions';
+import { updateNotesForUser } from './utils';
 
 export default function App(props) {
   const { notes, setNotes, userDetails, setUserDetails } = props;
@@ -27,7 +27,6 @@ export default function App(props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
   const [trashEditingNote, setTrashEditingNote] = useState(null);
-  // const [notes, setNotes] = useState(userNotes);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [isDefaultTextLoaded, setisDefaultTextLoaded] = useState({
     content: true,
@@ -316,9 +315,13 @@ export default function App(props) {
     }
   }
 
-  // useEffect(() => {
-  //   localStorage.setItem('notes', JSON.stringify(notes));
-  // }, [notes]);
+  useEffect(() => {
+    async function updateNotes() {
+      const { id } = userDetails;
+      await updateNotesForUser(id, notes);
+    }
+    updateNotes();
+  }, [notes, userDetails]);
 
   return (
     <div

@@ -60,7 +60,7 @@ export function SignupPage(props) {
       if (user) {
         const notes = { others: {}, pinned: {}, archives: {}, trash: {} };
         await supabase.from('notes').insert({ user_id: user.id, notes });
-        setUserDetails({ fullName: user.user_metadata.full_name });
+        setUserDetails({ id: user.id, fullName: user.user_metadata.full_name });
         setNotes(notes);
         setErrorMessages({ emailInput: null, login: null });
       }
