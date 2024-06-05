@@ -28,7 +28,11 @@ const AppRoutes = () => {
       const { user } = data;
       const notes = await fetchUserNotes(user);
       if (user && notes) {
-        setUserDetails({ id: user.id, fullName: user.user_metadata.full_name });
+        setUserDetails({
+          id: user.id,
+          fullName: user.user_metadata.full_name,
+          isAnonymous: user.is_anonymous,
+        });
         setNotes(notes);
       }
     } catch (error) {

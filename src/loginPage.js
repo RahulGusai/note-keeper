@@ -45,7 +45,11 @@ export function LoginPage(props) {
     const user = await signInUser();
     const notes = await fetchUserNotes(user);
     if (user && notes) {
-      setUserDetails({ id: user.id, fullName: user.user_metadata.full_name });
+      setUserDetails({
+        id: user.id,
+        fullName: user.user_metadata.full_name,
+        isAnonymous: user.is_anonymous,
+      });
       setNotes(notes);
       setErrorMessages({ emailInput: null, login: null });
     }
@@ -72,6 +76,7 @@ export function LoginPage(props) {
           emailInput: null,
         };
       });
+      return null;
     }
   }
 

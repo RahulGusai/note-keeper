@@ -334,10 +334,8 @@ export function Note(props) {
         setNotes,
         `${publicUrl}?t=${Date.now()}`
       );
-      // img.src = publicUrl;
-      // updateNotes(img);
     } catch (error) {
-      console.log(error);
+      console.log(`Failed to upload the image: ${error.message}`);
     }
   }
 

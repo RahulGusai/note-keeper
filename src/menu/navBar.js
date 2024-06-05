@@ -11,6 +11,7 @@ import { MdEdit } from 'react-icons/md';
 import { CiGrid41 } from 'react-icons/ci';
 import { useRef, useState } from 'react';
 import useDebounce from '../home/useDebounce';
+import { supabase } from '../supabase/supabaseClient';
 
 export function NavBar(props) {
   const { userDetails, setUserDetails } = props;
@@ -69,9 +70,16 @@ export function NavBar(props) {
     });
   }
 
-  function signOutUser() {
-    //TODO Call suth signout method
-    localStorage.removeItem('sb-xspfwwjrlszbhzewlxrr-auth-token');
+  async function signOutUser() {
+    await supabase.auth.signOut();
+    if (userDetails.isAnonymous) {
+      // TODO Delete the user via admin API
+
+      await supabase
+        .from('notes')
+        .update({ isDeleted: true })
+        .eq('user_id', userDetails.id);
+    }
     setUserDetails(null);
   }
 

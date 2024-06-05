@@ -34,7 +34,14 @@ export function GuestLogin(props) {
       const { user } = data;
       return user;
     } catch (error) {
-      console.log(error);
+      setErrorMessages((errorMessages) => {
+        return {
+          ...errorMessages,
+          login: error.message,
+          nameInput: null,
+        };
+      });
+      return null;
     }
   }
 
@@ -44,6 +51,7 @@ export function GuestLogin(props) {
         return {
           ...errorMessages,
           nameInput: 'Enter the name to continue',
+          login: null,
         };
       });
       nameInputRef.current.style.border = '2px solid black';
@@ -51,9 +59,17 @@ export function GuestLogin(props) {
     }
 
     const user = await createAnonymousUser();
-    setUserDetails({ id: user.id, fullName: user.user_metadata.full_name });
-    setNotes({ others: {}, pinned: {}, archives: {}, trash: {} });
-    setErrorMessages({ emailInput: null, login: null });
+    if (user) {
+      const notes = { others: {}, pinned: {}, archives: {}, trash: {} };
+      await supabase.from('notes').insert({ user_id: user.id, notes });
+      setUserDetails({
+        id: user.id,
+        fullName: user.user_metadata.full_name,
+        isAnonymous: user.is_anonymous,
+      });
+      setNotes(notes);
+      setErrorMessages({ emailInput: null, login: null });
+    }
   }
 
   const loginPageStyle = {
