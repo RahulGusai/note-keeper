@@ -11,6 +11,7 @@ import { ErrorDialog } from './home/errorDialog';
 import { getHeightClass } from './utils';
 import { SelectedNotesOptions } from './home/selectedNotesOptions';
 import { updateNotesForUser } from './utils';
+import { supabase } from './supabase/supabaseClient';
 
 export default function App(props) {
   const { notes, setNotes, userDetails, setUserDetails } = props;
@@ -55,20 +56,21 @@ export default function App(props) {
   });
 
   const [newNoteData, setNewNoteData] = useState({
+    newNoteId: Math.floor(Math.random() * 1000) + 1,
     backgroundColor: 'transparent',
     image: null,
-    imgBase64: null,
   });
+
   const [newNoteFooterOptions, setNewNoteFooterOptions] = useState({
     showColorSelector: false,
   });
 
-  function createNote(isArchived = false) {
+  async function createNote(isArchived = false) {
     const { titleRef, contentRef } = newNoterefs;
-    const { image, imgBase64, backgroundColor } = newNoteData;
+    const { newNoteId, image, backgroundColor } = newNoteData;
+    // const newNoteId = Math.floor(Math.random() * 1000) + 1;
 
     if (!isDefaultTextLoaded.title || !isDefaultTextLoaded.content || image) {
-      const newNoteId = Math.floor(Math.random() * 1000) + 1;
       const [heightClassForGridView, heightClassForListView] = getHeightClass(
         contentRef,
         image
@@ -126,7 +128,6 @@ export default function App(props) {
         });
         setLatestNoteId(newNoteId);
       }
-      if (imgBase64) localStorage.setItem(newNoteId, imgBase64);
     }
 
     setIsExpanded(false);
@@ -136,15 +137,29 @@ export default function App(props) {
         showColorSelector: false,
       };
     });
+
     setNewNoteData((newNoteData) => {
       return {
         ...newNoteData,
+        newNoteId: Math.floor(Math.random() * 1000) + 1,
         backgroundColor: 'transparent',
         image: null,
-        imgBase64: null,
       };
     });
   }
+
+  // useEffect(() => {
+  //   async function renameImgFileName() {
+  //     await supabase.storage
+  //       .from('note-images')
+  //       .move('new-note-image', `${newNoteId}`);
+  //   }
+
+  //   const { image } = newNoteData;
+  //   if (image) {
+  //     renameImgFileName();
+  //   }
+  // }, [newNoteData]);
 
   function handleHomeContainerClick(e) {
     const bodyClasses = [
@@ -205,7 +220,7 @@ export default function App(props) {
 
       const [heightClassForGridView, heightClassForListView] = getHeightClass(
         contentElem,
-        editingNote.image
+        image
       );
 
       if (others.hasOwnProperty(id)) {
@@ -215,7 +230,7 @@ export default function App(props) {
             id: id,
             title: title,
             content: content,
-            image: editingNote.image,
+            image: { ...image, ...others[id].image },
             heightClass: {
               gridView: heightClassForGridView,
               listView: heightClassForListView,
@@ -231,7 +246,7 @@ export default function App(props) {
             id: id,
             title: title,
             content: content,
-            image: editingNote.image,
+            image: { ...image, ...pinned[id].image },
             heightClass: {
               gridView: heightClassForGridView,
               listView: heightClassForListView,
@@ -394,6 +409,8 @@ export default function App(props) {
           newNoteFooterOptions={newNoteFooterOptions}
           setNewNoteFooterOptions={setNewNoteFooterOptions}
           createNote={createNote}
+          notes={notes}
+          setNotes={setNotes}
         ></NewNote>
         <NoteList
           setEditingNote={setEditingNote}

@@ -16,6 +16,7 @@ import {
   updateBackgroundColor,
   getContentToBeDisplayed,
   handleNoteClick,
+  updateNoteImageSource,
 } from '../utils';
 
 import './note.css';
@@ -56,7 +57,6 @@ export function Note(props) {
     bgColorSelector: false,
     moreOptionsDialog: false,
   });
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const isSelected = selectedNoteIds.has(note.id);
 
@@ -71,82 +71,69 @@ export function Note(props) {
       const maxHeightForGridView = Math.floor(250 / aspectRatio);
       const maxHeightForListView = Math.floor(600 / aspectRatio);
 
-      const { others, pinned, archives, trash } = notes;
-      let updatedOthers = { ...others };
-      let updatedPinned = { ...pinned };
-      let updatedArchives = { ...archives };
-      let updatedTrash = { ...trash };
-      if (others.hasOwnProperty(id)) {
-        const updatedNote = {
-          ...updatedOthers[id],
-          image: {
-            src: imageData.src,
-            width: imageData.width,
-            height: imageData.height,
-            maxHeightForGridView,
-            maxHeightForListView,
-          },
-          heightClass: {
-            gridView: heightClassForGridView,
-            listView: heightClassForListView,
-          },
-        };
-        updatedOthers = { ...updatedOthers, [id]: updatedNote };
-      } else if (pinned.hasOwnProperty(id)) {
-        const updatedNote = {
-          ...updatedPinned[id],
-          image: {
-            src: imageData.src,
-            width: imageData.width,
-            height: imageData.height,
-            maxHeightForGridView,
-            maxHeightForListView,
-          },
-          heightClass: {
-            gridView: heightClassForGridView,
-            listView: heightClassForListView,
-          },
-        };
-        updatedPinned = { ...updatedPinned, [id]: updatedNote };
-      } else if (archives.hasOwnProperty(id)) {
-        const updatedNote = {
-          ...updatedArchives[id],
-          image: {
-            src: imageData.src,
-            width: imageData.width,
-            height: imageData.height,
-            maxHeightForGridView,
-            maxHeightForListView,
-          },
-          heightClass: {
-            gridView: heightClassForGridView,
-            listView: heightClassForListView,
-          },
-        };
-        updatedArchives = { ...updatedArchives, [id]: updatedNote };
-      } else {
-        const updatedNote = {
-          ...updatedTrash[id],
-          image: {
-            src: imageData.src,
-            width: imageData.width,
-            height: imageData.height,
-            maxHeightForGridView,
-            maxHeightForListView,
-          },
-          heightClass: {
-            gridView: heightClassForGridView,
-            listView: heightClassForListView,
-          },
-        };
-        updatedTrash = { ...updatedTrash, [id]: updatedNote };
-      }
-
       setNotes((notes) => {
-        return { ...notes, others: updatedOthers, pinned: updatedPinned };
+        const { others, pinned, archives } = notes;
+        let updatedOthers = { ...others };
+        let updatedPinned = { ...pinned };
+        let updatedArchives = { ...archives };
+        if (others.hasOwnProperty(id)) {
+          const updatedNote = {
+            ...updatedOthers[id],
+            image: {
+              src: imageData.src,
+              width: imageData.width,
+              height: imageData.height,
+              maxHeightForGridView,
+              maxHeightForListView,
+            },
+            heightClass: {
+              gridView: heightClassForGridView,
+              listView: heightClassForListView,
+            },
+          };
+          updatedOthers = { ...updatedOthers, [id]: updatedNote };
+        } else if (pinned.hasOwnProperty(id)) {
+          const updatedNote = {
+            ...updatedPinned[id],
+            image: {
+              src: imageData.src,
+              width: imageData.width,
+              height: imageData.height,
+              maxHeightForGridView,
+              maxHeightForListView,
+            },
+            heightClass: {
+              gridView: heightClassForGridView,
+              listView: heightClassForListView,
+            },
+          };
+          updatedPinned = { ...updatedPinned, [id]: updatedNote };
+        } else {
+          const updatedNote = {
+            ...updatedArchives[id],
+            image: {
+              src: imageData.src,
+              width: imageData.width,
+              height: imageData.height,
+              maxHeightForGridView,
+              maxHeightForListView,
+            },
+            heightClass: {
+              gridView: heightClassForGridView,
+              listView: heightClassForListView,
+            },
+          };
+          updatedArchives = { ...updatedArchives, [id]: updatedNote };
+        }
+        return {
+          ...notes,
+          others: updatedOthers,
+          pinned: updatedPinned,
+          archives: updatedArchives,
+        };
       });
     },
-    [id, notes, setNotes]
+    [id, setNotes]
   );
 
   useEffect(() => {
@@ -326,7 +313,7 @@ export function Note(props) {
       updateNotes(img);
     };
 
-    const fileName = `${id}${fileExtension}`;
+    const fileName = `${id}`;
     try {
       const { error } = await supabase.storage
         .from('note-images')
@@ -341,8 +328,14 @@ export function Note(props) {
       const { publicUrl } = supabase.storage
         .from('note-images')
         .getPublicUrl(fileName).data;
-      img.src = publicUrl;
-      updateNotes(img);
+      updateNoteImageSource(
+        id,
+        notes,
+        setNotes,
+        `${publicUrl}?t=${Date.now()}`
+      );
+      // img.src = publicUrl;
+      // updateNotes(img);
     } catch (error) {
       console.log(error);
     }
@@ -569,7 +562,7 @@ export function Note(props) {
             <img
               class="image"
               ref={noteImageRef}
-              src={image.src}
+              src={image.publicUrl ? image.publicUrl : image.src}
               alt="noteImage"
               onClick={processNoteClick}
             ></img>

@@ -50,7 +50,7 @@ function FunctionComponent(props, ref) {
   }
 
   function processDeleteIconClick() {
-    deleteNoteFromTrash(id, notes, setNotes);
+    deleteNoteFromTrash(id, setNotes);
     setTrashEditingNote(null);
   }
 

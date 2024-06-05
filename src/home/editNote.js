@@ -13,6 +13,8 @@ import { GiPlainCircle } from 'react-icons/gi';
 import { MdInvertColorsOff } from 'react-icons/md';
 import { unArchiveNote } from '../utils';
 import { handleUndoBtnClick, handleRedoBtnClick } from '../utils';
+import { supabase } from '../supabase/supabaseClient';
+import { updateNoteImageSource } from '../utils';
 
 function FunctionComponent(props, ref) {
   const {
@@ -152,14 +154,15 @@ function FunctionComponent(props, ref) {
     }
   }
 
-  function deleteImage() {
-    localStorage.removeItem(id);
+  async function deleteImage() {
     setEditingNote((editingNote) => {
       return { ...editingNote, image: null };
     });
+    const fileName = `${id}`;
+    await supabase.storage.from('note-images').remove([fileName]);
   }
 
-  function processImage(event) {
+  async function processImage(event) {
     const file = event.target.files[0];
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
     const fileExtension = file.name
@@ -184,6 +187,7 @@ function FunctionComponent(props, ref) {
 
     const maxResolutionMP = 25;
     const maxResolutionPixels = maxResolutionMP * 1000000;
+
     const img = new Image();
     img.src = URL.createObjectURL(file);
     img.onload = function () {
@@ -195,19 +199,48 @@ function FunctionComponent(props, ref) {
         return;
       }
 
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = function () {
-        const base64data = reader.result;
-        localStorage.setItem(id, base64data);
-        setEditingNote((editingNote) => {
-          return {
-            ...editingNote,
-            image: img,
-          };
-        });
-      };
+      const aspectRatio = img.width / img.height;
+      const maxHeightForGridView = Math.floor(250 / aspectRatio);
+      const maxHeightForListView = Math.floor(600 / aspectRatio);
+      setEditingNote((editingNote) => {
+        return {
+          ...editingNote,
+          image: {
+            src: img.src,
+            width: img.width,
+            height: img.height,
+            maxHeightForGridView,
+            maxHeightForListView,
+          },
+        };
+      });
     };
+
+    const fileName = `${id}`;
+    try {
+      const { error } = await supabase.storage
+        .from('note-images')
+        .upload(fileName, file, {
+          upsert: true,
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      const { publicUrl } = supabase.storage
+        .from('note-images')
+        .getPublicUrl(fileName).data;
+
+      updateNoteImageSource(
+        id,
+        notes,
+        setNotes,
+        `${publicUrl}?t=${Date.now()}`
+      );
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function handleArchiveIconClick() {
@@ -351,7 +384,11 @@ function FunctionComponent(props, ref) {
             <img
               ref={editingNoteImageRef}
               className="image"
-              src={editingNote.image.src}
+              src={
+                editingNote.image.publicUrl
+                  ? editingNote.image.publicUrl
+                  : editingNote.image.src
+              }
               alt="noteImage"
             />
           </div>

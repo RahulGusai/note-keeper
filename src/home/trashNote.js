@@ -105,7 +105,7 @@ export function TrashNote(props) {
   }
 
   function deleteNote() {
-    deleteNoteFromTrash(id, notes, setNotes);
+    deleteNoteFromTrash(id, setNotes);
   }
 
   function handleSelectIconClick() {

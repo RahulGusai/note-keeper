@@ -213,20 +213,21 @@ function restoreNoteFromTrash(id, notes, setNotes) {
   });
 }
 
-function deleteNoteFromTrash(id, notes, setNotes) {
-  const { trash } = notes;
-
-  const updatedTrash = { ...trash };
-  delete updatedTrash[id];
-
+async function deleteNoteFromTrash(id, setNotes) {
   setNotes((notes) => {
+    const { trash } = notes;
+
+    const updatedTrash = { ...trash };
+    delete updatedTrash[id];
+
     return {
       ...notes,
       trash: updatedTrash,
     };
   });
 
-  localStorage.removeItem(id);
+  const fileName = `${id}`;
+  await supabase.storage.from('note-images').remove([fileName]);
 }
 
 function handleUndoBtnClick(
@@ -301,6 +302,54 @@ async function updateNotesForUser(userId, updatedNotes) {
   }
 }
 
+function updateNoteImageSource(id, notes, setNotes, publicUrl) {
+  setNotes((notes) => {
+    const { others, pinned, archives } = notes;
+    let updatedOthers = { ...others };
+    let updatedPinned = { ...pinned };
+    let updatedArchives = { ...archives };
+
+    if (others.hasOwnProperty(id)) {
+      const updatedNote = {
+        ...updatedOthers[id],
+        image: {
+          ...updatedOthers[id].image,
+          publicUrl: publicUrl,
+        },
+      };
+      updatedOthers = { ...updatedOthers, [id]: updatedNote };
+    }
+
+    if (pinned.hasOwnProperty(id)) {
+      const updatedNote = {
+        ...updatedPinned[id],
+        image: {
+          ...updatedPinned[id].image,
+          publicUrl: publicUrl,
+        },
+      };
+      updatedPinned = { ...updatedPinned, [id]: updatedNote };
+    }
+
+    if (archives.hasOwnProperty(id)) {
+      const updatedNote = {
+        ...updatedArchives[id],
+        image: {
+          ...updatedArchives[id].image,
+          src: publicUrl,
+        },
+      };
+      updatedArchives = { ...updatedArchives, [id]: updatedNote };
+    }
+    return {
+      ...notes,
+      others: updatedOthers,
+      pinned: updatedPinned,
+      archives: updatedArchives,
+    };
+  });
+}
+
 export {
   getHeightClass,
   archiveNote,
@@ -314,4 +363,5 @@ export {
   handleRedoBtnClick,
   fetchUserNotes,
   updateNotesForUser,
+  updateNoteImageSource,
 };

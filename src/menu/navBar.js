@@ -70,6 +70,7 @@ export function NavBar(props) {
   }
 
   function signOutUser() {
+    //TODO Call suth signout method
     localStorage.removeItem('sb-xspfwwjrlszbhzewlxrr-auth-token');
     setUserDetails(null);
   }
