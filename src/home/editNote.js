@@ -15,6 +15,7 @@ import { unArchiveNote } from '../utils';
 import { handleUndoBtnClick, handleRedoBtnClick } from '../utils';
 import { supabase } from '../supabase/supabaseClient';
 import { updateNoteImageSource } from '../utils';
+import { DEFAULT_NOTE_COLOR } from '../constans/colors';
 
 function FunctionComponent(props, ref) {
   const {
@@ -50,7 +51,7 @@ function FunctionComponent(props, ref) {
   const { showArchives } = notesListOptions;
 
   useEffect(() => {
-    if (metaData.backgroundColor !== 'transparent') {
+    if (metaData.backgroundColor !== '#202124') {
       editNoteContainerRef.current.style.border = 'none';
     } else {
       editNoteContainerRef.current.style.border = '1px solid grey';
@@ -420,7 +421,7 @@ function FunctionComponent(props, ref) {
           }
         >
           <MdInvertColorsOff
-            onClick={() => handleColorSelectorClick('transparent')}
+            onClick={() => handleColorSelectorClick(DEFAULT_NOTE_COLOR)}
           ></MdInvertColorsOff>
           <GiPlainCircle
             onClick={() => handleColorSelectorClick('#77172e')}

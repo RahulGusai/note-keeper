@@ -11,7 +11,7 @@ import { ErrorDialog } from './home/errorDialog';
 import { getHeightClass } from './utils';
 import { SelectedNotesOptions } from './home/selectedNotesOptions';
 import { updateNotesForUser } from './utils';
-import { supabase } from './supabase/supabaseClient';
+import { DEFAULT_NOTE_COLOR } from './constans/colors';
 
 export default function App(props) {
   const { notes, setNotes, userDetails, setUserDetails } = props;
@@ -57,7 +57,7 @@ export default function App(props) {
 
   const [newNoteData, setNewNoteData] = useState({
     newNoteId: Math.floor(Math.random() * 1000) + 1,
-    backgroundColor: 'transparent',
+    backgroundColor: '#202124',
     image: null,
   });
 
@@ -142,24 +142,11 @@ export default function App(props) {
       return {
         ...newNoteData,
         newNoteId: Math.floor(Math.random() * 1000) + 1,
-        backgroundColor: 'transparent',
+        backgroundColor: DEFAULT_NOTE_COLOR,
         image: null,
       };
     });
   }
-
-  // useEffect(() => {
-  //   async function renameImgFileName() {
-  //     await supabase.storage
-  //       .from('note-images')
-  //       .move('new-note-image', `${newNoteId}`);
-  //   }
-
-  //   const { image } = newNoteData;
-  //   if (image) {
-  //     renameImgFileName();
-  //   }
-  // }, [newNoteData]);
 
   function handleHomeContainerClick(e) {
     const bodyClasses = [
@@ -230,7 +217,10 @@ export default function App(props) {
             id: id,
             title: title,
             content: content,
-            image: { ...image, ...others[id].image },
+            image:
+              others[id].image || image
+                ? { ...image, ...others[id].image }
+                : null,
             heightClass: {
               gridView: heightClassForGridView,
               listView: heightClassForListView,
@@ -246,7 +236,10 @@ export default function App(props) {
             id: id,
             title: title,
             content: content,
-            image: { ...image, ...pinned[id].image },
+            image:
+              others[id].image || image
+                ? { ...image, ...others[id].image }
+                : null,
             heightClass: {
               gridView: heightClassForGridView,
               listView: heightClassForListView,

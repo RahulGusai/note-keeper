@@ -22,6 +22,7 @@ import {
 import './note.css';
 import { useCallback } from 'react';
 import { supabase } from '../supabase/supabaseClient';
+import { DEFAULT_NOTE_COLOR } from '../constans/colors';
 
 export function Note(props) {
   const {
@@ -149,7 +150,7 @@ export function Note(props) {
     if (isSelected) {
       noteContainerRef.current.style.border = '2px solid white';
     } else {
-      if (metaData.backgroundColor !== 'transparent') {
+      if (metaData.backgroundColor !== DEFAULT_NOTE_COLOR) {
         noteContainerRef.current.style.border = 'none';
       } else {
         noteContainerRef.current.style.border = '1px solid grey';
@@ -485,7 +486,7 @@ export function Note(props) {
         >
           <MdInvertColorsOff
             onClick={() =>
-              updateBackgroundColor(id, 'transparent', notes, setNotes)
+              updateBackgroundColor(id, DEFAULT_NOTE_COLOR, notes, setNotes)
             }
           ></MdInvertColorsOff>
           <GiPlainCircle

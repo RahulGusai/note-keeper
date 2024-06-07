@@ -6,6 +6,7 @@ import { IoArrowBack } from 'react-icons/io5';
 import { supabase } from './supabase/supabaseClient';
 import { useRef, useState } from 'react';
 import { Circles } from 'react-loader-spinner';
+import PasswordStrengthBar from 'react-password-strength-bar';
 
 export function SignupPage(props) {
   const { setUserDetails, setNotes } = props;
@@ -21,6 +22,8 @@ export function SignupPage(props) {
     signUp: null,
   });
   const [validEmailAddr, setValidEmailAddr] = useState(null);
+  const [password, setPassword] = useState('');
+  const [passwordScore, setPasswordScore] = useState('');
 
   const formInputs = {
     emailInputRef: useRef(),
@@ -158,12 +161,24 @@ export function SignupPage(props) {
                 type="textbox"
                 placeholder="First and Last Name"
               ></input>
-              <input
-                ref={formInputs.pwdInputRef}
-                className="pwdInput"
-                type="password"
-                placeholder="Enter your password"
-              ></input>
+
+              <div className="passwordWrapper">
+                <input
+                  ref={formInputs.pwdInputRef}
+                  className="pwdInput"
+                  type="password"
+                  placeholder="Enter your password"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                ></input>
+                <PasswordStrengthBar
+                  password={password}
+                  onChangeScore={setPasswordScore}
+                  scoreWords={['weak', 'okay', 'good', 'strong']}
+                  scoreWordStyle={{ color: '#fdf0e7' }}
+                />
+              </div>
             </div>
           )}
           <div onClick={handleContinueBtnClick} className="continueButton">

@@ -9,6 +9,7 @@ import {
 } from '../utils';
 
 import './trashNote.css';
+import { DEFAULT_NOTE_COLOR } from '../constans/colors';
 
 export function TrashNote(props) {
   const {
@@ -47,7 +48,7 @@ export function TrashNote(props) {
     if (isSelected) {
       trashNoteContainerRef.current.style.border = '2px solid white';
     } else {
-      if (metaData.backgroundColor !== 'transparent') {
+      if (metaData.backgroundColor !== DEFAULT_NOTE_COLOR) {
         trashNoteContainerRef.current.style.border = 'none';
       } else {
         trashNoteContainerRef.current.style.border = '1px solid grey';

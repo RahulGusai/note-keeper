@@ -15,6 +15,7 @@ import {
   updateNoteImageSource,
 } from '../utils';
 import { supabase } from '../supabase/supabaseClient';
+import { DEFAULT_NOTE_COLOR } from '../constans/colors';
 
 function ComponentHandler(props, ref) {
   const { titleRef, contentRef } = ref;
@@ -30,8 +31,6 @@ function ComponentHandler(props, ref) {
     newNoteFooterOptions,
     setNewNoteFooterOptions,
     createNote,
-    notes,
-    setNotes,
   } = props;
 
   const newNoteContainerRef = useRef();
@@ -319,7 +318,7 @@ function ComponentHandler(props, ref) {
           }
         >
           <MdInvertColorsOff
-            onClick={() => handleColorSelectorClick('transparent')}
+            onClick={() => handleColorSelectorClick(DEFAULT_NOTE_COLOR)}
           ></MdInvertColorsOff>
           <GiPlainCircle
             onClick={() => handleColorSelectorClick('#77172e')}
