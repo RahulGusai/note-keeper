@@ -16,10 +16,13 @@ import {
   updateBackgroundColor,
   getContentToBeDisplayed,
   handleNoteClick,
+  updateNoteImageSource,
 } from '../utils';
 
 import './note.css';
 import { useCallback } from 'react';
+import { supabase } from '../supabase/supabaseClient';
+import { DEFAULT_NOTE_COLOR } from '../constans/colors';
 
 export function Note(props) {
   const {
@@ -55,112 +58,84 @@ export function Note(props) {
     bgColorSelector: false,
     moreOptionsDialog: false,
   });
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const isSelected = selectedNoteIds.has(note.id);
 
   const updateNotes = useCallback(
-    (img) => {
+    (imageData) => {
       const [heightClassForGridView, heightClassForListView] = getHeightClass(
         contentRef,
-        img
+        imageData
       );
 
-      const aspectRatio = img.width / img.height;
+      const aspectRatio = imageData.width / imageData.height;
       const maxHeightForGridView = Math.floor(250 / aspectRatio);
       const maxHeightForListView = Math.floor(600 / aspectRatio);
 
-      const { others, pinned, archives, trash } = notes;
-      let updatedOthers = { ...others };
-      let updatedPinned = { ...pinned };
-      let updatedArchives = { ...archives };
-      let updatedTrash = { ...trash };
-      if (others.hasOwnProperty(id)) {
-        const updatedNote = {
-          ...updatedOthers[id],
-          image: {
-            src: img.src,
-            width: img.width,
-            height: img.height,
-            maxHeightForGridView,
-            maxHeightForListView,
-          },
-          heightClass: {
-            gridView: heightClassForGridView,
-            listView: heightClassForListView,
-          },
-        };
-        updatedOthers = { ...updatedOthers, [id]: updatedNote };
-      } else if (pinned.hasOwnProperty(id)) {
-        const updatedNote = {
-          ...updatedPinned[id],
-          image: {
-            src: img.src,
-            width: img.width,
-            height: img.height,
-            maxHeightForGridView,
-            maxHeightForListView,
-          },
-          heightClass: {
-            gridView: heightClassForGridView,
-            listView: heightClassForListView,
-          },
-        };
-        updatedPinned = { ...updatedPinned, [id]: updatedNote };
-      } else if (archives.hasOwnProperty(id)) {
-        const updatedNote = {
-          ...updatedArchives[id],
-          image: {
-            src: img.src,
-            width: img.width,
-            height: img.height,
-            maxHeightForGridView,
-            maxHeightForListView,
-          },
-          heightClass: {
-            gridView: heightClassForGridView,
-            listView: heightClassForListView,
-          },
-        };
-        updatedArchives = { ...updatedArchives, [id]: updatedNote };
-      } else {
-        const updatedNote = {
-          ...updatedTrash[id],
-          image: {
-            src: img.src,
-            width: img.width,
-            height: img.height,
-            maxHeightForGridView,
-            maxHeightForListView,
-          },
-          heightClass: {
-            gridView: heightClassForGridView,
-            listView: heightClassForListView,
-          },
-        };
-        updatedTrash = { ...updatedTrash, [id]: updatedNote };
-      }
-
       setNotes((notes) => {
-        return { ...notes, others: updatedOthers, pinned: updatedPinned };
+        const { others, pinned, archives } = notes;
+        let updatedOthers = { ...others };
+        let updatedPinned = { ...pinned };
+        let updatedArchives = { ...archives };
+        if (others.hasOwnProperty(id)) {
+          const updatedNote = {
+            ...updatedOthers[id],
+            image: {
+              src: imageData.src,
+              width: imageData.width,
+              height: imageData.height,
+              maxHeightForGridView,
+              maxHeightForListView,
+            },
+            heightClass: {
+              gridView: heightClassForGridView,
+              listView: heightClassForListView,
+            },
+          };
+          updatedOthers = { ...updatedOthers, [id]: updatedNote };
+        } else if (pinned.hasOwnProperty(id)) {
+          const updatedNote = {
+            ...updatedPinned[id],
+            image: {
+              src: imageData.src,
+              width: imageData.width,
+              height: imageData.height,
+              maxHeightForGridView,
+              maxHeightForListView,
+            },
+            heightClass: {
+              gridView: heightClassForGridView,
+              listView: heightClassForListView,
+            },
+          };
+          updatedPinned = { ...updatedPinned, [id]: updatedNote };
+        } else {
+          const updatedNote = {
+            ...updatedArchives[id],
+            image: {
+              src: imageData.src,
+              width: imageData.width,
+              height: imageData.height,
+              maxHeightForGridView,
+              maxHeightForListView,
+            },
+            heightClass: {
+              gridView: heightClassForGridView,
+              listView: heightClassForListView,
+            },
+          };
+          updatedArchives = { ...updatedArchives, [id]: updatedNote };
+        }
+        return {
+          ...notes,
+          others: updatedOthers,
+          pinned: updatedPinned,
+          archives: updatedArchives,
+        };
       });
     },
-    [id, notes, setNotes]
+    [id, setNotes]
   );
-
-  useEffect(() => {
-    if (!isImageLoaded) {
-      const storedImage = localStorage.getItem(id);
-      if (storedImage) {
-        const img = new Image();
-        img.src = storedImage;
-        img.onload = function () {
-          updateNotes(img);
-        };
-      }
-      setIsImageLoaded(true);
-    }
-  }, [id, image, isImageLoaded, updateNotes]);
 
   useEffect(() => {
     if (image) {
@@ -175,7 +150,7 @@ export function Note(props) {
     if (isSelected) {
       noteContainerRef.current.style.border = '2px solid white';
     } else {
-      if (metaData.backgroundColor !== 'transparent') {
+      if (metaData.backgroundColor !== DEFAULT_NOTE_COLOR) {
         noteContainerRef.current.style.border = 'none';
       } else {
         noteContainerRef.current.style.border = '1px solid grey';
@@ -301,7 +276,7 @@ export function Note(props) {
     imageUploadRef.current.click();
   };
 
-  const handleImageUpload = (event) => {
+  async function handleImageUpload(event) {
     const file = event.target.files[0];
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
     const fileExtension = file.name
@@ -336,16 +311,34 @@ export function Note(props) {
         );
         return;
       }
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = function () {
-        const base64data = reader.result;
-        localStorage.setItem(id, base64data);
-        updateNotes(img);
-      };
+      updateNotes(img);
     };
-  };
+
+    const fileName = `${id}`;
+    try {
+      const { error } = await supabase.storage
+        .from('note-images')
+        .upload(fileName, file, {
+          upsert: true,
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      const { publicUrl } = supabase.storage
+        .from('note-images')
+        .getPublicUrl(fileName).data;
+      updateNoteImageSource(
+        id,
+        notes,
+        setNotes,
+        `${publicUrl}?t=${Date.now()}`
+      );
+    } catch (error) {
+      console.log(`Failed to upload the image: ${error.message}`);
+    }
+  }
 
   function updateFooterOptions(updatedOptions) {
     setFooterOptions((footerOptions) => {
@@ -493,7 +486,7 @@ export function Note(props) {
         >
           <MdInvertColorsOff
             onClick={() =>
-              updateBackgroundColor(id, 'transparent', notes, setNotes)
+              updateBackgroundColor(id, DEFAULT_NOTE_COLOR, notes, setNotes)
             }
           ></MdInvertColorsOff>
           <GiPlainCircle
@@ -568,7 +561,7 @@ export function Note(props) {
             <img
               class="image"
               ref={noteImageRef}
-              src={image.src}
+              src={image.publicUrl ? image.publicUrl : image.src}
               alt="noteImage"
               onClick={processNoteClick}
             ></img>

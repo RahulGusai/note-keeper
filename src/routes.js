@@ -10,43 +10,85 @@ import { SignupPage } from './signupPage';
 import { LoginPage } from './loginPage';
 import { GuestLogin } from './guestLogin';
 import App from './App';
+import { supabase } from './supabase/supabaseClient';
+import { fetchUserNotes } from './utils';
 
 const AppRoutes = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
+  const [notes, setNotes] = useState(null);
+
+  async function checkIfUserIsLoggedIn() {
+    try {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error) {
+        throw error;
+      }
+
+      const { user } = data;
+      const notes = await fetchUserNotes(user);
+      if (user && notes) {
+        setUserDetails({
+          id: user.id,
+          fullName: user.user_metadata.full_name,
+          isAnonymous: user.is_anonymous,
+        });
+        setNotes(notes);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   useEffect(() => {
-    const userInfo = localStorage.getItem('userInfo');
-    if (userInfo != null) {
-      setIsLoggedIn(true);
-    }
+    checkIfUserIsLoggedIn();
   }, []);
-
-  function fetchNotes() {
-    return JSON.parse(localStorage.getItem('notes'));
-  }
 
   return (
     <Router>
-      {isLoggedIn && <Navigate to="/home" />}
+      {userDetails && <Navigate to="/home" />}
       <Routes>
         <Route
           path="/home"
           element={
-            isLoggedIn ? (
-              <App setIsLoggedIn={setIsLoggedIn} userNotes={fetchNotes} />
+            userDetails ? (
+              <App
+                userDetails={userDetails}
+                setUserDetails={setUserDetails}
+                notes={notes}
+                setNotes={setNotes}
+              />
             ) : (
               <Navigate to="/" />
             )
           }
         />
-        <Route path="/signup" element={<SignupPage></SignupPage>} />
-        {/* <Route
+        <Route
+          path="/signup"
+          element={
+            <SignupPage
+              setUserDetails={setUserDetails}
+              setNotes={setNotes}
+            ></SignupPage>
+          }
+        />
+        <Route
           path="/guest"
-          element={<GuestLogin setIsLoggedIn={setIsLoggedIn}></GuestLogin>}
-        /> */}
+          element={
+            <GuestLogin
+              setUserDetails={setUserDetails}
+              setNotes={setNotes}
+            ></GuestLogin>
+          }
+        />
         <Route
           path="/"
-          element={<GuestLogin setIsLoggedIn={setIsLoggedIn}></GuestLogin>}
+          element={
+            <LoginPage
+              setUserDetails={setUserDetails}
+              setNotes={setNotes}
+            ></LoginPage>
+          }
         />
       </Routes>
     </Router>

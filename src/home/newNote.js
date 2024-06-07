@@ -9,7 +9,13 @@ import { GiPlainCircle } from 'react-icons/gi';
 import { MdInvertColorsOff } from 'react-icons/md';
 import { MdDelete } from 'react-icons/md';
 import { useRef } from 'react';
-import { handleUndoBtnClick, handleRedoBtnClick } from '../utils';
+import {
+  handleUndoBtnClick,
+  handleRedoBtnClick,
+  updateNoteImageSource,
+} from '../utils';
+import { supabase } from '../supabase/supabaseClient';
+import { DEFAULT_NOTE_COLOR } from '../constans/colors';
 
 function ComponentHandler(props, ref) {
   const { titleRef, contentRef } = ref;
@@ -34,7 +40,7 @@ function ComponentHandler(props, ref) {
   const [redoStack, setRedoStack] = useState([]);
   const [lastKeyStrokeTimestamp, setLastKeyStrokeTimestamp] = useState(null);
 
-  const { backgroundColor, image } = newNoteData;
+  const { newNoteId, backgroundColor, image } = newNoteData;
 
   useEffect(() => {
     newNoteContainerRef.current.style.backgroundColor = backgroundColor;
@@ -166,7 +172,7 @@ function ComponentHandler(props, ref) {
     createNote(true);
   }
 
-  function processImage(event) {
+  async function processImage(event) {
     const file = event.target.files[0];
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
     const fileExtension = file.name
@@ -193,27 +199,53 @@ function ComponentHandler(props, ref) {
     const maxResolutionPixels = maxResolutionMP * 1000000;
     const img = new Image();
     img.src = URL.createObjectURL(file);
+    let maxHeightForGridView, maxHeightForListView;
     img.onload = function () {
       const resolution = img.width * img.height;
       if (resolution > maxResolutionPixels) {
         setErrorMessage(
           'Can’t upload this file. We accept GIF, JPEG, JPG, PNG files less than 10MB and 25 megapixels.'
         );
+        return;
       }
 
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = function () {
-        const base64data = reader.result;
-        setNewNoteData((newNoteData) => {
-          return {
-            ...newNoteData,
-            image: img,
-            imgBase64: base64data,
-          };
-        });
-      };
+      const aspectRatio = img.width / img.height;
+      maxHeightForGridView = Math.floor(250 / aspectRatio);
+      maxHeightForListView = Math.floor(600 / aspectRatio);
     };
+
+    const fileName = `${newNoteId}`;
+    try {
+      const { error } = await supabase.storage
+        .from('note-images')
+        .upload(fileName, file, {
+          upsert: true,
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      const { publicUrl } = supabase.storage
+        .from('note-images')
+        .getPublicUrl(fileName).data;
+
+      setNewNoteData((newNoteData) => {
+        return {
+          ...newNoteData,
+          image: {
+            src: img.src,
+            publicUrl: `${publicUrl}?t=${Date.now()}`,
+            width: img.width,
+            height: img.height,
+            maxHeightForGridView,
+            maxHeightForListView,
+          },
+        };
+      });
+    } catch (error) {
+      console.log(`Failed to upload the image: ${error.message}`);
+    }
   }
 
   function handleCloseBtnClick() {
@@ -252,7 +284,11 @@ function ComponentHandler(props, ref) {
         {image && (
           <>
             <MdDelete className="deleteImageIcon"></MdDelete>
-            <img className="newNoteImage" src={image.src} alt="noteImage" />
+            <img
+              className="newNoteImage"
+              src={image.publicUrl ? image.publicUrl : image.src}
+              alt="noteImage"
+            />
           </>
         )}
 
@@ -282,7 +318,7 @@ function ComponentHandler(props, ref) {
           }
         >
           <MdInvertColorsOff
-            onClick={() => handleColorSelectorClick('transparent')}
+            onClick={() => handleColorSelectorClick(DEFAULT_NOTE_COLOR)}
           ></MdInvertColorsOff>
           <GiPlainCircle
             onClick={() => handleColorSelectorClick('#77172e')}

@@ -11,6 +11,7 @@ import { MdInvertColorsOff } from 'react-icons/md';
 import { MdOutlineUnarchive } from 'react-icons/md';
 import { MdDeleteForever } from 'react-icons/md';
 import { MdOutlineRestoreFromTrash } from 'react-icons/md';
+import { deleteNoteFromTrash } from '../utils';
 
 export function SelectedNotesOptions(props) {
   const {
@@ -280,19 +281,17 @@ export function SelectedNotesOptions(props) {
   }
 
   function deleteNotesForever() {
-    const { trash } = notes;
-    const updatedTrash = { ...trash };
-
     for (const noteId of selectedNoteIds) {
-      delete updatedTrash[noteId];
+      deleteNoteFromTrash(noteId, setNotes);
+      // delete updatedTrash[noteId];
     }
 
-    setNotes((notes) => {
-      return {
-        ...notes,
-        trash: updatedTrash,
-      };
-    });
+    // setNotes((notes) => {
+    //   return {
+    //     ...notes,
+    //     trash: updatedTrash,
+    //   };
+    // });
 
     setSelectedNoteIds(new Set());
   }

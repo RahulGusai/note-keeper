@@ -3,7 +3,6 @@ import { NewNote } from './home/newNote';
 import './home.css';
 import { useEffect, useRef, useState } from 'react';
 import { NoteList } from './home/noteList';
-import { notes_list } from './data/notes';
 import { NavBar } from './menu/navBar';
 import { SideBar } from './menu/sideBar';
 import { EditNote } from './home/editNote';
@@ -11,9 +10,11 @@ import { TrashEditingNote } from './home/trashEditNote';
 import { ErrorDialog } from './home/errorDialog';
 import { getHeightClass } from './utils';
 import { SelectedNotesOptions } from './home/selectedNotesOptions';
+import { updateNotesForUser } from './utils';
+import { DEFAULT_NOTE_COLOR } from './constans/colors';
 
 export default function App(props) {
-  const { setIsLoggedIn, userNotes } = props;
+  const { notes, setNotes, userDetails, setUserDetails } = props;
   const newNoterefs = {
     titleRef: useRef(null),
     contentRef: useRef(null),
@@ -27,7 +28,6 @@ export default function App(props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
   const [trashEditingNote, setTrashEditingNote] = useState(null);
-  const [notes, setNotes] = useState(userNotes);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [isDefaultTextLoaded, setisDefaultTextLoaded] = useState({
     content: true,
@@ -56,20 +56,21 @@ export default function App(props) {
   });
 
   const [newNoteData, setNewNoteData] = useState({
-    backgroundColor: 'transparent',
+    newNoteId: Math.floor(Math.random() * 1000) + 1,
+    backgroundColor: '#202124',
     image: null,
-    imgBase64: null,
   });
+
   const [newNoteFooterOptions, setNewNoteFooterOptions] = useState({
     showColorSelector: false,
   });
 
-  function createNote(isArchived = false) {
+  async function createNote(isArchived = false) {
     const { titleRef, contentRef } = newNoterefs;
-    const { image, imgBase64, backgroundColor } = newNoteData;
+    const { newNoteId, image, backgroundColor } = newNoteData;
+    // const newNoteId = Math.floor(Math.random() * 1000) + 1;
 
     if (!isDefaultTextLoaded.title || !isDefaultTextLoaded.content || image) {
-      const newNoteId = Math.floor(Math.random() * 1000) + 1;
       const [heightClassForGridView, heightClassForListView] = getHeightClass(
         contentRef,
         image
@@ -127,7 +128,6 @@ export default function App(props) {
         });
         setLatestNoteId(newNoteId);
       }
-      if (imgBase64) localStorage.setItem(newNoteId, imgBase64);
     }
 
     setIsExpanded(false);
@@ -137,12 +137,13 @@ export default function App(props) {
         showColorSelector: false,
       };
     });
+
     setNewNoteData((newNoteData) => {
       return {
         ...newNoteData,
-        backgroundColor: 'transparent',
+        newNoteId: Math.floor(Math.random() * 1000) + 1,
+        backgroundColor: DEFAULT_NOTE_COLOR,
         image: null,
-        imgBase64: null,
       };
     });
   }
@@ -206,7 +207,7 @@ export default function App(props) {
 
       const [heightClassForGridView, heightClassForListView] = getHeightClass(
         contentElem,
-        editingNote.image
+        image
       );
 
       if (others.hasOwnProperty(id)) {
@@ -216,7 +217,10 @@ export default function App(props) {
             id: id,
             title: title,
             content: content,
-            image: editingNote.image,
+            image:
+              others[id].image || image
+                ? { ...image, ...others[id].image }
+                : null,
             heightClass: {
               gridView: heightClassForGridView,
               listView: heightClassForListView,
@@ -232,7 +236,10 @@ export default function App(props) {
             id: id,
             title: title,
             content: content,
-            image: editingNote.image,
+            image:
+              others[id].image || image
+                ? { ...image, ...others[id].image }
+                : null,
             heightClass: {
               gridView: heightClassForGridView,
               listView: heightClassForListView,
@@ -317,8 +324,12 @@ export default function App(props) {
   }
 
   useEffect(() => {
-    localStorage.setItem('notes', JSON.stringify(notes));
-  }, [notes]);
+    async function updateNotes() {
+      const { id } = userDetails;
+      await updateNotesForUser(id, notes);
+    }
+    updateNotes();
+  }, [notes, userDetails]);
 
   return (
     <div
@@ -354,7 +365,8 @@ export default function App(props) {
         changeSidebarState={setIsSidebarExpanded}
         isSearchBarActive={isSearchBarActive}
         setIsSearchBarActive={setIsSearchBarActive}
-        setIsLoggedIn={setIsLoggedIn}
+        userDetails={userDetails}
+        setUserDetails={setUserDetails}
         gridView={gridView}
         setGridView={setGridView}
         setDefaultFooter={setDefaultFooter}
@@ -390,6 +402,8 @@ export default function App(props) {
           newNoteFooterOptions={newNoteFooterOptions}
           setNewNoteFooterOptions={setNewNoteFooterOptions}
           createNote={createNote}
+          notes={notes}
+          setNotes={setNotes}
         ></NewNote>
         <NoteList
           setEditingNote={setEditingNote}

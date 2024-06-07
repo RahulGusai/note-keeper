@@ -3,6 +3,7 @@ import { MdOutlineRestoreFromTrash } from 'react-icons/md';
 import { MdDeleteForever } from 'react-icons/md';
 import { forwardRef, useEffect, useRef } from 'react';
 import { restoreNoteFromTrash, deleteNoteFromTrash } from '../utils';
+import { DEFAULT_NOTE_COLOR } from '../constans/colors';
 
 function FunctionComponent(props, ref) {
   const {
@@ -30,7 +31,7 @@ function FunctionComponent(props, ref) {
   }, [gridView, image]);
 
   useEffect(() => {
-    if (metaData.backgroundColor !== 'transparent') {
+    if (metaData.backgroundColor !== DEFAULT_NOTE_COLOR) {
       editNoteOuterContainerRef.current.style.backgroundColor =
         metaData.backgroundColor;
       editNoteOuterContainerRef.current.style.border = 'none';
@@ -50,7 +51,7 @@ function FunctionComponent(props, ref) {
   }
 
   function processDeleteIconClick() {
-    deleteNoteFromTrash(id, notes, setNotes);
+    deleteNoteFromTrash(id, setNotes);
     setTrashEditingNote(null);
   }
 

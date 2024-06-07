@@ -1,7 +1,4 @@
 .signupPage {
-  width: 100%;
-  height: 100vh;
-  background-color: teal;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -9,15 +6,26 @@
 }
 
 .signupForm {
+  position: relative;
   margin-bottom: 10%;
   padding: 30px;
   height: auto;
   width: 400px;
-  background-color: white;
+  background-color: #ad8260;
   display: flex;
   flex-direction: column;
   gap: 20px;
   align-items: center;
+  border-radius: 5px;
+}
+
+.signupForm .backIcon {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  scale: 1.3;
+  cursor: pointer;
+  color: #fdf0e7;
 }
 
 .emailSignup {
@@ -28,7 +36,46 @@
   align-items: center;
 }
 
-.emailSignup .emailInput {
+.emailSignup h3 {
+  color: #fdf0e7;
+}
+
+.emailSignup > span {
+  color: black;
+  font-size: 11px;
+  font-weight: bold;
+  padding-left: 5px;
+}
+
+.emailSignup .viewOneContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viewOneContainer span {
+  color: black;
+  font-size: 11px;
+  font-weight: bold;
+  padding-left: 5px;
+}
+
+.viewTwoContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.viewTwoContainer .passwordWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.emailSignup input {
   width: 100%;
   height: 40px;
   border-radius: 4px;
@@ -36,14 +83,17 @@
   cursor: text;
 }
 
-.emailSignup .signupButton {
+.emailSignup .continueButton {
   width: 100%;
   height: 40px;
-  background-color: blue;
+  margin-top: 10px;
+  background-color: #fdf0e7;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #ad8260;
+  font-size: 14px;
+  font-weight: 600;
   border-radius: 4px;
   cursor: pointer;
 }
@@ -79,7 +129,7 @@
 
 .loginRedirect {
   font-size: 13px;
-  color: blue;
+  color: #fdf0e7;
   cursor: pointer;
   font-weight: 400;
 }

@@ -3,45 +3,73 @@ import { useNavigate } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import backgroundImage from './images/guestLoginBackground.jpg';
 import { IoArrowBack } from 'react-icons/io5';
+import { supabase } from './supabase/supabaseClient';
 
 export function GuestLogin(props) {
-  const { setIsLoggedIn } = props;
+  const { setUserDetails, setNotes } = props;
   const navigate = useNavigate();
   const nameInputRef = useRef(null);
   const [errorMessages, setErrorMessages] = useState({
     nameInput: null,
+    login: null,
   });
 
   function handleBackIconClick() {
     navigate('/');
   }
 
-  function setUserinfoAndNotes() {
-    localStorage.setItem(
-      'userInfo',
-      JSON.stringify({ isGuest: true, name: nameInputRef.current.value.trim() })
-    );
+  async function createAnonymousUser() {
+    try {
+      const { data, error } = await supabase.auth.signInAnonymously({
+        options: {
+          data: {
+            full_name: nameInputRef.current.value,
+          },
+        },
+      });
 
-    localStorage.setItem(
-      'notes',
-      JSON.stringify({ others: {}, pinned: {}, archives: {}, trash: {} })
-    );
+      if (error) {
+        throw error;
+      }
+      const { user } = data;
+      return user;
+    } catch (error) {
+      setErrorMessages((errorMessages) => {
+        return {
+          ...errorMessages,
+          login: error.message,
+          nameInput: null,
+        };
+      });
+      return null;
+    }
   }
 
-  function handleLoginBtnClick() {
+  async function handleLoginBtnClick() {
     if (nameInputRef.current.value.trim() === '') {
       setErrorMessages((errorMessages) => {
         return {
           ...errorMessages,
           nameInput: 'Enter the name to continue',
+          login: null,
         };
       });
-      nameInputRef.current.style.border = '2px solid red';
+      nameInputRef.current.style.border = '2px solid black';
       return;
     }
 
-    setUserinfoAndNotes();
-    setIsLoggedIn(true);
+    const user = await createAnonymousUser();
+    if (user) {
+      const notes = { others: {}, pinned: {}, archives: {}, trash: {} };
+      await supabase.from('notes').insert({ user_id: user.id, notes });
+      setUserDetails({
+        id: user.id,
+        fullName: user.user_metadata.full_name,
+        isAnonymous: user.is_anonymous,
+      });
+      setNotes(notes);
+      setErrorMessages({ emailInput: null, login: null });
+    }
   }
 
   const loginPageStyle = {
@@ -55,10 +83,10 @@ export function GuestLogin(props) {
   return (
     <div style={loginPageStyle} className="guestLoginPage">
       <div className="guestLoginForm">
-        {/* <IoArrowBack
+        <IoArrowBack
           onClick={handleBackIconClick}
           className="backIcon"
-        ></IoArrowBack> */}
+        ></IoArrowBack>
         <div className="nameLogin">
           <h3>Enter your name to continue</h3>
           <div className="nameInput">

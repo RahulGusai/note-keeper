@@ -1,7 +1,4 @@
 .loginPage {
-  width: 100%;
-  height: 100vh;
-  background-color: teal;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,11 +10,12 @@
   padding: 30px;
   height: auto;
   width: 400px;
-  background-color: white;
+  background-color: #ad8260;
   display: flex;
   flex-direction: column;
   gap: 20px;
   align-items: center;
+  border-radius: 5px;
 }
 
 .emailLogin {
@@ -26,6 +24,23 @@
   flex-direction: column;
   gap: 15px;
   align-items: center;
+}
+.emailLogin .inputWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputWrapper > span {
+  color: black;
+  font-size: 11px;
+  font-weight: bold;
+  padding-left: 5px;
+}
+
+.emailLogin h3 {
+  color: #fdf0e7;
+  font-size: 19px;
 }
 
 .emailLogin input {
@@ -47,16 +62,27 @@
   display: inline-block;
 }
 
-.emailLogin .loginButton {
+.emailLogin .continueButton {
   width: 100%;
   height: 40px;
-  background-color: blue;
+  background-color: #fdf0e7;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #ad8260;
+  font-size: 15px;
+  font-weight: 600;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.emailLogin > span {
+  color: black;
+  font-weight: bold;
+}
+
+.separatorText {
+  color: #fdf0e7;
 }
 
 .socialSignup {
@@ -65,15 +91,19 @@
   flex-direction: column;
 }
 
-.socialSignup div {
+.socialSignup > div {
   cursor: pointer;
   width: 100%;
   height: 40px;
   border-radius: 4px;
-  border: 1px solid black;
+  border: 1px solid #fdf0e7;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.socialSignup > div > span {
+  color: #fdf0e7;
 }
 
 .googleLogin {
@@ -89,7 +119,7 @@
 }
 
 .loginForm .options {
-  color: blue;
+  color: #fdf0e7;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -105,7 +135,7 @@
 }
 
 .guestAccount {
-  color: blue;
+  color: #fdf0e7;
   font-weight: 400;
   cursor: pointer;
 }

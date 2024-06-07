@@ -1,3 +1,5 @@
+import { supabase } from './supabase/supabaseClient';
+
 function getContentToBeDisplayed(string) {
   const lines = string.split('\n');
   if (lines.length <= 24) {
@@ -211,20 +213,21 @@ function restoreNoteFromTrash(id, notes, setNotes) {
   });
 }
 
-function deleteNoteFromTrash(id, notes, setNotes) {
-  const { trash } = notes;
-
-  const updatedTrash = { ...trash };
-  delete updatedTrash[id];
-
+async function deleteNoteFromTrash(id, setNotes) {
   setNotes((notes) => {
+    const { trash } = notes;
+
+    const updatedTrash = { ...trash };
+    delete updatedTrash[id];
+
     return {
       ...notes,
       trash: updatedTrash,
     };
   });
 
-  localStorage.removeItem(id);
+  const fileName = `${id}`;
+  await supabase.storage.from('note-images').remove([fileName]);
 }
 
 function handleUndoBtnClick(
@@ -263,6 +266,90 @@ function handleRedoBtnClick(
   });
 }
 
+async function fetchUserNotes(user) {
+  try {
+    const { data, error } = await supabase
+      .from('notes')
+      .select('notes')
+      .eq('user_id', user.id)
+      .limit(1)
+      .single(1);
+    if (error) {
+      throw error;
+    }
+    return data.notes;
+  } catch (error) {
+    console.log(error.message);
+    return null;
+  }
+}
+
+async function updateNotesForUser(userId, updatedNotes) {
+  try {
+    const { data, error } = await supabase
+      .from('notes')
+      .update({ notes: updatedNotes })
+      .eq('user_id', userId);
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error updating notes:', error);
+    return null;
+  }
+}
+
+function updateNoteImageSource(id, notes, setNotes, publicUrl) {
+  setNotes((notes) => {
+    const { others, pinned, archives } = notes;
+    let updatedOthers = { ...others };
+    let updatedPinned = { ...pinned };
+    let updatedArchives = { ...archives };
+
+    if (others.hasOwnProperty(id)) {
+      const updatedNote = {
+        ...updatedOthers[id],
+        image: {
+          ...updatedOthers[id].image,
+          publicUrl: publicUrl,
+        },
+      };
+      updatedOthers = { ...updatedOthers, [id]: updatedNote };
+    }
+
+    if (pinned.hasOwnProperty(id)) {
+      const updatedNote = {
+        ...updatedPinned[id],
+        image: {
+          ...updatedPinned[id].image,
+          publicUrl: publicUrl,
+        },
+      };
+      updatedPinned = { ...updatedPinned, [id]: updatedNote };
+    }
+
+    if (archives.hasOwnProperty(id)) {
+      const updatedNote = {
+        ...updatedArchives[id],
+        image: {
+          ...updatedArchives[id].image,
+          src: publicUrl,
+        },
+      };
+      updatedArchives = { ...updatedArchives, [id]: updatedNote };
+    }
+    return {
+      ...notes,
+      others: updatedOthers,
+      pinned: updatedPinned,
+      archives: updatedArchives,
+    };
+  });
+}
+
 export {
   getHeightClass,
   archiveNote,
@@ -274,4 +361,7 @@ export {
   restoreNoteFromTrash,
   handleUndoBtnClick,
   handleRedoBtnClick,
+  fetchUserNotes,
+  updateNotesForUser,
+  updateNoteImageSource,
 };

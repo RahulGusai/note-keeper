@@ -11,9 +11,10 @@ import { MdEdit } from 'react-icons/md';
 import { CiGrid41 } from 'react-icons/ci';
 import { useRef, useState } from 'react';
 import useDebounce from '../home/useDebounce';
+import { supabase } from '../supabase/supabaseClient';
 
 export function NavBar(props) {
-  const { setIsLoggedIn } = props;
+  const { userDetails, setUserDetails } = props;
 
   const searchInputRef = useRef();
   const [searchInput, setSearchInput] = useState('');
@@ -34,7 +35,7 @@ export function NavBar(props) {
     setNotesListOptions,
   } = props;
 
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  const userName = userDetails.fullName;
 
   const delay = 500;
   useDebounce(searchInput, delay, notes, setFilteredNotes, setNotesListOptions);
@@ -69,14 +70,17 @@ export function NavBar(props) {
     });
   }
 
-  function removeUserinfoAndNotes() {
-    localStorage.removeItem('userInfo');
-    localStorage.removeItem('notes');
-  }
-  function signOutUser() {
-    // For guest login
-    removeUserinfoAndNotes();
-    setIsLoggedIn(false);
+  async function signOutUser() {
+    await supabase.auth.signOut();
+    if (userDetails.isAnonymous) {
+      // TODO Delete the user via admin API
+
+      await supabase
+        .from('notes')
+        .update({ isDeleted: true })
+        .eq('user_id', userDetails.id);
+    }
+    setUserDetails(null);
   }
 
   function switchView() {
@@ -107,11 +111,11 @@ export function NavBar(props) {
   return (
     <div onClick={handleNavBarContainerClick} className="navBarContainer">
       <div
-        className={`${
+        className={
           navBarOptions.showUserProfileDialog
             ? 'userProfileDialog show'
             : 'userProfileDialog'
-        }`}
+        }
       >
         <div className="imageSection">
           <div className="image">
@@ -124,7 +128,7 @@ export function NavBar(props) {
             <MdEdit className="editIcon"></MdEdit>
           </div>
 
-          <div className="name">{`Hi, ${userInfo.name}!`}</div>
+          <div className="name">{`Hi, ${userName}!`}</div>
         </div>
         <div className="userProfileOptions">
           <div onClick={signOutUser} className="signout">
@@ -135,11 +139,11 @@ export function NavBar(props) {
       </div>
 
       <div
-        className={`${
+        className={
           navBarOptions.showSettingsDialog
             ? 'settingsDialog show'
             : 'settingsDialog'
-        }`}
+        }
       >
         <div>Disable Dark Theme</div>
         <div>Settings</div>
