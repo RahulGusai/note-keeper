@@ -7,6 +7,7 @@ import { supabase } from './supabase/supabaseClient';
 import { useRef, useState } from 'react';
 import { Circles } from 'react-loader-spinner';
 import PasswordStrengthBar from 'react-password-strength-bar';
+import { fetchUserNotes } from './utils';
 
 export function SignupPage(props) {
   const { setUserDetails, setNotes } = props;
@@ -61,8 +62,7 @@ export function SignupPage(props) {
 
       const user = await createNewUser();
       if (user) {
-        const notes = { others: {}, pinned: {}, archives: {}, trash: {} };
-        await supabase.from('notes').insert({ user_id: user.id, notes });
+        const notes = await fetchUserNotes(user);
         setUserDetails({
           id: user.id,
           fullName: user.user_metadata.full_name,

@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import backgroundImage from './images/guestLoginBackground.jpg';
 import { IoArrowBack } from 'react-icons/io5';
 import { supabase } from './supabase/supabaseClient';
+import { fetchUserNotes } from './utils';
 
 export function GuestLogin(props) {
   const { setUserDetails, setNotes } = props;
@@ -59,9 +60,8 @@ export function GuestLogin(props) {
     }
 
     const user = await createAnonymousUser();
-    if (user) {
-      const notes = { others: {}, pinned: {}, archives: {}, trash: {} };
-      await supabase.from('notes').insert({ user_id: user.id, notes });
+    const notes = await fetchUserNotes(user);
+    if (user && notes) {
       setUserDetails({
         id: user.id,
         fullName: user.user_metadata.full_name,

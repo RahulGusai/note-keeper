@@ -84,6 +84,20 @@ export function LoginPage(props) {
     navigate('./signup');
   }
 
+  async function signInWithGoogle() {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.log('error occured');
+    }
+  }
+
   const loginPageStyle = {
     backgroundImage: `url(${backgroundImage})`,
     backgroundSize: 'cover',
@@ -132,7 +146,7 @@ export function LoginPage(props) {
         <div className="separatorText">Or continue with:</div>
 
         <div className="socialSignup">
-          <div className="googleLogin">
+          <div onClick={signInWithGoogle} className="googleLogin">
             <img src={googleLogo} alt="googleLogo"></img>
             <span>Google</span>
           </div>
