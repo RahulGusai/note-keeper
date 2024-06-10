@@ -162,7 +162,7 @@ export function TrashNote(props) {
             onClick={processNoteClick}
             class="trashNoteImage"
             ref={trashNoteImageRef}
-            src={image.src}
+            src={image.publicUrl ? image.publicUrl : image.src}
             alt="noteImage"
           />
         )}
