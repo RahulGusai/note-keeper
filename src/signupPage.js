@@ -7,7 +7,7 @@ import { supabase } from './supabase/supabaseClient';
 import { useRef, useState } from 'react';
 import { Circles } from 'react-loader-spinner';
 import PasswordStrengthBar from 'react-password-strength-bar';
-import { fetchUserNotes } from './utils';
+import { fetchUserNotes, signInWithGoogle } from './utils';
 
 export function SignupPage(props) {
   const { setUserDetails, setNotes } = props;
@@ -199,7 +199,7 @@ export function SignupPage(props) {
         <div className="separatorText">Or continue with:</div>
 
         <div className="socialSignup">
-          <div className="googleLogin">
+          <div onClick={signInWithGoogle} className="googleLogin">
             <img src={googleLogo} alt="googleLogo"></img>
             <span>Google</span>
           </div>

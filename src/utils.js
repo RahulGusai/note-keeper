@@ -350,6 +350,23 @@ function updateNoteImageSource(id, notes, setNotes, publicUrl) {
   });
 }
 
+async function signInWithGoogle() {
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      // options: {
+      //   redirectTo: 'http://localhost:3000',
+      // },
+    });
+
+    if (error) {
+      throw error;
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 export {
   getHeightClass,
   archiveNote,
@@ -364,4 +381,5 @@ export {
   fetchUserNotes,
   updateNotesForUser,
   updateNoteImageSource,
+  signInWithGoogle,
 };

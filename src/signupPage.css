@@ -132,8 +132,10 @@
   color: #fdf0e7;
   cursor: pointer;
   font-weight: 400;
+  transition: scale 0.3s ease-in-out;
 }
 
 .loginRedirect:hover {
+  scale: 1.05;
   text-decoration: underline;
 }

@@ -74,6 +74,7 @@
   font-weight: 600;
   border-radius: 4px;
   cursor: pointer;
+  transition: scale 0.3s ease-in-out;
 }
 
 .emailLogin > span {
@@ -111,6 +112,13 @@
   justify-content: center;
   align-items: center;
   gap: 5px;
+  scale: 1;
+  transition: scale 0.3s ease-in-out;
+}
+
+.continueButton:hover,
+.googleLogin:hover {
+  scale: 1.05;
 }
 
 .googleLogin img {
@@ -130,7 +138,12 @@
   cursor: pointer;
 }
 
-.options span:hover {
+.options > span {
+  transition: scale 0.3s ease-in-out;
+}
+
+.options > span:hover {
+  scale: 1.05;
   text-decoration: underline;
 }
 
@@ -138,9 +151,11 @@
   color: #fdf0e7;
   font-weight: 400;
   cursor: pointer;
+  transition: scale 0.3s ease-in-out;
 }
 
 .guestAccount:hover {
+  scale: 1.05;
   text-decoration: underline;
 }
 

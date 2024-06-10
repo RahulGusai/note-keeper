@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import backgroundImage from './images/guestLoginBackground.jpg';
 import { supabase } from './supabase/supabaseClient';
 import { Circles } from 'react-loader-spinner';
-import { fetchUserNotes } from './utils';
+import { fetchUserNotes, signInWithGoogle } from './utils';
 
 export function LoginPage(props) {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -82,20 +82,6 @@ export function LoginPage(props) {
 
   function handleCreateAccountClick() {
     navigate('./signup');
-  }
-
-  async function signInWithGoogle() {
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-      });
-
-      if (error) {
-        throw error;
-      }
-    } catch (error) {
-      console.log('error occured');
-    }
   }
 
   const loginPageStyle = {
