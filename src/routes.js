@@ -85,11 +85,11 @@ const AppRoutes = () => {
         <Route
           path="/"
           element={
-            // <LoginPage
-            //   setUserDetails={setUserDetails}
-            //   setNotes={setNotes}
-            // ></LoginPage>
-            <NewLoginPage></NewLoginPage>
+            <LoginPage
+              setUserDetails={setUserDetails}
+              setNotes={setNotes}
+            ></LoginPage>
+            // <NewLoginPage></NewLoginPage>
           }
         />
       </Routes>
