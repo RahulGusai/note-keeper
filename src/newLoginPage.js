@@ -16,6 +16,7 @@ import './newLoginPage.css';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useState } from 'react';
 import { outlinedInputClasses } from '@mui/material/OutlinedInput';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 export function NewLoginPage() {
   const [showPassword, setShowPassword] = useState(true);
@@ -63,6 +64,14 @@ export function NewLoginPage() {
           },
         },
       },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+            fontWeight: 'normal',
+          },
+        },
+      },
     },
   });
 
@@ -74,16 +83,17 @@ export function NewLoginPage() {
       justifyContent={'center'}
       alignItems={'center'}
       backgroundColor={'black'}
+      position={'relative'}
     >
       <ThemeProvider theme={customTheme}>
         <Stack
           width={'20%'}
+          maxWidth={'350px'}
           alignItems={'center'}
           marginBottom={'10%'}
           spacing={3}
         >
           <h2 className="formHeading">Log in To NoteKeeper</h2>
-
           <FormControl fullWidth variant="outlined">
             <InputLabel htmlFor="standard-adornment-password">
               Email Address
@@ -104,7 +114,6 @@ export function NewLoginPage() {
               label="Email Address"
             />
           </FormControl>
-
           <FormControl fullWidth variant="outlined">
             <InputLabel htmlFor="standard-adornment-password">
               Password
@@ -126,10 +135,30 @@ export function NewLoginPage() {
             />
           </FormControl>
           <h4>Or</h4>
-          <Button fullWidth variant="outlined" color="secondary" size="large">
+          <Button
+            sx={{ fontSize: '15px' }}
+            fullWidth
+            variant="contained"
+            color="secondary"
+            size="large"
+          >
             Continue with Google
           </Button>
+          <Button
+            sx={{ fontSize: '13px' }}
+            color="secondary"
+            size="small"
+            endIcon={<ArrowForwardIcon></ArrowForwardIcon>}
+          >
+            Create a guest account
+          </Button>
         </Stack>
+
+        <div className="bottomMenu">
+          <Button sx={{ fontSize: '16px' }} color="secondary">
+            Don't have an account? Sign Up
+          </Button>
+        </div>
       </ThemeProvider>
     </Box>
   );
