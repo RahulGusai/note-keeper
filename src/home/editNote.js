@@ -15,7 +15,7 @@ import { unArchiveNote } from '../utils';
 import { handleUndoBtnClick, handleRedoBtnClick } from '../utils';
 import { supabase } from '../supabase/supabaseClient';
 import { updateNoteImageSource } from '../utils';
-import { DEFAULT_NOTE_COLOR } from '../constans/colors';
+import { DEFAULT_NOTE_COLOR } from '../constants/colors';
 
 function FunctionComponent(props, ref) {
   const {

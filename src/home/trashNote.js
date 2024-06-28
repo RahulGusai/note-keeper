@@ -9,7 +9,7 @@ import {
 } from '../utils';
 
 import './trashNote.css';
-import { DEFAULT_NOTE_COLOR } from '../constans/colors';
+import { DEFAULT_NOTE_COLOR } from '../constants/colors';
 
 export function TrashNote(props) {
   const {

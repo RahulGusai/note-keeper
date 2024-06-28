@@ -11,7 +11,7 @@ import { ErrorDialog } from './home/errorDialog';
 import { getHeightClass } from './utils';
 import { SelectedNotesOptions } from './home/selectedNotesOptions';
 import { updateNotesForUser } from './utils';
-import { DEFAULT_NOTE_COLOR } from './constans/colors';
+import { DEFAULT_NOTE_COLOR } from './constants/colors';
 
 export default function App(props) {
   const { notes, setNotes, userDetails, setUserDetails } = props;

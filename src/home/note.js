@@ -22,7 +22,7 @@ import {
 import './note.css';
 import { useCallback } from 'react';
 import { supabase } from '../supabase/supabaseClient';
-import { DEFAULT_NOTE_COLOR } from '../constans/colors';
+import { DEFAULT_NOTE_COLOR } from '../constants/colors';
 
 export function Note(props) {
   const {

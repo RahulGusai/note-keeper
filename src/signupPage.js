@@ -8,6 +8,7 @@ import { useRef, useState } from 'react';
 import { Circles } from 'react-loader-spinner';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import { fetchUserNotes, signInWithGoogle } from './utils';
+import Button from '@mui/material/Button';
 
 export function SignupPage(props) {
   const { setUserDetails, setNotes } = props;

@@ -354,9 +354,9 @@ async function signInWithGoogle() {
   try {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      // options: {
-      //   redirectTo: 'http://localhost:3000',
-      // },
+      options: {
+        redirectTo: 'http://localhost:3000',
+      },
     });
 
     if (error) {

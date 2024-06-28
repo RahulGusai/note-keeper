@@ -15,7 +15,7 @@ import {
   updateNoteImageSource,
 } from '../utils';
 import { supabase } from '../supabase/supabaseClient';
-import { DEFAULT_NOTE_COLOR } from '../constans/colors';
+import { DEFAULT_NOTE_COLOR } from '../constants/colors';
 
 function ComponentHandler(props, ref) {
   const { titleRef, contentRef } = ref;

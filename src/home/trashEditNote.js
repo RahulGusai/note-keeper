@@ -3,7 +3,7 @@ import { MdOutlineRestoreFromTrash } from 'react-icons/md';
 import { MdDeleteForever } from 'react-icons/md';
 import { forwardRef, useEffect, useRef } from 'react';
 import { restoreNoteFromTrash, deleteNoteFromTrash } from '../utils';
-import { DEFAULT_NOTE_COLOR } from '../constans/colors';
+import { DEFAULT_NOTE_COLOR } from '../constants/colors';
 
 function FunctionComponent(props, ref) {
   const {

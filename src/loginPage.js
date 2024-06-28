@@ -7,6 +7,7 @@ import backgroundImage from './images/guestLoginBackground.jpg';
 import { supabase } from './supabase/supabaseClient';
 import { Circles } from 'react-loader-spinner';
 import { fetchUserNotes, signInWithGoogle } from './utils';
+import { Button } from '@mui/material';
 
 export function LoginPage(props) {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
