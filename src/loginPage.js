@@ -149,9 +149,8 @@ export function LoginPage(props) {
           }}
           className="guestAccount"
         >
-          Create a guest account{' '}
+          Create a guest account
         </span>
-        {/* <hr className="lineBreak"></hr> */}
       </div>
     </div>
   );

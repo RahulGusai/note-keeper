@@ -2,41 +2,25 @@ import {
   Box,
   Button,
   CircularProgress,
-  FormControl,
-  FormHelperText,
-  IconButton,
-  Input,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
   Stack,
   TextField,
   ThemeProvider,
   createTheme,
 } from '@mui/material';
 import './newLoginPage.css';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { outlinedInputClasses } from '@mui/material/OutlinedInput';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { supabase } from './supabase/supabaseClient';
 import { fetchUserNotes } from './utils';
+import { ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-export function NewLoginPage(props) {
+export function NewGuestLoginPage(props) {
   const { setUserDetails, setNotes } = props;
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [inputFieldError, setInputFieldError] = useState({
-    email: false,
-    password: false,
-  });
-  const [helperText, setHelperText] = useState({
-    email: null,
+    name: false,
   });
   const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
@@ -95,11 +79,14 @@ export function NewLoginPage(props) {
     },
   });
 
-  async function signInUser() {
+  async function createAnonymousUser() {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
+      const { data, error } = await supabase.auth.signInAnonymously({
+        options: {
+          data: {
+            full_name: name,
+          },
+        },
       });
 
       if (error) {
@@ -114,41 +101,21 @@ export function NewLoginPage(props) {
   }
 
   function validateInputFields() {
-    const isPasswordValid = password.length > 0;
-    const isEmailValid = email.length > 0 && emailRegex.test(email);
+    const isNameValid = name.length > 0;
 
     setInputFieldError((inputFieldError) => {
       return {
         ...inputFieldError,
-        email: !isEmailValid,
-        password: !isPasswordValid,
+        name: !isNameValid,
       };
     });
 
-    if (!isEmailValid) {
-      if (email.length === 0) {
-        setHelperText((helperText) => {
-          return {
-            ...helperText,
-            email: 'Email address is required',
-          };
-        });
-      } else {
-        setHelperText((helperText) => {
-          return {
-            ...helperText,
-            email: 'Please enter a valid email address',
-          };
-        });
-      }
-    }
-
-    if (!isEmailValid || !isPasswordValid) {
+    if (!isNameValid) {
       throw 'Invalid input fields';
     }
   }
 
-  async function handleContinueBtnClick() {
+  async function handleLoginBtnClick() {
     try {
       validateInputFields();
     } catch (err) {
@@ -157,7 +124,7 @@ export function NewLoginPage(props) {
     }
 
     setIsLoading(true);
-    const user = await signInUser();
+    const user = await createAnonymousUser();
     const notes = await fetchUserNotes(user);
     if (user && notes) {
       setUserDetails({
@@ -191,78 +158,41 @@ export function NewLoginPage(props) {
           spacing={2}
         >
           <h2 className="formHeading">Log in To NoteKeeper</h2>
+
           <TextField
-            error={inputFieldError.email}
+            error={inputFieldError.name}
             fullWidth
             variant="outlined"
-            label="Email Address"
+            label="Name"
             color="primary"
-            onChange={(e) => setEmail(e.target.value)}
-            helperText={helperText.email}
+            onChange={(e) => setName(e.target.value)}
+            helperText="Name is required"
           ></TextField>
-          <FormControl
-            error={inputFieldError.password}
-            fullWidth
-            variant="outlined"
-          >
-            <InputLabel
-              helperText="Password is required"
-              htmlFor="standard-adornment-password"
-            >
-              Password
-            </InputLabel>
-            <OutlinedInput
-              id="standard-adornment-password"
-              type={showPassword ? 'text' : 'password'}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    color="primary"
-                    aria-label="toggle password visibility"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <FormHelperText>Password is required</FormHelperText>
-          </FormControl>
+
           <Button
             sx={{ fontSize: '15px' }}
             fullWidth
             variant="contained"
             color="secondary"
             size="large"
-            onClick={handleContinueBtnClick}
+            onClick={handleLoginBtnClick}
           >
             {isLoading && <CircularProgress color="primary" />}
-            {!isLoading && 'Sign In'}
+            {!isLoading && 'Login'}
           </Button>
+
           {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
 
-          <h4>Or</h4>
-          <Button
-            sx={{ fontSize: '15px' }}
-            fullWidth
-            variant="contained"
-            color="secondary"
-            size="large"
-          >
-            Continue with Google
-          </Button>
           <Button
             sx={{ fontSize: '13px' }}
             color="secondary"
             size="small"
-            endIcon={<ArrowForwardIcon></ArrowForwardIcon>}
+            startIcon={<ArrowBack></ArrowBack>}
             onClick={() => {
-              navigate('./guest');
+              navigate('/');
             }}
           >
-            Create a guest account
+            Other Login options
           </Button>
         </Stack>
 

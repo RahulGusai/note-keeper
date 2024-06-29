@@ -13,6 +13,7 @@ import App from './App';
 import { supabase } from './supabase/supabaseClient';
 import { fetchUserNotes } from './utils';
 import { NewLoginPage } from './newLoginPage';
+import { NewGuestLoginPage } from './newGuestLoginPage';
 
 const AppRoutes = () => {
   const [userDetails, setUserDetails] = useState(null);
@@ -76,20 +77,27 @@ const AppRoutes = () => {
         <Route
           path="/guest"
           element={
-            <GuestLogin
+            // <GuestLogin
+            //   setUserDetails={setUserDetails}
+            //   setNotes={setNotes}
+            // ></GuestLogin>
+            <NewGuestLoginPage
               setUserDetails={setUserDetails}
               setNotes={setNotes}
-            ></GuestLogin>
+            ></NewGuestLoginPage>
           }
         />
         <Route
           path="/"
           element={
-            <LoginPage
+            // <LoginPage
+            // setUserDetails={setUserDetails}
+            // setNotes={setNotes}
+            // ></LoginPage>
+            <NewLoginPage
               setUserDetails={setUserDetails}
               setNotes={setNotes}
-            ></LoginPage>
-            // <NewLoginPage></NewLoginPage>
+            ></NewLoginPage>
           }
         />
       </Routes>
