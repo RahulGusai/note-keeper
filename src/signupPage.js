@@ -1,51 +1,163 @@
-import './signupPage.css';
-import googleLogo from './logos/google.png';
-import { useNavigate } from 'react-router-dom';
-import backgroundImage from './images/guestLoginBackground.jpg';
-import { IoArrowBack } from 'react-icons/io5';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
+  FormHelperText,
+  IconButton,
+  Input,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Stack,
+  TextField,
+  ThemeProvider,
+  createTheme,
+} from '@mui/material';
+import './loginPage.css';
+import { useState } from 'react';
+import { outlinedInputClasses } from '@mui/material/OutlinedInput';
 import { supabase } from './supabase/supabaseClient';
-import { useRef, useState } from 'react';
-import { Circles } from 'react-loader-spinner';
-import PasswordStrengthBar from 'react-password-strength-bar';
-import { fetchUserNotes, signInWithGoogle } from './utils';
-import Button from '@mui/material/Button';
+import { fetchUserNotes } from './utils';
+import { ArrowBack, Visibility, VisibilityOff } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 export function SignupPage(props) {
-  const { setUserDetails, setNotes } = props;
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const navigate = useNavigate();
+  const { setUserDetails, setNotes } = props;
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formNavigation, setFormNavigation] = useState({
     viewOne: true,
     viewTwo: false,
   });
-  const [errorMessages, setErrorMessages] = useState({
-    emailInput: null,
-    signUp: null,
+  const [input, setInput] = useState({ fullName: '', email: '', password: '' });
+  const [inputFieldError, setInputFieldError] = useState({
+    fullName: false,
+    email: false,
+    password: false,
   });
-  const [validEmailAddr, setValidEmailAddr] = useState(null);
-  const [password, setPassword] = useState('');
-  const [passwordScore, setPasswordScore] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [helperText, setHelperText] = useState({
+    email: null,
+  });
+  const navigate = useNavigate();
 
-  const formInputs = {
-    emailInputRef: useRef(),
-    fullNameInputRef: useRef(),
-    pwdInputRef: useRef(),
-  };
+  const customTheme = createTheme({
+    palette: {
+      primary: {
+        main: '#686868',
+      },
+      secondary: { main: '#14549c' },
+    },
+    components: {
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            '--TextField-brandBorderColor': '#ffffff',
+            '--TextField-brandBorderHoverColor': '#ffffff',
+            '--TextField-brandBorderFocusedColor': '#14549c',
+          },
+        },
+      },
+      MuiOutlinedInput: {
+        styleOverrides: {
+          root: {
+            color: 'white',
+            [`& .${outlinedInputClasses.notchedOutline}`]: {
+              borderColor: '#686868',
+            },
+            [`&:hover .${outlinedInputClasses.notchedOutline}`]: {
+              borderColor: '#686868',
+            },
+            [`&.Mui-focused .${outlinedInputClasses.notchedOutline}`]: {
+              borderColor: '#14549c',
+            },
+          },
+        },
+      },
+      MuiInputLabel: {
+        styleOverrides: {
+          root: {
+            color: '#686868',
+            '&.Mui-focused': {
+              color: '#14549c',
+            },
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+            fontWeight: 'normal',
+          },
+        },
+      },
+    },
+  });
+
+  function validateViewOneInputFields() {
+    const isNameValid = input.fullName.length > 0;
+
+    setInputFieldError((inputFieldError) => {
+      return {
+        ...inputFieldError,
+        fullName: !isNameValid,
+      };
+    });
+
+    if (!isNameValid) {
+      throw 'Invalid input fields';
+    }
+  }
+
+  function validateViewTwoInputFields() {
+    const isEmailValid = input.email.length > 0 && emailRegex.test(input.email);
+    const isPasswordValid = input.password.length > 0;
+
+    setInputFieldError((inputFieldError) => {
+      return {
+        ...inputFieldError,
+        email: !isEmailValid,
+        password: !isPasswordValid,
+      };
+    });
+
+    if (!isEmailValid) {
+      if (input.email.length === 0) {
+        setHelperText((helperText) => {
+          return {
+            ...helperText,
+            email: 'Email address is required',
+          };
+        });
+      } else {
+        setHelperText((helperText) => {
+          return {
+            ...helperText,
+            email: 'Please enter a valid email address',
+          };
+        });
+      }
+    }
+
+    if (!isEmailValid || !isPasswordValid) {
+      throw 'Invalid input fields';
+    }
+  }
 
   async function handleContinueBtnClick(e) {
     e.preventDefault();
 
     if (formNavigation.viewOne) {
-      if (!emailRegex.test(formInputs.emailInputRef.current.value)) {
-        setErrorMessages((errorMessages) => {
-          return {
-            ...errorMessages,
-            emailInput: 'Please enter a valid email address',
-          };
-        });
+      try {
+        validateViewOneInputFields();
+      } catch (err) {
+        setErrorMessage(null);
         return;
       }
+
       setFormNavigation((formNavigation) => {
         return {
           ...formNavigation,
@@ -53,14 +165,18 @@ export function SignupPage(props) {
           viewTwo: true,
         };
       });
-      setValidEmailAddr(formInputs.emailInputRef.current.value);
-
       return;
     }
 
     if (formNavigation.viewTwo) {
-      setIsLoading(true);
+      try {
+        validateViewTwoInputFields();
+      } catch (err) {
+        setErrorMessage(null);
+        return;
+      }
 
+      setIsLoading(true);
       const user = await createNewUser();
       if (user) {
         const notes = await fetchUserNotes(user);
@@ -70,7 +186,7 @@ export function SignupPage(props) {
           isAnonymous: user.is_anonymous,
         });
         setNotes(notes);
-        setErrorMessages({ emailInput: null, login: null });
+        setErrorMessage(null);
       }
       setIsLoading(false);
     }
@@ -79,11 +195,11 @@ export function SignupPage(props) {
   async function createNewUser() {
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: validEmailAddr,
-        password: formInputs.pwdInputRef.current.value,
+        email: input.email,
+        password: input.password,
         options: {
           data: {
-            full_name: formInputs.fullNameInputRef.current.value,
+            full_name: input.fullName,
           },
         },
       });
@@ -94,126 +210,128 @@ export function SignupPage(props) {
       const { user } = data;
       return user;
     } catch (error) {
-      setErrorMessages((errorMessages) => {
-        return {
-          ...errorMessages,
-          signUp: error.message,
-          emailInput: false,
-        };
-      });
+      setErrorMessage(error.message);
       return null;
     }
   }
 
-  function handleBackIconClick() {
-    if (formNavigation.viewOne) navigate('/');
-    if (formNavigation.viewTwo) {
-      setErrorMessages((errorMessages) => {
-        return {
-          ...errorMessages,
-          emailInput: null,
-        };
-      });
-      setFormNavigation((formNavigation) => {
-        return {
-          ...formNavigation,
-          viewOne: true,
-          viewTwo: false,
-        };
-      });
-    }
-  }
-
-  const loginPageStyle = {
-    backgroundImage: `url(${backgroundImage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    width: '100%',
-    height: '100vh',
-  };
-
   return (
-    <div style={loginPageStyle} className="signupPage">
-      <div className="signupForm">
-        <IoArrowBack
-          onClick={handleBackIconClick}
-          className="backIcon"
-        ></IoArrowBack>
-        <div className="emailSignup">
-          <h3>Create your free account</h3>
-          {formNavigation.viewOne && (
-            <div className="viewOneContainer">
-              <input
-                ref={formInputs.emailInputRef}
-                className="emailInput"
-                type="textbox"
-                placeholder="Enter your email"
-              ></input>
-              {errorMessages.emailInput && (
-                <span>{errorMessages.emailInput}</span>
-              )}
-            </div>
-          )}
-          {formNavigation.viewTwo && (
-            <div className="viewTwoContainer">
-              <input
-                ref={formInputs.fullNameInputRef}
-                className="fullNameInput"
-                type="textbox"
-                placeholder="First and Last Name"
-              ></input>
-
-              <div className="passwordWrapper">
-                <input
-                  ref={formInputs.pwdInputRef}
-                  className="pwdInput"
-                  type="password"
-                  placeholder="Enter your password"
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                  }}
-                ></input>
-                <PasswordStrengthBar
-                  password={password}
-                  onChangeScore={setPasswordScore}
-                  scoreWords={['weak', 'okay', 'good', 'strong']}
-                  scoreWordStyle={{ color: '#fdf0e7' }}
-                />
-              </div>
-            </div>
-          )}
-          <div onClick={handleContinueBtnClick} className="continueButton">
-            {!isLoading && <span>Continue</span>}
-            <Circles
-              height="30"
-              width="80"
-              color="#ad8260"
-              ariaLabel="circles-loading"
-              wrapperStyle={{}}
-              wrapperClass=""
-              visible={isLoading}
-            />
-          </div>
-          {errorMessages.signUp && <span>{errorMessages.signUp}</span>}
-        </div>
-
-        <div className="separatorText">Or continue with:</div>
-
-        <div className="socialSignup">
-          <div onClick={signInWithGoogle} className="googleLogin">
-            <img src={googleLogo} alt="googleLogo"></img>
-            <span>Google</span>
-          </div>
-        </div>
-        <div
-          onClick={() => {
-            navigate('/');
-          }}
-          className="loginRedirect"
+    <Box
+      width={'100%'}
+      height={'100vh'}
+      display={'flex'}
+      justifyContent={'center'}
+      alignItems={'center'}
+      backgroundColor={'#0a0a0a'}
+      position={'relative'}
+    >
+      <ThemeProvider theme={customTheme}>
+        <Stack
+          width={'20%'}
+          minWidth={'300px'}
+          maxWidth={'350px'}
+          alignItems={'center'}
+          marginBottom={'10%'}
+          spacing={2}
         >
-          Already have an NoteKeeper's account? Login
-        </div>
-      </div>
-    </div>
+          <Stack alignItems={'center'} padding={'10px'} spacing={2}>
+            <div className="divHeading">Create Your</div>
+            <div className="divHeading">NoteKeeper Account</div>
+          </Stack>
+
+          {formNavigation.viewOne && (
+            <TextField
+              error={inputFieldError.fullName}
+              fullWidth
+              variant="outlined"
+              label="FullName"
+              color="primary"
+              onChange={(e) =>
+                setInput((input) => {
+                  return { ...input, fullName: e.target.value };
+                })
+              }
+              helperText="Name is required"
+            ></TextField>
+          )}
+
+          {formNavigation.viewTwo && (
+            <>
+              <TextField
+                error={inputFieldError.email}
+                fullWidth
+                variant="outlined"
+                label="Email Address"
+                color="primary"
+                onChange={(e) =>
+                  setInput((input) => {
+                    return { ...input, email: e.target.value };
+                  })
+                }
+                helperText={helperText.email}
+              ></TextField>
+
+              <FormControl
+                error={inputFieldError.password}
+                fullWidth
+                variant="outlined"
+              >
+                <InputLabel htmlFor="standard-adornment-password">
+                  Password
+                </InputLabel>
+                <OutlinedInput
+                  id="standard-adornment-password"
+                  type={showPassword ? 'text' : 'password'}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        color="primary"
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
+                  onChange={(e) =>
+                    setInput((input) => {
+                      return { ...input, password: e.target.value };
+                    })
+                  }
+                />
+                <FormHelperText>Password is required</FormHelperText>
+              </FormControl>
+            </>
+          )}
+
+          <Button
+            sx={{ fontSize: '15px' }}
+            fullWidth
+            variant="contained"
+            color="secondary"
+            size="large"
+            onClick={handleContinueBtnClick}
+          >
+            {isLoading && <CircularProgress color="primary" />}
+            {!isLoading && 'Continue'}
+          </Button>
+
+          {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
+
+          <Button
+            sx={{ fontSize: '13px' }}
+            color="secondary"
+            size="small"
+            startIcon={<ArrowBack></ArrowBack>}
+            onClick={() => {
+              navigate('/');
+            }}
+          >
+            Back to Login
+          </Button>
+        </Stack>
+      </ThemeProvider>
+    </Box>
   );
 }
