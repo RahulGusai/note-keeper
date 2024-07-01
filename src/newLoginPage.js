@@ -20,7 +20,7 @@ import { useRef, useState } from 'react';
 import { outlinedInputClasses } from '@mui/material/OutlinedInput';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { supabase } from './supabase/supabaseClient';
-import { fetchUserNotes } from './utils';
+import { fetchUserNotes, signInWithGoogle } from './utils';
 import { useNavigate } from 'react-router-dom';
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -28,7 +28,7 @@ const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 export function NewLoginPage(props) {
   const { setUserDetails, setNotes } = props;
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [inputFieldError, setInputFieldError] = useState({
@@ -205,10 +205,7 @@ export function NewLoginPage(props) {
             fullWidth
             variant="outlined"
           >
-            <InputLabel
-              helperText="Password is required"
-              htmlFor="standard-adornment-password"
-            >
+            <InputLabel htmlFor="standard-adornment-password">
               Password
             </InputLabel>
             <OutlinedInput
@@ -250,6 +247,7 @@ export function NewLoginPage(props) {
             variant="contained"
             color="secondary"
             size="large"
+            onClick={signInWithGoogle}
           >
             Continue with Google
           </Button>
@@ -267,7 +265,11 @@ export function NewLoginPage(props) {
         </Stack>
 
         <div className="bottomMenu">
-          <Button sx={{ fontSize: '16px' }} color="secondary">
+          <Button
+            onClick={() => navigate('/signup')}
+            sx={{ fontSize: '16px' }}
+            color="secondary"
+          >
             Don't have an account? Sign Up
           </Button>
         </div>

@@ -18,3 +18,9 @@ h4 {
   align-items: center;
   bottom: 0px;
 }
+
+.divHeading {
+  color: white;
+  font-size: 25px;
+  font-weight: bold;
+}

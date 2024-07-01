@@ -157,7 +157,7 @@ export function NewGuestLoginPage(props) {
           marginBottom={'10%'}
           spacing={2}
         >
-          <h2 className="formHeading">Log in To NoteKeeper</h2>
+          <h2 className="formHeading">Create Your Guest Account</h2>
 
           <TextField
             error={inputFieldError.name}
@@ -197,7 +197,11 @@ export function NewGuestLoginPage(props) {
         </Stack>
 
         <div className="bottomMenu">
-          <Button sx={{ fontSize: '16px' }} color="secondary">
+          <Button
+            sx={{ fontSize: '16px' }}
+            color="secondary"
+            onClick={() => navigate('/signup')}
+          >
             Don't have an account? Sign Up
           </Button>
         </div>

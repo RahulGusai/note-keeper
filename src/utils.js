@@ -352,10 +352,17 @@ function updateNoteImageSource(id, notes, setNotes, publicUrl) {
 
 async function signInWithGoogle() {
   try {
+    let redirectTo;
+    if (process.env.REACT_APP_ENV == 'dev') {
+      redirectTo = process.env.REACT_APP_GOOGLE_REDIRECT_URL_DEV;
+    } else {
+      redirectTo = process.env.REACT_APP_GOOGLE_REDIRECT_URL_PROD;
+    }
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'http://localhost:3000',
+        redirectTo: redirectTo,
       },
     });
 
